@@ -1,9 +1,13 @@
 import 'package:ecommerce/data/category_data.dart';
+import 'package:ecommerce/data/product_data.dart';
+import 'package:ecommerce/models/product_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../widgets/search_field.dart';
+import 'home_content.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -106,9 +110,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              const SizedBox(
-                height: 7,
-              ),
               SizedBox(
                 height: 100,
                 width: double.infinity,
@@ -139,49 +140,58 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              Stack(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(6),
-                    child: Image(
+              Card(
+                margin: const EdgeInsets.all(9),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                clipBehavior: Clip.hardEdge,
+                child: Stack(
+                  children: [
+                    const Image(
                       image: AssetImage("assets/sale.png"),
                     ),
-                  ),
-                  const Positioned(
-                    top: 24,
-                    left: 20,
-                    child: Text(
-                      "50-40% OFF",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold),
+                    const Positioned(
+                      top: 24,
+                      left: 20,
+                      child: Text(
+                        "50-40% OFF",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: 64,
-                    left: 20,
-                    child: Text(" Now in (product) \n All colours",style: Theme.of(context).textTheme.bodySmall,),
-                  ),
-                  Positioned(
-                    bottom: 36,
-                    left: 20,
-                    child: OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                    Positioned(
+                      top: 64,
+                      left: 20,
+                      child: Text(
+                        " Now in (product) \n All colours",
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 29,
+                      left: 20,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: Colors.white),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          "Shop Now",
+                          style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ),
-                      onPressed: () {},
-                      child: Text(
-                        "Shop Now",
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                    ),
-                  )
-                ],
-              )
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                  height: 500,
+                  child: HomeContent()),
             ],
           ),
         ),

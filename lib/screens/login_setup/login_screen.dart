@@ -1,3 +1,4 @@
+import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/screens/home_screen.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
@@ -22,7 +23,7 @@ class LoginScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(
-                height: 40,
+                height: 56,
               ),
               Text(
                 "Welcome \nBack!",
@@ -69,7 +70,7 @@ class LoginScreen extends StatelessWidget {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
+                      builder: (context) => const LayOut(),
                     ),
                   );
                 },

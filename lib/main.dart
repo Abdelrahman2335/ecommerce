@@ -1,14 +1,17 @@
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 final ColorScheme _colorScheme = ColorScheme.fromSeed(
   seedColor: const Color(0xfff83758),
-  surface: Colors.white,
+  surface: Color(0xFFF9F9F9),
   brightness: Brightness.light,
   primary: const Color(0xfff83758),
   secondary: const Color(0xFF4392F9),
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         colorScheme: _colorScheme,
-        // scaffoldBackgroundColor: _colorScheme.surface,
+        scaffoldBackgroundColor: _colorScheme.surface,
         textTheme: GoogleFonts.robotoTextTheme().copyWith(
           titleSmall: GoogleFonts.roboto(fontWeight: FontWeight.w600),
           titleMedium: GoogleFonts.roboto(

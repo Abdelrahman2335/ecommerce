@@ -39,6 +39,10 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_svg: ^2.0.10+1
   uuid: ^4.5.1
+  firebase_core: ^2.12.0
+  firebase_storage: ^11.0.16
+  awesome_bottom_bar: ^1.2.4
+  transparent_image: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -66,7 +70,6 @@ flutter:
   assets:
      - assets/
      - assets/category_image/
-
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
