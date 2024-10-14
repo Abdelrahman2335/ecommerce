@@ -1,17 +1,21 @@
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:ecommerce/firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 final ColorScheme _colorScheme = ColorScheme.fromSeed(
   seedColor: const Color(0xfff83758),
-  surface: Color(0xFFF9F9F9),
+  surface: const Color(0xFFF9F9F9),
   brightness: Brightness.light,
   primary: const Color(0xfff83758),
   secondary: const Color(0xFF4392F9),

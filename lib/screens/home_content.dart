@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -16,55 +15,100 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
+  CollectionReference wishList =
+      FirebaseFirestore.instance.collection("wishList");
+
+  Future addWish(Product item) async {
+    try {
+      wishList.add({
+        "imageURL": item.imageUrl,
+        "title": item.title,
+        "price": item.price,
+        "id": item.id,
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to add the item."),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(14),
-        child: GridView.builder(
-          physics: const ScrollPhysics(),
-          itemCount: productData.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 9,
-            mainAxisSpacing: 9,
-            mainAxisExtent: 300,
-          ),
-          itemBuilder: (BuildContext context, int index) {
-            final Product data = productData[index];
-            return Container(
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20), color: Colors.white),
-              clipBehavior: Clip.hardEdge,
-              child: InkWell(
-                onTap: () {},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FadeInImage(
-                      height: 200,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      placeholder: MemoryImage(kTransparentImage),
-                      image: NetworkImage(
-                        data.imageUrl,
-                      ),
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: productData.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 11,
+        mainAxisSpacing: 11,
+        mainAxisExtent: 300,
+      ),
+      itemBuilder: (BuildContext context, int index) {
+        final Product data = productData[index];
+        return Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20), color: Colors.white),
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(17),
+            onTap: () {},
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FadeInImage(
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: MemoryImage(kTransparentImage),
+                    image: NetworkImage(
+                      data.imageUrl,
                     ),
-                    Text(
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 6, top: 5, bottom: 2),
+                    child: Text(
                       data.title,
                       style: Theme.of(context).textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Text(
-                      "${data.price}",
-                      style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 6,
                     ),
-                  ],
-                ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "\$${data.price}",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: () {
+                              addWish(data);
+                            },
+                            icon: const Icon(Icons.favorite_border),
+                            color: Theme.of(context).colorScheme.secondary),
+                        IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.shopping_cart_outlined,
+                              color: Theme.of(context).colorScheme.secondary,
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

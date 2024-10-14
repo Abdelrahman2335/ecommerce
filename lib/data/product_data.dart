@@ -1,5 +1,8 @@
 import 'package:ecommerce/models/product_model.dart';
 
+
+
+
 List<Product> productData = [
   Product(
     title: "Women Printed Kurta",
@@ -64,7 +67,7 @@ List<Product> productData = [
     category: "Footwear",
   ),
   Product(
-    title: "Bluetooth Headphones",
+    title: "Bluetooth-Headphone",
     price: 800,
     imageUrl:
         "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Headphones.png?alt=media&token=9faa4534-6962-4876-afb2-f7a455533d13",
