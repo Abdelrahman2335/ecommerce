@@ -5,7 +5,7 @@ Uuid uuid = const Uuid();
 class Product {
   final String id;
   final String category;
-  final String imageUrl;
+  final List imageUrl;
   final String title;
   final int price;
 

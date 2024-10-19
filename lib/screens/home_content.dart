@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/screens/item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -15,16 +18,22 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
+  FirebaseFirestore fireStore = FirebaseFirestore.instance;
   CollectionReference wishList =
       FirebaseFirestore.instance.collection("wishList");
 
+  String docId = "";
   Future addWish(Product item) async {
     try {
-      wishList.add({
+      DocumentReference docRef = await wishList.add({
         "imageURL": item.imageUrl,
         "title": item.title,
         "price": item.price,
         "id": item.id,
+      });
+      docRef;
+      setState(() {
+        docId = docRef.id;
       });
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -32,11 +41,20 @@ class _HomeContentState extends State<HomeContent> {
           content: Text("Failed to add the item."),
         ),
       );
+      log(error.toString());
     }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    addWish;
   }
 
   @override
   Widget build(BuildContext context) {
+
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -55,7 +73,12 @@ class _HomeContentState extends State<HomeContent> {
           clipBehavior: Clip.hardEdge,
           child: InkWell(
             borderRadius: BorderRadius.circular(17),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ItemDetails(
+                        itemData: data,
+                      )));
+            },
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +89,7 @@ class _HomeContentState extends State<HomeContent> {
                     fit: BoxFit.cover,
                     placeholder: MemoryImage(kTransparentImage),
                     image: NetworkImage(
-                      data.imageUrl,
+                      data.imageUrl[0],
                     ),
                   ),
                   Padding(
