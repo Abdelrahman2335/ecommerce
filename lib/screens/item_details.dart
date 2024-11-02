@@ -1,9 +1,10 @@
-import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:ecommerce/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ItemDetails extends StatefulWidget {
   final Product itemData;
+
   const ItemDetails({super.key, required this.itemData});
 
   @override
@@ -29,30 +30,59 @@ class _ItemDetailsState extends State<ItemDetails> {
         ],
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            CarouselSlider.builder(
-
-              itemCount: widget.itemData.imageUrl.length,
-              itemBuilder: (context, index, item) {
-                return Container(
-                  child: Image.network(widget.itemData.imageUrl[index],fit: BoxFit.fitHeight,),
-
-                  color: Colors.white,
-                );
-
-              },
-              options: CarouselOptions(
-                // autoPlay: true,
-                aspectRatio: 1.7,
-                // autoPlayInterval: const Duration(seconds: 2),
-                enlargeCenterPage: true,
-                enlargeStrategy: CenterPageEnlargeStrategy.height,
-                scrollDirection: Axis.horizontal,
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.network(
+                widget.itemData.imageUrl[0],
+                fit: BoxFit.fitWidth,
+                width: double.infinity,
+                height: 240,
               ),
-
-            )
-          ],
+              const SizedBox(
+                height: 13,
+              ),
+              if (widget.itemData.size != null)
+                Row(
+                  children: [
+                    for (var i in widget.itemData.size!)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: OutlinedButton(
+                          onPressed: () {},
+                          style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(9),
+                              ),
+                              side: BorderSide(
+                                  color: Theme.of(context).primaryColor)),
+                          child: Text(i),
+                        ),
+                      ),
+                  ],
+                ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  widget.itemData.title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "\$${widget.itemData.price}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,color: Colors.grey
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

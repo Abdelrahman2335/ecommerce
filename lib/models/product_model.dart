@@ -8,11 +8,13 @@ class Product {
   final List imageUrl;
   final String title;
   final int price;
+  final List? size;
 
   Product({
     required this.category,
     required this.imageUrl,
     required this.title,
     required this.price,
+    this.size,
   }) : id = uuid.v4();
 }
