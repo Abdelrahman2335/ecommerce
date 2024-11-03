@@ -7,12 +7,14 @@ class Product {
   final String category;
   final List imageUrl;
   final String title;
+  final String description;
   final int price;
   final List? size;
 
-  Product({
+  Product( {
     required this.category,
     required this.imageUrl,
+    required this.description,
     required this.title,
     required this.price,
     this.size,

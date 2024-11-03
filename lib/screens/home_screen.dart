@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../widgets/search_field.dart';
-import 'home_content.dart';
+import '../widgets/home_content.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

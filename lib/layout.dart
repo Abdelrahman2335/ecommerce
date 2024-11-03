@@ -1,6 +1,7 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:ecommerce/screens/home_screen.dart';
+import 'package:ecommerce/screens/profile_screen.dart';
 import 'package:ecommerce/screens/setting_screen.dart';
 import 'package:ecommerce/screens/wishlist.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +47,7 @@ class _LayOutState extends State<LayOut> {
     const Wishlist(),
     const SettingScreen(),
     const HomeScreen(),
-    const Wishlist(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -54,7 +55,7 @@ class _LayOutState extends State<LayOut> {
     return Scaffold(
         body: selectedPage[currentIndex],
         bottomNavigationBar: CurvedNavigationBar(
-          animationDuration: const Duration(milliseconds: 500),
+          animationDuration: const Duration(milliseconds: 300),
             onTap: (value) {
               setState(() {
                 currentIndex = value;
