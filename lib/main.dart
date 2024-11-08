@@ -1,6 +1,7 @@
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 final ColorScheme _colorScheme = ColorScheme.fromSeed(

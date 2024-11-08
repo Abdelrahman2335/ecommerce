@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-import '../widgets/search_field.dart';
+import '../../widgets/search_field.dart';
 
 class Wishlist extends StatefulWidget {
   const Wishlist({super.key});

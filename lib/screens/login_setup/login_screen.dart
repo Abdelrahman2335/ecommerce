@@ -36,6 +36,12 @@ class LoginScreen extends StatelessWidget {
                 icon: const FaIcon(Icons.person),
                 controller: userCon,
                 isSecure: false,
+                // isValid: (String? value) {
+                //   if (value == null || value.isEmpty || value.length <= 1) {
+                //     return "Please Enter Valid a Email";
+                //   }
+                //   return null;
+                // },
               ),
               const SizedBox(
                 height: 16,
@@ -45,6 +51,12 @@ class LoginScreen extends StatelessWidget {
                 icon: const FaIcon(Icons.lock),
                 controller: passCon,
                 isSecure: true,
+                // isValid: (String? value) {
+                //   if (value == null || value.isEmpty || value.length <= 6) {
+                //     return "Wrong Password";
+                //   }
+                //   return null;
+                // },
               ),
               Padding(
                 padding: const EdgeInsets.only(

@@ -6,13 +6,19 @@ class CustomField extends StatefulWidget {
   final String label;
   final FaIcon icon;
   final TextEditingController controller;
+  ///Will use it later
+  // final String? Function(String?) isValid;
 
-  const CustomField(
-      {super.key,
-      required this.label,
-      required this.icon,
-      required this.controller,
-      required this.isSecure});
+
+
+  const CustomField({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.controller,
+    required this.isSecure,
+
+  });
 
   @override
   State<CustomField> createState() => _CustomfieldState();
@@ -27,6 +33,7 @@ class _CustomfieldState extends State<CustomField> {
       obscureText: hidePass,
       maxLines: 1,
       controller: widget.controller,
+      // validator: widget.isValid,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(20),
         focusedBorder: OutlineInputBorder(

@@ -1,9 +1,9 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:ecommerce/screens/home_screen.dart';
+import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/screens/items/home_screen.dart';
 import 'package:ecommerce/screens/profile_screen.dart';
-import 'package:ecommerce/screens/setting_screen.dart';
-import 'package:ecommerce/screens/wishlist.dart';
+import 'package:ecommerce/screens/items/wishlist.dart';
 import 'package:flutter/material.dart';
 
 class LayOut extends StatefulWidget {
@@ -45,7 +45,7 @@ class _LayOutState extends State<LayOut> {
   final List<Widget> selectedPage = [
     const HomeScreen(),
     const Wishlist(),
-    const SettingScreen(),
+    const CartScreen(),
     const HomeScreen(),
     const ProfileScreen(),
   ];

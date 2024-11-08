@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final Function pressed;
+  final void Function()? pressed;
   final String text;
   const CustomButton({
     super.key, required this.pressed, required this.text,
@@ -19,7 +19,7 @@ class CustomButton extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         backgroundColor: Theme.of(context).primaryColor,
       ),
-      onPressed: (){pressed();},
+      onPressed: pressed,
       child: Center(child: Text(text,style: Theme.of(context).textTheme.labelLarge,),),
     );
   }

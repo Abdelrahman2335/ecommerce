@@ -18,7 +18,7 @@ final List<Product> productData = [
   Product(
     category: "Footwear",
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img_1.png?alt=media&token=99b47ab6-54a9-4250-b5c5-16578d7c0304",
+      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img_1.png?alt=media&token=443a3367-f2b9-418b-8a08-fff1e71f5106",
     ],
     title: "Nike Shoes",
     price: 999,
