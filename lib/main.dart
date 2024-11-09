@@ -1,4 +1,6 @@
+import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +58,15 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const LoginScreen(),
+      home: StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: ((context, snapshot) {
+            if (snapshot.hasData) {
+              return const LayOut();
+            } else {
+              return const LoginScreen();
+            }
+          })),
     );
   }
 }

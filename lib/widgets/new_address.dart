@@ -1,17 +1,16 @@
-
 import 'package:ecommerce/data/cities.dart';
 import 'package:flutter/material.dart';
 
 class NewAddress extends StatelessWidget {
- final TextEditingController addressCon;
+  final TextEditingController addressCon;
   final TextEditingController landCon;
 
-  NewAddress({super.key, required this.addressCon, required this.landCon});
-
-  String selectedCity = egyptCities[0];
+  const NewAddress(
+      {super.key, required this.addressCon, required this.landCon});
 
   @override
   Widget build(BuildContext context) {
+    String selectedCity = egyptCities[0];
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(

@@ -1,6 +1,6 @@
-import 'package:ecommerce/data/cities.dart';
 import 'package:ecommerce/widgets/new_address.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -13,12 +13,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool hidePass = true;
-  late FocusNode passFocusNode;
   TextEditingController userCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
   TextEditingController rePassCon = TextEditingController();
   TextEditingController addressCon = TextEditingController();
   TextEditingController landCon = TextEditingController();
+  final firebase = FirebaseAuth.instance;
+
 
   @override
   void initState() {
@@ -52,6 +53,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text("Profile", style: Theme.of(context).textTheme.labelMedium),
         ),
         centerTitle: true,
+        actions: [IconButton(onPressed: () {
+          firebase.signOut();
+        }, icon: const Icon(Icons.exit_to_app_outlined))],
       ),
       body: Padding(
         padding: const EdgeInsets.all(19.0),
@@ -66,7 +70,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   offset: const Offset(-24, -14),
                   backgroundColor: Theme.of(context).primaryColor,
                   alignment: Alignment.bottomRight,
-                  label: IconButton(onPressed: () {}, icon: const Icon(Icons.edit,color: Colors.white,),),
+                  label: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                    ),
+                  ),
                   child: const CircleAvatar(
                     maxRadius: 50,
                   ),
