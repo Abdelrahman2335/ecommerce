@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,11 +11,16 @@ import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  try{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+    name: 'e-commerce-2699c',
   );
   await Firebase.initializeApp();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));}catch(error){
+    log("error: $error");
+  }
 }
 
 final ColorScheme _colorScheme = ColorScheme.fromSeed(
@@ -61,6 +68,9 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: ((context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.waiting){
+              return const CircularProgressIndicator();
+            }
             if (snapshot.hasData) {
               return const LayOut();
             } else {

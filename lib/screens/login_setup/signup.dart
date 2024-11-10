@@ -4,6 +4,7 @@ import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignUp extends StatelessWidget {
   const SignUp({super.key});
@@ -15,6 +16,32 @@ class SignUp extends StatelessWidget {
     TextEditingController passCon = TextEditingController();
     TextEditingController rePassCon = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+
+    void signInWithGoogle() async {
+      /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
+      GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      if (googleSignInAccount == null) {
+        return;
+      } else {
+        try {
+          GoogleSignInAuthentication googleAuth =
+              await googleSignInAccount.authentication;
+
+          AuthCredential authCredential = GoogleAuthProvider.credential(
+              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+          firebase.signInWithCredential(authCredential);
+        } catch (error) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Authentication Error!"),
+            ),
+          );
+        }
+      }
+    }
 
     void createUser() async {
       final valid = formKey.currentState!.validate();
@@ -132,7 +159,7 @@ class SignUp extends StatelessWidget {
                             Theme.of(context).primaryColor.withOpacity(0.1),
                         side: BorderSide(color: Theme.of(context).primaryColor),
                       ),
-                      onPressed: () {},
+                      onPressed: signInWithGoogle,
                       child: const Image(
                         image: AssetImage(
                           "assets/google.png",
