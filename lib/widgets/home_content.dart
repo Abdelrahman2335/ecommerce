@@ -23,6 +23,7 @@ class _HomeContentState extends State<HomeContent> {
       FirebaseFirestore.instance.collection("wishList");
 
   String docId = "";
+
   Future addWish(Product item) async {
     try {
       DocumentReference docRef = await wishList.add({
@@ -45,7 +46,6 @@ class _HomeContentState extends State<HomeContent> {
     }
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -54,84 +54,168 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-
-    return GridView.builder(
+    return CustomScrollView(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: productData.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 11,
-        mainAxisSpacing: 11,
-        mainAxisExtent: 300,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        final Product data = productData[index];
-        return Container(
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20), color: Colors.white),
-          clipBehavior: Clip.hardEdge,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(17),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ItemDetails(
-                        itemData: data,
-                      )));
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FadeInImage(
-                    height: 200,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: MemoryImage(kTransparentImage),
-                    image: NetworkImage(
-                      data.imageUrl[0],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 6, top: 5, bottom: 2),
-                    child: Text(
-                      data.title,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 6,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                          "\$${data.price}",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        const Spacer(),
-                        IconButton(
-                            onPressed: () {
-                              addWish(data);
-                            },
-                            icon: const Icon(Icons.favorite_border),
-                            color: Theme.of(context).colorScheme.secondary),
-                        IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.shopping_cart_outlined,
-                              color: Theme.of(context).colorScheme.secondary,
-                            )),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      physics: NeverScrollableScrollPhysics(),
+      slivers: [
+
+        SliverGrid(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 11,
+            mainAxisSpacing: 11,
+            mainAxisExtent: 300,
           ),
-        );
-      },
+          delegate:
+              SliverChildBuilderDelegate((BuildContext context, int index) {
+                if (index >= productData.length) return null;
+                    final Product data = productData[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20), color: Colors.white),
+                      clipBehavior: Clip.hardEdge,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(17),
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ItemDetails(
+                                    itemData: data,
+                                  )));
+                        },
+                        child:  Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              FadeInImage(
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                placeholder: MemoryImage(kTransparentImage),
+                                image: NetworkImage(
+                                  data.imageUrl[0],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 6, top: 5, bottom: 2),
+                                child: Text(
+                                  data.title,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 6,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "\$${data.price}",
+                                      style: Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                        onPressed: () {
+                                          addWish(data);
+                                        },
+                                        icon: const Icon(Icons.favorite_border),
+                                        color: Theme.of(context).colorScheme.secondary),
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          Icons.shopping_cart_outlined,
+                                          color: Theme.of(context).colorScheme.secondary,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+
+                      ),
+                    );
+              }),
+        ),
+      ],
     );
+
+    /// Instead of using [GridView.builder] we used [CustomScrollView] for better performance.
+    //   GridView.builder(
+    //   shrinkWrap: true,
+    //   physics: const NeverScrollableScrollPhysics(),
+    //   itemCount: productData.length,
+    //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    //     crossAxisCount: 2,
+    //     crossAxisSpacing: 11,
+    //     mainAxisSpacing: 11,
+    //     mainAxisExtent: 300,
+    //   ),
+    //   itemBuilder: (BuildContext context, int index) {
+    //     final Product data = productData[index];
+    //     return Container(
+    //       decoration: BoxDecoration(
+    //           borderRadius: BorderRadius.circular(20), color: Colors.white),
+    //       clipBehavior: Clip.hardEdge,
+    //       child: InkWell(
+    //         borderRadius: BorderRadius.circular(17),
+    //         onTap: () {
+    //           Navigator.of(context).push(MaterialPageRoute(
+    //               builder: (context) => ItemDetails(
+    //                     itemData: data,
+    //                   )));
+    //         },
+    //         child: SingleChildScrollView(
+    //           child: Column(
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: [
+    //               FadeInImage(
+    //                 height: 200,
+    //                 width: double.infinity,
+    //                 fit: BoxFit.cover,
+    //                 placeholder: MemoryImage(kTransparentImage),
+    //                 image: NetworkImage(
+    //                   data.imageUrl[0],
+    //                 ),
+    //               ),
+    //               Padding(
+    //                 padding: const EdgeInsets.only(left: 6, top: 5, bottom: 2),
+    //                 child: Text(
+    //                   data.title,
+    //                   style: Theme.of(context).textTheme.bodyMedium,
+    //                   overflow: TextOverflow.ellipsis,
+    //                 ),
+    //               ),
+    //               Padding(
+    //                 padding: const EdgeInsets.only(
+    //                   left: 6,
+    //                 ),
+    //                 child: Row(
+    //                   children: [
+    //                     Text(
+    //                       "\$${data.price}",
+    //                       style: Theme.of(context).textTheme.titleMedium,
+    //                     ),
+    //                     const Spacer(),
+    //                     IconButton(
+    //                         onPressed: () {
+    //                           addWish(data);
+    //                         },
+    //                         icon: const Icon(Icons.favorite_border),
+    //                         color: Theme.of(context).colorScheme.secondary),
+    //                     IconButton(
+    //                         onPressed: () {},
+    //                         icon: Icon(
+    //                           Icons.shopping_cart_outlined,
+    //                           color: Theme.of(context).colorScheme.secondary,
+    //                         )),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }

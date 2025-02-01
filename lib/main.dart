@@ -5,7 +5,6 @@ import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +17,8 @@ void main() async {
     name: 'e-commerce-2699c',
   );
   await Firebase.initializeApp();
-  runApp(const ProviderScope(child: MyApp()));}catch(error){
-    log("error: $error");
+  runApp(const MyApp());}catch(error){
+    log("Error in the main function: $error");
   }
 }
 
