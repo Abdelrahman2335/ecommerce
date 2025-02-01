@@ -11,13 +11,14 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  try{
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-    name: 'e-commerce-2699c',
-  );
-  await Firebase.initializeApp();
-  runApp(const MyApp());}catch(error){
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+      name: 'e-commerce-2699c',
+    );
+    await Firebase.initializeApp();
+    runApp(const MyApp());
+  } catch (error) {
     log("Error in the main function: $error");
   }
 }
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugInvertOversizedImages = true;
     return MaterialApp(
       theme: ThemeData(
         colorScheme: _colorScheme,
@@ -68,7 +70,7 @@ class MyApp extends StatelessWidget {
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: ((context, snapshot) {
-            if(snapshot.connectionState == ConnectionState.waiting){
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             }
             if (snapshot.hasData) {
