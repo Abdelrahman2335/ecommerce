@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_field.dart';
@@ -6,9 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     final firebase = FirebaseAuth.instance;
@@ -52,6 +59,7 @@ class SignUp extends StatelessWidget {
               await firebase.createUserWithEmailAndPassword(
                   email: userCon.text, password: rePassCon.text);
         } else {
+          log("We are going back");
           return;
         }
       } on FirebaseAuthException catch (error) {
@@ -161,9 +169,12 @@ class SignUp extends StatelessWidget {
                       ),
                       onPressed: signInWithGoogle,
                       child: const Image(
+
                         image: AssetImage(
                           "assets/google.png",
+
                         ),
+                        filterQuality: FilterQuality.medium,
                         width: 35,
                         height: 37,
                       ),
@@ -186,8 +197,11 @@ class SignUp extends StatelessWidget {
                         image: AssetImage(
                           "assets/facebook.png",
                         ),
+                        filterQuality: FilterQuality.medium,
+
                         width: 38,
                         height: 38,
+
                       ),
                     ),
                   ],

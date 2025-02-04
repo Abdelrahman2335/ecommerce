@@ -1,7 +1,8 @@
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce/provider/item_provider.dart';
+import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,14 +74,15 @@ class _HomeContentState extends State<HomeContent> {
             if (index >= data.dataSpecification.length) return null;
 
             return Selector(
-                selector: (BuildContext, selectorContext) => data.dataSpecification,
+                selector: (BuildContext, selectorContext) =>
+                    data.dataSpecification,
                 builder: (BuildContext context, value, Widget? child) {
                   final data = value[index];
                   return Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(16),
                         color: Colors.white),
-                    clipBehavior: Clip.hardEdge,
+                    clipBehavior: Clip.antiAlias,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(17),
                       onTap: () {
@@ -89,59 +91,75 @@ class _HomeContentState extends State<HomeContent> {
                                   itemData: data,
                                 )));
                       },
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FadeInImage(
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            placeholder: MemoryImage(kTransparentImage),
-                            image: NetworkImage(
-                              data.imageUrl[0],
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: double.infinity,
+                          // Ensure the container takes full width
+                          maxWidth: double.infinity,
+                          minHeight:
+                              200, // Set a minimum height to avoid unconstrained issues
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CachedNetworkImage(
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              // placeholder: MemoryImage(kTransparentImage),
+                              memCacheWidth:
+                                  (MediaQuery.of(context).size.width * 0.8)
+                                      .round(),
+                              memCacheHeight:
+                                  (MediaQuery.of(context).size.height * 0.4)
+                                      .round(),
+
+                              imageUrl:
+                                  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/dress.png?alt=media&token=d8611349-946a-42a0-8038-9a6e10e86e57",
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 6, top: 5, bottom: 2),
-                            child: Text(
-                              data.title,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              overflow: TextOverflow.ellipsis,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 6, top: 5, bottom: 2),
+                              child: Text(
+                                data.title,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 6,
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "\$${data.price}",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const Spacer(),
-                                IconButton(
-                                    onPressed: () {
-                                      addWish(data);
-                                    },
-                                    icon: const Icon(Icons.favorite_border),
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.shopping_cart_outlined,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 6,
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "\$${data.price}",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  const Spacer(),
+                                  IconButton(
+                                      onPressed: () {
+                                        addWish(data);
+                                      },
+                                      icon: const Icon(Icons.favorite_border),
                                       color: Theme.of(context)
                                           .colorScheme
-                                          .secondary,
-                                    )),
-                              ],
+                                          .secondary),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.shopping_cart_outlined,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      )),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
