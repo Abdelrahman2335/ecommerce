@@ -7,6 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+
+import '../../main.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -23,52 +26,6 @@ class _SignUpState extends State<SignUp> {
     TextEditingController passCon = TextEditingController();
     TextEditingController rePassCon = TextEditingController();
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
-    void signInWithGoogle() async {
-      /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
-      GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-      if (googleSignInAccount == null) {
-        return;
-      } else {
-        try {
-          GoogleSignInAuthentication googleAuth =
-              await googleSignInAccount.authentication;
-
-          AuthCredential authCredential = GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-          firebase.signInWithCredential(authCredential);
-        } catch (error) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Authentication Error!"),
-            ),
-          );
-        }
-      }
-    }
-
-    void createUser() async {
-      final valid = formKey.currentState!.validate();
-
-      try {
-        if (valid) {
-          final UserCredential userCredential =
-              await firebase.createUserWithEmailAndPassword(
-                  email: userCon.text, password: rePassCon.text);
-        } else {
-          log("We are going back");
-          return;
-        }
-      } on FirebaseAuthException catch (error) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error.message ?? "Authentication Error!")));
-      }
-      formKey.currentState!.save();
-    }
 
     return Scaffold(
       body: Padding(
@@ -141,7 +98,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 CustomButton(
                   pressed: () {
-                    createUser();
+                    /// Will add the provider her + loading indicator.
                   },
                   text: "Create Account",
                 ),
@@ -167,12 +124,12 @@ class _SignUpState extends State<SignUp> {
                             Theme.of(context).primaryColor.withOpacity(0.1),
                         side: BorderSide(color: Theme.of(context).primaryColor),
                       ),
-                      onPressed: signInWithGoogle,
+                      onPressed: () {
+                        /// Will add the provider her + loading indicator.
+                      },
                       child: const Image(
-
                         image: AssetImage(
                           "assets/google.png",
-
                         ),
                         filterQuality: FilterQuality.medium,
                         width: 35,
@@ -198,10 +155,8 @@ class _SignUpState extends State<SignUp> {
                           "assets/facebook.png",
                         ),
                         filterQuality: FilterQuality.medium,
-
                         width: 38,
                         height: 38,
-
                       ),
                     ),
                   ],

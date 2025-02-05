@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/e_provider.dart';
-import 'package:ecommerce/provider/login_provider.dart';
+import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,13 +20,14 @@ void main() async {
       name: 'e-commerce-2699c',
     );
     await Firebase.initializeApp();
-    runApp(MultiProvider(
-        providers: [
-            ChangeNotifierProvider(create: (_)=>  ItemProvider(),),
-            ChangeNotifierProvider(create: (_)=>  LoginProvider(),),
-
-        ],
-        child: const MyApp()));
+    runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(
+        create: (_) => ItemProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => LoginProvider(),
+      ),
+    ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
   }
@@ -49,6 +50,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     debugInvertOversizedImages = true;
     return MaterialApp(
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/layout': (context) => const LayOut(),
+      },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeData(
         colorScheme: _colorScheme,

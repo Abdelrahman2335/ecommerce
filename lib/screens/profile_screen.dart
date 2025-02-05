@@ -1,9 +1,15 @@
+import 'dart:developer';
+
+import 'package:ecommerce/main.dart';
 import 'package:ecommerce/widgets/new_address.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/auth_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,17 +26,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController addressCon = TextEditingController();
   TextEditingController landCon = TextEditingController();
   final firebase = FirebaseAuth.instance;
-  GoogleSignIn google = GoogleSignIn();
-
-  void signOut() async{
-    try {
-      await firebase.signOut();
-      await google.signOut();
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Couldn't sign out please try again. ")));
-    }
-  }
 
   @override
   void initState() {
@@ -66,7 +61,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: signOut, icon: const Icon(Icons.exit_to_app_outlined))
+            onPressed: () {
+              Provider.of<LoginProvider>(context).signOut;
+
+              if (firebase.currentUser != null) {
+                scaffoldMessengerKey.currentState?.clearSnackBars();
+                scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+                  content: Text("Couldn't sign out please try again."),
+                ));
+              } else {
+                Navigator.of(context).pushReplacementNamed('/login');
+              }
+            },
+            icon: const Icon(Icons.exit_to_app_outlined),
+          ),
         ],
       ),
       body: Padding(

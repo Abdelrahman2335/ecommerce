@@ -1,4 +1,6 @@
-import 'package:ecommerce/provider/login_provider.dart';
+import 'dart:developer';
+
+import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
@@ -36,34 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    void signInWithGoogle() async {
-      setState(() => isLoading = true);
 
-      /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
-      GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-      if (googleSignInAccount == null) {
-        setState(() => isLoading = false);
-        return;
-      } else {
-        try {
-          setState(() => isLoading = true);
-          GoogleSignInAuthentication googleAuth =
-              await googleSignInAccount.authentication;
-
-          AuthCredential authCredential = GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-          firebase.signInWithCredential(authCredential);
-        } catch (error) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) =>
-                Text("Authentication Error!: $error"),
-          );
-        } finally {
-          setState(() => isLoading = false);
-        }
-      }
-    }
 
     return Scaffold(
       body: Padding(
@@ -140,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         return !isLoading
                             ? CustomButton(
                                 pressed: () {
-                                  Provider.of<LoginProvider>(context)
+                                  Provider.of<LoginProvider>(context, listen: false)
                                       .signIn(formKey, passCon, userCon);
                                 },
                                 text: "Login",
@@ -172,7 +147,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           backgroundColor: theme.primaryColor.withOpacity(0.1),
                           side: BorderSide(color: theme.primaryColor),
                         ),
-                        onPressed: signInWithGoogle,
+                        onPressed: (){
+                         var response = Provider.of<LoginProvider>(context, listen: false).signInWithGoogle();
+                         response.then((_) => {Navigator.of(context).pushReplacementNamed('/layout')});
+                        },
                         child: const Image(
                           image: AssetImage(
                             "assets/google.png",
@@ -193,7 +171,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.all(13),
                           side: BorderSide(color: theme.primaryColor),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+
+                        },
                         child: const Image(
                           image: AssetImage(
                             "assets/facebook.png",
