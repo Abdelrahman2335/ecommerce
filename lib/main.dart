@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/e_provider.dart';
+import 'package:ecommerce/provider/login_provider.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

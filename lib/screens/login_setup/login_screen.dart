@@ -1,3 +1,4 @@
+import 'package:ecommerce/provider/login_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -63,8 +65,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
 
-
-
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(27),
@@ -85,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   const Gap(
                     30,
                   ),
-
                   CustomField(
                     label: "Email Address",
                     icon: const FaIcon(Icons.person),
@@ -99,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const Gap(
-                     16,
+                    16,
                   ),
                   CustomField(
                     label: "Password",
@@ -135,18 +134,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: TextStyle(fontSize: 13),
                         )),
                   ),
-                  !isLoading
-                      ? CustomButton(
-                          pressed: () {
-                            // signIn();
-                          },
-                          text: "Login",
-                        )
-                      : Center(
-                          child: CircularProgressIndicator(
-                            color: theme.primaryColor,
-                          ),
-                        ),
+                  Selector<LoginProvider, bool>(
+                      selector: (_, selectedValue) => selectedValue.loading,
+                      builder: (context, isLoading, child) {
+                        return !isLoading
+                            ? CustomButton(
+                                pressed: () {
+                                  Provider.of<LoginProvider>(context)
+                                      .signIn(formKey, passCon, userCon);
+                                },
+                                text: "Login",
+                              )
+                            : Center(
+                                child: CircularProgressIndicator(
+                                  color: theme.primaryColor,
+                                ),
+                              );
+                      }),
                   const SizedBox(
                     height: 60,
                   ),
