@@ -1,14 +1,10 @@
-import 'dart:developer';
-
-import 'package:ecommerce/main.dart';
 import 'package:ecommerce/widgets/new_address.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-
+import 'package:gap/gap.dart';
 import '../provider/auth_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -28,50 +24,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final firebase = FirebaseAuth.instance;
 
   @override
-  void initState() {
-    hidePass;
-    userCon;
-    passCon;
-    rePassCon;
-    addressCon;
-    landCon;
-    super.initState();
-  }
-
-  @override
   void dispose() {
-    userCon;
-    passCon;
-    rePassCon;
-    addressCon;
-    landCon;
+    userCon.dispose();
+    passCon.dispose();
+    rePassCon.dispose();
+    addressCon.dispose();
+    landCon.dispose();
+
     super.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
+
     // GlobalKey formKey = GlobalKey();
     return Scaffold(
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(top: 14),
           child:
-              Text("Profile", style: Theme.of(context).textTheme.labelMedium),
+          Text("Profile", style: Theme.of(context).textTheme.labelMedium),
         ),
         centerTitle: true,
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<LoginProvider>(context).signOut;
-
-              if (firebase.currentUser != null) {
-                scaffoldMessengerKey.currentState?.clearSnackBars();
-                scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-                  content: Text("Couldn't sign out please try again."),
-                ));
-              } else {
-                Navigator.of(context).pushReplacementNamed('/login');
-              }
+             Provider.of<LoginProvider>(context, listen: false).signOut();
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),
@@ -102,16 +82,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 29,
-              ),
+              Gap(29),
               const Text(
                 "Personal Details",
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(
-                height: 18,
-              ),
+              Gap(18),
               TextFormField(
                 controller: userCon,
                 decoration: const InputDecoration(
@@ -119,9 +95,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   contentPadding: EdgeInsets.all(9),
                 ),
               ),
-              const SizedBox(
-                height: 26,
-              ),
+              Gap(26),
               TextFormField(
                 obscureText: hidePass,
                 controller: passCon,
@@ -142,9 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       )),
                 ),
               ),
-              const SizedBox(
-                height: 26,
-              ),
+              Gap(26),
               TextFormField(
                 obscureText: hidePass,
                 controller: rePassCon,
@@ -165,9 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       )),
                 ),
               ),
-              const SizedBox(
-                height: 34,
-              ),
+              Gap(34),
               ElevatedButton(
                 onPressed: () {
                   showModalBottomSheet(
@@ -189,9 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 child: const Center(child: Text("Change Address")),
               ),
-              const SizedBox(
-                height: 24,
-              ),
+              Gap(24),
               CustomButton(pressed: () {}, text: "Save"),
             ],
           ),

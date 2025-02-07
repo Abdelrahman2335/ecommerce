@@ -10,6 +10,10 @@ class SignUpProvider extends ChangeNotifier {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final firebase = FirebaseAuth.instance;
 
+  bool isLoading = false;
+
+    get loading => isLoading;
+
   void signInWithGoogle() async {
     /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
@@ -34,15 +38,15 @@ class SignUpProvider extends ChangeNotifier {
     }
   }
 
-  void createUser(GlobalKey<FormState> formKey, TextEditingController passCon,
-      TextEditingController userCon, rePassCon) async {
+   createUser(GlobalKey<FormState> formKey, String passCon,
+      String userCon,String rePassCon) async {
     final valid = formKey.currentState!.validate();
 
     try {
       if (valid) {
         final UserCredential userCredential =
             await firebase.createUserWithEmailAndPassword(
-                email: userCon.text, password: rePassCon.text);
+                email: userCon, password: rePassCon);
       } else {
         log("We are going back");
         return;

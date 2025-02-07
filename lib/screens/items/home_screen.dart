@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 
+import '../../widgets/home_content.dart';
 import '../../widgets/search_field.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -182,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ];
         },
-        body: Text("Null"), // HomeContent(),
+        body: const HomeContent(),
       ),
     );
   }

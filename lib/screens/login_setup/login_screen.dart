@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
@@ -11,6 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+
+import '../../main.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -98,11 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ForgotPassword()));
+                          navigatorKey.currentState!.pushNamed("/forgot");
                         },
                         child: const Text(
                           "Forgot Password?",
@@ -116,7 +113,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? CustomButton(
                                 pressed: () {
                                   Provider.of<LoginProvider>(context, listen: false)
-                                      .signIn(formKey, passCon, userCon);
+                                      .signIn(formKey, passCon.text, userCon.text);
                                 },
                                 text: "Login",
                               )
@@ -144,12 +141,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(40),
                           ),
                           padding: const EdgeInsets.all(13),
-                          backgroundColor: theme.primaryColor.withOpacity(0.1),
+                          backgroundColor: theme.primaryColor.withAlpha(37),
                           side: BorderSide(color: theme.primaryColor),
                         ),
                         onPressed: (){
                          var response = Provider.of<LoginProvider>(context, listen: false).signInWithGoogle();
-                         response.then((_) => {Navigator.of(context).pushReplacementNamed('/layout')});
+                         response.then((_) => {navigatorKey.currentState?.pushReplacementNamed('/layout')});
                         },
                         child: const Image(
                           image: AssetImage(
@@ -167,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(50),
                           ),
-                          backgroundColor: theme.primaryColor.withOpacity(0.1),
+                          backgroundColor: theme.primaryColor.withAlpha(37),
                           padding: const EdgeInsets.all(13),
                           side: BorderSide(color: theme.primaryColor),
                         ),
@@ -196,12 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SignUp(),
-                            ),
-                          );
+                          navigatorKey.currentState?.pushReplacementNamed('/signup');
                         },
                         child: const Text("Sign Up"),
                       )

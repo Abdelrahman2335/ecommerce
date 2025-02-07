@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce/models/product_model.dart';
 import 'package:flutter/material.dart';
 
 class ItemDetails extends StatefulWidget {
-  final Product itemData;
+  final Product? itemData;
 
   const ItemDetails({super.key, required this.itemData});
 
@@ -35,24 +36,47 @@ class _ItemDetailsState extends State<ItemDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
-                clipBehavior: Clip.hardEdge,
-                child: Image.network(
-                  
-                  widget.itemData.imageUrl[0],
+                 CachedNetworkImage(
+                  placeholderFadeInDuration: Duration(milliseconds: 150),
+                  placeholder:  (context, url) => ShaderMask(
+                    shaderCallback: (rect) {
+                      return LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.pinkAccent, // Start color
+                          Colors.transparent, // End color
+                        ],
+                      ).createShader(rect);
+                    },
+                    blendMode: BlendMode.srcIn,
+                    child: Container(
+                      color: Theme.of(context).primaryColor, // Default color
+                    ),
+                  ),
+                  height: MediaQuery.sizeOf(context).height * MediaQuery.devicePixelRatioOf(context) / 6,
+                  width: MediaQuery.sizeOf(context).width * MediaQuery.devicePixelRatioOf(context),
+                  filterQuality: FilterQuality.high,
                   fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 300,
+                  // placeholder: MemoryImage(kTransparentImage),
+                  memCacheWidth:
+                  (MediaQuery.of(context).size.width * 0.8)
+                      .round(),
+                  memCacheHeight:
+                  (MediaQuery.of(context).size.height * 0.7)
+                      .round(),
+
+                  imageUrl:
+                  "${widget.itemData!.imageUrl[0]}",
                 ),
-              ),
+
               const SizedBox(
                 height: 13,
               ),
-              if (widget.itemData.size != null)
+              if (widget.itemData!.size != null)
                 Row(
                   children: [
-                    for (var i in widget.itemData.size!)
+                    for (var i in widget.itemData!.size!)
                       Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: OutlinedButton(
@@ -80,7 +104,7 @@ class _ItemDetailsState extends State<ItemDetails> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  widget.itemData.title,
+                  widget.itemData!.title,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
@@ -89,14 +113,14 @@ class _ItemDetailsState extends State<ItemDetails> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  "\$${widget.itemData.price}",
+                  "\$${widget.itemData!.price}",
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.grey),
                 ),
               ),
               ListTile(
                 title: const Text("Description:"),
-                subtitle: Text(widget.itemData.description),
+                subtitle: Text(widget.itemData!.description),
               ),
               Row(
                 children: [

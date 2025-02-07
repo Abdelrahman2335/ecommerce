@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:ecommerce/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-/// This class is responsible for login & signing
+/// This class is responsible for login & logout
 class LoginProvider extends ChangeNotifier {
   final firebase = FirebaseAuth.instance;
   GoogleSignIn google = GoogleSignIn();
@@ -15,8 +17,8 @@ class LoginProvider extends ChangeNotifier {
 
   get loading => isLoading;
 
-  void signIn(GlobalKey<FormState> formKey, TextEditingController passCon,
-      TextEditingController userCon) async {
+  void signIn(
+      GlobalKey<FormState> formKey, String passCon, String userCon) async {
     final valid = formKey.currentState!.validate();
     isLoading = true;
     notifyListeners();
@@ -28,9 +30,8 @@ class LoginProvider extends ChangeNotifier {
 
         return;
       } else {
-        final UserCredential userCredential =
-            await firebase.signInWithEmailAndPassword(
-                email: userCon.text, password: passCon.text);
+        final UserCredential userCredential = await firebase
+            .signInWithEmailAndPassword(email: userCon, password: passCon);
       }
     } on FirebaseAuthException catch (error) {
       /// Important to know that we are using Scaffold global Key from the main.dart
@@ -82,12 +83,19 @@ class LoginProvider extends ChangeNotifier {
     }
   }
 
-
-  void  signOut() async {
+  void signOut() async {
     try {
       await firebase.signOut();
       await google.signOut();
 
+        if (firebase.currentUser == null) {
+          navigatorKey.currentState?.pushReplacementNamed('/login');
+        } else {
+          scaffoldMessengerKey.currentState?.clearSnackBars();
+          scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+            content: Text("Couldn't sign out please try again."),
+          ));
+        };
     } catch (error) {
       scaffoldMessengerKey.currentState!.showSnackBar(
         SnackBar(

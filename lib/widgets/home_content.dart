@@ -2,12 +2,13 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/main.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/product_model.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({
@@ -25,20 +26,22 @@ class _HomeContentState extends State<HomeContent> {
 
   String docId = "";
 
-  Future addWish(Product item) async {
+  Future addWish(String itemId, String userId) async {
     try {
       DocumentReference docRef = await wishList.add({
-        "imageURL": item.imageUrl,
-        "title": item.title,
-        "price": item.price,
-        "id": item.id,
+        "userId": userId,
+        "id": itemId,
       });
       docRef;
-      setState(() {
-        docId = docRef.id;
-      });
+      if (docRef.id.isNotEmpty) {
+        scaffoldMessengerKey.currentState
+            ?.showSnackBar(SnackBar(content: Text("Item added successfully")));
+        setState(() {
+          docId = docRef.id;
+        });
+      }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      scaffoldMessengerKey.currentState?.showSnackBar(
         const SnackBar(
           content: Text("Failed to add the item."),
         ),
@@ -55,7 +58,7 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<ItemProvider>(context, listen: true);
+    var data = Provider.of<ItemProvider>(context, listen: false);
 
     return CustomScrollView(
       shrinkWrap: true,
@@ -70,11 +73,14 @@ class _HomeContentState extends State<HomeContent> {
           ),
           delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
-            if (index >= data.dataSpecification.length) return null;
+            if (index >= data.receivedData.length) {
+              log(data.receivedData.length.toString());
+              return null;
+            }
 
             return Selector(
-                selector: (BuildContext, selectorContext) =>
-                    data.dataSpecification,
+                selector: (BuildContext context, selectorContext) =>
+                    data.receivedData,
                 builder: (BuildContext context, value, Widget? child) {
                   final data = value[index];
                   return Container(
@@ -102,6 +108,25 @@ class _HomeContentState extends State<HomeContent> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             CachedNetworkImage(
+                              placeholderFadeInDuration:
+                                  Duration(milliseconds: 150),
+                              placeholder: (context, url) => ShaderMask(
+                                shaderCallback: (rect) {
+                                  return LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.pinkAccent, // Start color
+                                      Colors.transparent, // End color
+                                    ],
+                                  ).createShader(rect);
+                                },
+                                blendMode: BlendMode.srcIn,
+                                child: Container(
+                                  color: Theme.of(context)
+                                      .primaryColor, // Default color
+                                ),
+                              ),
                               height: 200,
                               width: double.infinity,
                               fit: BoxFit.cover,
@@ -113,8 +138,7 @@ class _HomeContentState extends State<HomeContent> {
                                   (MediaQuery.of(context).size.height * 0.4)
                                       .round(),
 
-                              imageUrl:
-                                  "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/dress.png?alt=media&token=d8611349-946a-42a0-8038-9a6e10e86e57",
+                              imageUrl: "${data.imageUrl[0]}",
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -140,7 +164,10 @@ class _HomeContentState extends State<HomeContent> {
                                   const Spacer(),
                                   IconButton(
                                       onPressed: () {
-                                        addWish(data);
+                                        addWish(
+                                            data.id,
+                                            FirebaseAuth
+                                                .instance.currentUser!.uid);
                                       },
                                       icon: const Icon(Icons.favorite_border),
                                       color: Theme.of(context)

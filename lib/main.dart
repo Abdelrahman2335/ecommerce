@@ -3,7 +3,13 @@ import 'dart:developer';
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/provider/auth_provider.dart';
+import 'package:ecommerce/provider/signup_provider.dart';
+import 'package:ecommerce/screens/items/item_details.dart';
+import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
+import 'package:ecommerce/screens/login_setup/signup.dart';
+import 'package:ecommerce/screens/profile_screen.dart';
+import 'package:ecommerce/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
@@ -21,6 +27,7 @@ void main() async {
     );
     await Firebase.initializeApp();
     runApp(MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => SignUpProvider()),
       ChangeNotifierProvider(
         create: (_) => ItemProvider(),
       ),
@@ -33,15 +40,10 @@ void main() async {
   }
 }
 
-final ColorScheme _colorScheme = ColorScheme.fromSeed(
-  seedColor: const Color(0xfff83758),
-  surface: const Color(0xFFF9F9F9),
-  brightness: Brightness.light,
-  primary: const Color(0xfff83758),
-  secondary: const Color(0xFF4392F9),
-);
+
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
     GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -50,41 +52,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     debugInvertOversizedImages = true;
     return MaterialApp(
-      initialRoute: '/login',
+      navigatorKey: navigatorKey,
       routes: {
         '/login': (context) => const LoginScreen(),
         '/layout': (context) => const LayOut(),
+        '/profile': (context) => const ProfileScreen(),
+        '/signup': (context) => const SignUp(),
+        '/forgot': (context) => const ForgotPassword(),
+        '/item': (context) => const ItemDetails(itemData: null),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
-      theme: ThemeData(
-        colorScheme: _colorScheme,
-        scaffoldBackgroundColor: _colorScheme.surface,
-        textTheme: GoogleFonts.robotoTextTheme().copyWith(
-          titleSmall: GoogleFonts.roboto(fontWeight: FontWeight.w600),
-          titleMedium: GoogleFonts.roboto(
-            fontWeight: FontWeight.normal,
-          ),
-          titleLarge:
-              GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 34),
-          labelSmall: GoogleFonts.roboto(
-            fontWeight: FontWeight.normal,
-            color: const Color(-11053225),
-          ),
-          labelMedium: GoogleFonts.playfairDisplay(
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF4392F9),
-              fontSize: 18),
-          labelLarge: GoogleFonts.roboto(
-              fontWeight: FontWeight.normal, color: Colors.white, fontSize: 14),
-          bodySmall: GoogleFonts.roboto(
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.italic,
-              color: Colors.white),
-        ),
-        useMaterial3: true,
-      ),
+      theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
-      // home: CartScreen(),
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: ((context, snapshot) {

@@ -1,16 +1,15 @@
-import 'dart:developer';
 
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
-
+import '../../provider/signup_provider.dart';
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -19,13 +18,24 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  TextEditingController userCon = TextEditingController();
+  TextEditingController passCon = TextEditingController();
+  TextEditingController rePassCon = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isLoading = false;
+  FirebaseAuth firebase = FirebaseAuth.instance;
+
+  @override
+  void dispose() {
+    userCon.dispose();
+    passCon.dispose();
+    rePassCon.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final firebase = FirebaseAuth.instance;
-    TextEditingController userCon = TextEditingController();
-    TextEditingController passCon = TextEditingController();
-    TextEditingController rePassCon = TextEditingController();
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    final theme = Theme.of(context);
 
     return Scaffold(
       body: Padding(
@@ -36,16 +46,12 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 40,
-                ),
+                const Gap(40),
                 Text(
                   "Create an \naccount",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
-                const SizedBox(
-                  height: 34,
-                ),
+                const Gap(34),
                 CustomField(
                   label: "Username or Email",
                   icon: const FaIcon(Icons.person),
@@ -58,9 +64,7 @@ class _SignUpState extends State<SignUp> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const Gap(16),
                 CustomField(
                   label: "Password",
                   icon: const FaIcon(Icons.lock),
@@ -73,9 +77,7 @@ class _SignUpState extends State<SignUp> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const Gap(16),
                 CustomField(
                   label: "Confirm Password",
                   icon: const FaIcon(Icons.lock),
@@ -93,24 +95,37 @@ class _SignUpState extends State<SignUp> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 40,
-                ),
-                CustomButton(
-                  pressed: () {
-                    /// Will add the provider her + loading indicator.
-                  },
-                  text: "Create Account",
-                ),
-                const SizedBox(
-                  height: 46,
-                ),
+                const Gap(40),
+                Selector<SignUpProvider, bool>(
+                    selector: (_, selectedValue) => selectedValue.loading,
+                    builder: (context, isLoading, child) {
+                      return !isLoading
+                          ? CustomButton(
+                        pressed: () {
+                          Provider.of<SignUpProvider>(context,
+                              listen: false)
+                              .createUser(formKey, passCon.text,
+                              userCon.text, rePassCon.text).then((value) {
+                            if (firebase.currentUser != null) {
+                              Navigator.of(context).pushReplacementNamed('/layout');
+                            }else{
+                              return;
+                            }
+                          });
+                        },
+                        text: "Login",
+                      )
+                          : Center(
+                        child: CircularProgressIndicator(
+                          color: theme.primaryColor,
+                        ),
+                      );
+                    }),
+                const Gap(46),
                 const Center(
                   child: Text("- OR Continue with -"),
                 ),
-                const SizedBox(
-                  height: 24,
-                ),
+                const Gap(24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -120,12 +135,11 @@ class _SignUpState extends State<SignUp> {
                           borderRadius: BorderRadius.circular(40),
                         ),
                         padding: const EdgeInsets.all(13),
-                        backgroundColor:
-                            Theme.of(context).primaryColor.withOpacity(0.1),
-                        side: BorderSide(color: Theme.of(context).primaryColor),
+                        backgroundColor: theme.primaryColor.withAlpha(37),
+                        side: BorderSide(color: theme.primaryColor),
                       ),
                       onPressed: () {
-                        /// Will add the provider her + loading indicator.
+                        Provider.of<SignUpProvider>(context).googleSignIn;
                       },
                       child: const Image(
                         image: AssetImage(
@@ -136,18 +150,15 @@ class _SignUpState extends State<SignUp> {
                         height: 37,
                       ),
                     ),
-                    const SizedBox(
-                      width: 14,
-                    ),
+                    const Gap(14),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        backgroundColor:
-                            Theme.of(context).primaryColor.withOpacity(0.1),
+                        backgroundColor: theme.primaryColor.withAlpha(37),
                         padding: const EdgeInsets.all(13),
-                        side: BorderSide(color: Theme.of(context).primaryColor),
+                        side: BorderSide(color: theme.primaryColor),
                       ),
                       onPressed: () {},
                       child: const Image(
