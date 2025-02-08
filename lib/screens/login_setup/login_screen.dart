@@ -1,14 +1,11 @@
 
 import 'package:ecommerce/provider/auth_provider.dart';
-import 'package:ecommerce/screens/login_setup/forgot_password.dart';
-import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 import '../../main.dart';
@@ -25,7 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passCon = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final firebase = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
   bool isLoading = false;
 
   @override

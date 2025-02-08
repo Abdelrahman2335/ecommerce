@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:ecommerce/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -95,7 +94,7 @@ class LoginProvider extends ChangeNotifier {
           scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
             content: Text("Couldn't sign out please try again."),
           ));
-        };
+        }
     } catch (error) {
       scaffoldMessengerKey.currentState!.showSnackBar(
         SnackBar(

@@ -17,7 +17,7 @@ class Product {
     required this.description,
     required this.title,
     required this.price,
-    this.size,
+    required this.size,
   }) : id = uuid.v4();
 
   /// Convert Firestore document to Product object

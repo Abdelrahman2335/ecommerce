@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce/main.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-import '../models/product_model.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({
@@ -86,84 +85,71 @@ class _HomeContentState extends State<HomeContent> {
                           minHeight:
                               200, // Set a minimum height to avoid unconstrained issues
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CachedNetworkImage(
-                              placeholderFadeInDuration:
-                                  Duration(milliseconds: 150),
-                              placeholder: (context, url) => ShaderMask(
-                                shaderCallback: (rect) {
-                                  return LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.pinkAccent, // Start color
-                                      Colors.transparent, // End color
-                                    ],
-                                  ).createShader(rect);
-                                },
-                                blendMode: BlendMode.srcIn,
-                                child: Container(
-                                  color: Theme.of(context)
-                                      .primaryColor, // Default color
+                        child: Skeletonizer(
+                          enabled: data.isLoading? true : false, /// This is our new placeholder
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CachedNetworkImage(
+                                placeholderFadeInDuration:
+                                    Duration(milliseconds: 150),
+                                
+                                height: 200,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                // placeholder: MemoryImage(kTransparentImage),
+                                memCacheWidth:
+                                    (MediaQuery.of(context).size.width * 0.8)
+                                        .round(),
+                                memCacheHeight:
+                                    (MediaQuery.of(context).size.height * 0.4)
+                                        .round(),
+                          
+                                imageUrl: "${data.imageUrl[0]}",
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 6, top: 5, bottom: 2),
+                                child: Text(
+                                  data.title,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ),
-                              height: 200,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              // placeholder: MemoryImage(kTransparentImage),
-                              memCacheWidth:
-                                  (MediaQuery.of(context).size.width * 0.8)
-                                      .round(),
-                              memCacheHeight:
-                                  (MediaQuery.of(context).size.height * 0.4)
-                                      .round(),
-
-                              imageUrl: "${data.imageUrl[0]}",
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 6, top: 5, bottom: 2),
-                              child: Text(
-                                data.title,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 6,
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    "\$${data.price}",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  const Spacer(),
-                                  IconButton(
-                                      onPressed: () {
-                                        // addWish(data.id, data.title);
-                                      },
-                                      icon: const Icon(Icons.favorite_border),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                        Icons.shopping_cart_outlined,
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 6,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "\$${data.price}",
+                                      style:
+                                          Theme.of(context).textTheme.titleMedium,
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                        onPressed: () {
+                                          // addWish(data.id, data.title);
+                                        },
+                                        icon: const Icon(Icons.favorite_border),
                                         color: Theme.of(context)
                                             .colorScheme
-                                            .secondary,
-                                      )),
-                                ],
+                                            .secondary),
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon: Icon(
+                                          Icons.shopping_cart_outlined,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        )),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

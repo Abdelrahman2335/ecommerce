@@ -79,6 +79,7 @@ final List<Product> productData = [
     category: "Accessories",
     description:
         "Elegant brown leather handbag with ample storage, perfect for both formal and casual settings.",
+    size: null,
   ),
   Product(
     category: "Clothing",
@@ -92,25 +93,25 @@ final List<Product> productData = [
         "Classic black jacket for men, designed to provide warmth and style during colder days.",
   ),
   Product(
-    title: "Men's Classic Watch",
-    price: 999,
-    imageUrl: [
-      "https://ng.jumia.is/unsafe/fit-in/680x680/filters:fill(white)/product/91/4377262/1.jpg?3687"
-    ],
-    category: "Accessories",
-    description:
-        "Sophisticated classic watch, ideal for formal wear and everyday elegance.",
-  ),
+      title: "Men's Classic Watch",
+      price: 999,
+      imageUrl: [
+        "https://ng.jumia.is/unsafe/fit-in/680x680/filters:fill(white)/product/91/4377262/1.jpg?3687"
+      ],
+      category: "Accessories",
+      description:
+          "Sophisticated classic watch, ideal for formal wear and everyday elegance.",
+      size: null),
   Product(
-    title: "Shirt - Black",
-    price: 699,
-    imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/pexels-gustavo-11576960.jpg?alt=media&token=07c57d92-e30d-4acc-88df-974a8c6e17af"
-    ],
-    category: "Accessories",
-    description:
-        "Versatile black shirt that pairs well with any outfit for a sleek, modern look.",
-  ),
+      title: "Shirt - Black",
+      price: 699,
+      imageUrl: [
+        "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/pexels-gustavo-11576960.jpg?alt=media&token=07c57d92-e30d-4acc-88df-974a8c6e17af"
+      ],
+      category: "Accessories",
+      description:
+          "Versatile black shirt that pairs well with any outfit for a sleek, modern look.",
+      size: null),
   Product(
     title: "Women High Heels - Red",
     price: 399,
@@ -123,15 +124,15 @@ final List<Product> productData = [
         "Elegant high heels in a striking red color, designed to make a statement.",
   ),
   Product(
-    title: "Bluetooth Headphone",
-    price: 699,
-    imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Headphones.png?alt=media&token=9faa4534-6962-4876-afb2-f7a455533d13"
-    ],
-    category: "Electronics",
-    description:
-        "Wireless Bluetooth headphones with high-quality sound and comfortable design for long wear.",
-  ),
+      title: "Bluetooth Headphone",
+      price: 699,
+      imageUrl: [
+        "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Headphones.png?alt=media&token=9faa4534-6962-4876-afb2-f7a455533d13"
+      ],
+      category: "Electronics",
+      description:
+          "Wireless Bluetooth headphones with high-quality sound and comfortable design for long wear.",
+      size: null),
   Product(
     title: "Men's Formal Trousers",
     price: 399,
@@ -152,5 +153,6 @@ final List<Product> productData = [
     category: "Accessories",
     description:
         "Elegant men's watch with classic styling, perfect for daily wear or special occasions.",
+    size: null,
   ),
 ];
