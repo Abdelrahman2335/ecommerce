@@ -5,10 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../models/product_model.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({
@@ -24,37 +24,19 @@ class _HomeContentState extends State<HomeContent> {
   CollectionReference wishList =
       FirebaseFirestore.instance.collection("wishList");
 
-  String docId = "";
-
-  Future addWish(String itemId, String userId) async {
-    try {
-      DocumentReference docRef = await wishList.add({
-        "userId": userId,
-        "id": itemId,
-      });
-      docRef;
-      if (docRef.id.isNotEmpty) {
-        scaffoldMessengerKey.currentState
-            ?.showSnackBar(SnackBar(content: Text("Item added successfully")));
-        setState(() {
-          docId = docRef.id;
-        });
-      }
-    } catch (error) {
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        const SnackBar(
-          content: Text("Failed to add the item."),
-        ),
-      );
-      log(error.toString());
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    addWish;
-  }
+  // Future addWish(String ProductId, UserID) async {
+  //   try {
+  //
+  //
+  //   } catch (error) {
+  //     scaffoldMessengerKey.currentState?.showSnackBar(
+  //       const SnackBar(
+  //         content: Text("Failed to add the item."),
+  //       ),
+  //     );
+  //     log(error.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +146,7 @@ class _HomeContentState extends State<HomeContent> {
                                   const Spacer(),
                                   IconButton(
                                       onPressed: () {
-                                        addWish(
-                                            data.id,
-                                            FirebaseAuth
-                                                .instance.currentUser!.uid);
+                                        // addWish(data.id, data.title);
                                       },
                                       icon: const Icon(Icons.favorite_border),
                                       color: Theme.of(context)
