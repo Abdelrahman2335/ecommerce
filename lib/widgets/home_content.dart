@@ -1,12 +1,12 @@
-import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/e_provider.dart';
+import 'package:ecommerce/provider/wishList_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 
 class HomeContent extends StatefulWidget {
@@ -20,27 +20,12 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  CollectionReference wishList =
-      FirebaseFirestore.instance.collection("wishList");
-
-  // Future addWish(String ProductId, UserID) async {
-  //   try {
-  //
-  //
-  //   } catch (error) {
-  //     scaffoldMessengerKey.currentState?.showSnackBar(
-  //       const SnackBar(
-  //         content: Text("Failed to add the item."),
-  //       ),
-  //     );
-  //     log(error.toString());
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
-    var data = Provider.of<ItemProvider>(context, listen: false);
-
+    ItemProvider data = Provider.of<ItemProvider>(context, listen: false);
+    WishListProvider wishedItems =
+        Provider.of<WishListProvider>(context, listen: false);
     return CustomScrollView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -48,113 +33,120 @@ class _HomeContentState extends State<HomeContent> {
         SliverGrid(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 11,
-            mainAxisSpacing: 11,
-            mainAxisExtent: 300,
+            crossAxisSpacing: 4,
+            mainAxisSpacing: 3,
+            mainAxisExtent: MediaQuery.of(context).size.height * 0.4,
           ),
           delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
             if (index >= data.receivedData.length) {
-              log(data.receivedData.length.toString());
               return null;
             }
 
             return Selector(
-                selector: (BuildContext context, selectorContext) =>
-                    data.receivedData,
-                builder: (BuildContext context, value, Widget? child) {
-                  final data = value[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: Colors.white),
-                    clipBehavior: Clip.antiAlias,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(17),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ItemDetails(
-                                  itemData: data,
-                                )));
-                      },
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minWidth: double.infinity,
-                          // Ensure the container takes full width
-                          maxWidth: double.infinity,
-                          minHeight:
-                              200, // Set a minimum height to avoid unconstrained issues
-                        ),
-                        child: Skeletonizer(
-                          enabled: data.isLoading? true : false, /// This is our new placeholder
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CachedNetworkImage(
-                                placeholderFadeInDuration:
-                                    Duration(milliseconds: 150),
-                                
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                                // placeholder: MemoryImage(kTransparentImage),
-                                memCacheWidth:
-                                    (MediaQuery.of(context).size.width * 0.8)
-                                        .round(),
-                                memCacheHeight:
-                                    (MediaQuery.of(context).size.height * 0.4)
-                                        .round(),
-                          
-                                imageUrl: "${data.imageUrl[0]}",
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 6, top: 5, bottom: 2),
-                                child: Text(
-                                  data.title,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
+              selector: (BuildContext context, selectorContext) =>
+                  data.receivedData,
+              builder: (BuildContext context, value, Widget? child) {
+                final Product data = value[index];
+                return Container(
+                  margin: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.white),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(17),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ItemDetails(
+                                itemData: data,
+                              )));
+                    },
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minWidth: double.infinity,
+                        // Ensure the container takes full width
+                        maxWidth: double.infinity,
+                        minHeight:
+                            200, // Set a minimum height to avoid unconstrained issues
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CachedNetworkImage(
+                            placeholderFadeInDuration:
+                                Duration(milliseconds: 150),
+
+                            height: 200,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            // placeholder: MemoryImage(kTransparentImage),
+                            memCacheWidth:
+                                (MediaQuery.of(context).size.width * 0.8)
+                                    .round(),
+                            memCacheHeight:
+                                (MediaQuery.of(context).size.height * 0.4)
+                                    .round(),
+
+                            imageUrl: "${data.imageUrl[0]}",
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 6, top: 5, bottom: 2),
+                            child: Text(
+                              data.title,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 6,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "\$${data.price}",
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 6,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "\$${data.price}",
-                                      style:
-                                          Theme.of(context).textTheme.titleMedium,
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                        onPressed: () {
-                                          // addWish(data.id, data.title);
-                                        },
-                                        icon: const Icon(Icons.favorite_border),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
-                                    IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.shopping_cart_outlined,
+                                const Spacer(),
+                                Selector(
+                                    selector:
+                                        (BuildContext context, selectedItem) =>
+                                            wishedItems.myItems.contains(data.id),
+                                    builder: (BuildContext context,  isWished,
+                                        Widget? child) {
+                                      return IconButton(
+                                          onPressed: () {
+                                            wishedItems.addWish(data.id);
+                                          },
+                                          icon: isWished
+                                              ?  Icon(Icons.favorite)
+                                              :  Icon(Icons.favorite_border),
                                           color: Theme.of(context)
                                               .colorScheme
-                                              .secondary,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                            ],
+                                              .secondary);
+                                    }),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: Icon(
+                                      Icons.shopping_cart_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    )),
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                  );
-                });
+                  ),
+                );
+              },
+            );
           }),
         ),
       ],

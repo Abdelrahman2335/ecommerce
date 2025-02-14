@@ -1,4 +1,8 @@
+import 'package:uuid/uuid.dart';
+
 import '../models/product_model.dart';
+
+Uuid uuid = Uuid();
 
 final List<Product> productData = [
   Product(
@@ -13,7 +17,7 @@ final List<Product> productData = [
     price: 299,
     size: ['S', 'M', 'L'],
     description:
-        "A stylish and comfortable shirt with a windowpane pattern, perfect for casual and formal occasions.",
+        "A stylish and comfortable shirt with a windowpane pattern, perfect for casual and formal occasions.", id: uuid.v4(),
   ),
   Product(
     category: "Footwear",
@@ -24,7 +28,7 @@ final List<Product> productData = [
     price: 999,
     size: ['40-41', '42-43', '44-45'],
     description:
-        "High-performance Nike shoes designed for comfort and durability, ideal for sports and everyday wear.",
+        "High-performance Nike shoes designed for comfort and durability, ideal for sports and everyday wear.", id: uuid.v4(),
   ),
   Product(
     title: "Elegant Women's Printed Kurta",
@@ -36,6 +40,7 @@ final List<Product> productData = [
     size: ['S', 'M', 'L'],
     description:
         "Elegant printed kurta with vibrant colors, perfect for traditional and festive occasions.",
+    id: uuid.v4(),
   ),
   Product(
     title: "Marwa Platform Moccasin - Green",
@@ -47,6 +52,7 @@ final List<Product> productData = [
     size: ['40-41', '42-43', '44-45'],
     description:
         "Stylish platform moccasins with a classic design, adding elegance and comfort to your steps.",
+    id: uuid.v4(),
   ),
   Product(
     title: "Men's Casual Shirt",
@@ -58,6 +64,7 @@ final List<Product> productData = [
     size: ['S', 'M', 'L'],
     description:
         "Casual shirt for men, crafted with breathable fabric for everyday comfort and style.",
+    id: uuid.v4(),
   ),
   Product(
     title: "Running Shoes - Blue",
@@ -69,6 +76,7 @@ final List<Product> productData = [
     size: ['40-41', '42-43', '44-45'],
     description:
         "Lightweight running shoes designed for optimal performance, with a stylish blue finish.",
+    id: uuid.v4(),
   ),
   Product(
     title: "Leather Handbag - Brown",
@@ -80,6 +88,7 @@ final List<Product> productData = [
     description:
         "Elegant brown leather handbag with ample storage, perfect for both formal and casual settings.",
     size: null,
+    id: uuid.v4(),
   ),
   Product(
     category: "Clothing",
@@ -91,6 +100,7 @@ final List<Product> productData = [
     price: 499,
     description:
         "Classic black jacket for men, designed to provide warmth and style during colder days.",
+    id: uuid.v4(),
   ),
   Product(
       title: "Men's Classic Watch",
@@ -101,7 +111,9 @@ final List<Product> productData = [
       category: "Accessories",
       description:
           "Sophisticated classic watch, ideal for formal wear and everyday elegance.",
-      size: null),
+      size: null,
+      id: uuid.v4(),
+  ),
   Product(
       title: "Shirt - Black",
       price: 699,
@@ -111,7 +123,9 @@ final List<Product> productData = [
       category: "Accessories",
       description:
           "Versatile black shirt that pairs well with any outfit for a sleek, modern look.",
-      size: null),
+      size: null,
+      id: uuid.v4(),
+  ),
   Product(
     title: "Women High Heels - Red",
     price: 399,
@@ -121,7 +135,7 @@ final List<Product> productData = [
     category: "Footwear",
     size: ['38-39', '40-41', '42-43'],
     description:
-        "Elegant high heels in a striking red color, designed to make a statement.",
+        "Elegant high heels in a striking red color, designed to make a statement.", id: uuid.v4(),
   ),
   Product(
       title: "Bluetooth Headphone",
@@ -132,7 +146,9 @@ final List<Product> productData = [
       category: "Electronics",
       description:
           "Wireless Bluetooth headphones with high-quality sound and comfortable design for long wear.",
-      size: null),
+      size: null,
+      id: uuid.v4(),
+  ),
   Product(
     title: "Men's Formal Trousers",
     price: 399,
@@ -143,6 +159,7 @@ final List<Product> productData = [
     size: ['40-41', '42-43', '44-45'],
     description:
         "Smart formal trousers for men, offering a tailored fit suitable for business and formal events.",
+    id: uuid.v4(),
   ),
   Product(
     title: "Men's Watch - Classic",
@@ -154,5 +171,6 @@ final List<Product> productData = [
     description:
         "Elegant men's watch with classic styling, perfect for daily wear or special occasions.",
     size: null,
+    id: uuid.v4(),
   ),
 ];

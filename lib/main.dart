@@ -4,6 +4,7 @@ import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:ecommerce/provider/signup_provider.dart';
+import 'package:ecommerce/provider/wishList_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
@@ -33,6 +34,7 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => LoginProvider(),
       ),
+      ChangeNotifierProvider(create: (_)=> WishListProvider()),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
