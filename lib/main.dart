@@ -1,10 +1,6 @@
 import 'dart:developer';
 
 import 'package:ecommerce/layout.dart';
-import 'package:ecommerce/provider/e_provider.dart';
-import 'package:ecommerce/provider/auth_provider.dart';
-import 'package:ecommerce/provider/signup_provider.dart';
-import 'package:ecommerce/provider/wishList_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
@@ -16,6 +12,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'provider/auth_provider.dart';
+import 'provider/e_provider.dart';
+import 'provider/signup_provider.dart';
+import 'provider/wishList_provider.dart';
+import 'provider/wishlist_content_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +36,8 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => LoginProvider(),
       ),
-      ChangeNotifierProvider(create: (_)=> WishListProvider()),
+      ChangeNotifierProvider(create: (_) => WishListProvider()),
+      ChangeNotifierProvider(create: (_) => WishListContentProvider(_)),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");

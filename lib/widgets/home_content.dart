@@ -3,16 +3,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/models/product_model.dart';
 import 'package:ecommerce/provider/e_provider.dart';
-import 'package:ecommerce/provider/wishList_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/wishList_provider.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({
     super.key,
   });
+
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -21,11 +22,12 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
+
+
   @override
   Widget build(BuildContext context) {
-    ItemProvider data = Provider.of<ItemProvider>(context, listen: false);
-    WishListProvider wishedItems =
-        Provider.of<WishListProvider>(context, listen: false);
+    ItemProvider ProviderData = Provider.of<ItemProvider>(context, listen: false);
+    WishListProvider wishedItems = Provider.of<WishListProvider>(context, listen: true);
     return CustomScrollView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -39,15 +41,18 @@ class _HomeContentState extends State<HomeContent> {
           ),
           delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
-            if (index >= data.receivedData.length) {
+            if (index >= ProviderData.receivedData.length) {
               return null;
             }
 
             return Selector(
               selector: (BuildContext context, selectorContext) =>
-                  data.receivedData,
+                  ProviderData.receivedData,
               builder: (BuildContext context, value, Widget? child) {
                 final Product data = value[index];
+                bool isWished =
+                 wishedItems.productIds.contains((data.id));
+
                 return Container(
                   margin: const EdgeInsets.all(9),
                   decoration: BoxDecoration(
@@ -112,23 +117,20 @@ class _HomeContentState extends State<HomeContent> {
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
                                 const Spacer(),
-                                Selector(
-                                    selector:
-                                        (BuildContext context, selectedItem) =>
-                                            wishedItems.myItems.contains(data.id),
-                                    builder: (BuildContext context,  isWished,
-                                        Widget? child) {
-                                      return IconButton(
-                                          onPressed: () {
-                                            wishedItems.addWish(data.id);
-                                          },
-                                          icon: isWished
-                                              ?  Icon(Icons.favorite)
-                                              :  Icon(Icons.favorite_border),
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary);
-                                    }),
+                                IconButton(
+                                    onPressed: () async {
+                                      await wishedItems.fetchData();
+                                      await wishedItems.addWish(data.id);
+
+                                    },
+                                    icon: isWished
+                                        ? Icon(Icons.favorite)
+                                        : Icon(Icons.favorite_border),
+                                    color: isWished
+                                        ? Theme.of(context).primaryColor
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                                 IconButton(
                                     onPressed: () {},
                                     icon: Icon(

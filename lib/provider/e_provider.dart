@@ -8,12 +8,17 @@ import '../models/product_model.dart';
 
 /// This class is responsible for getting the, add to cart & add to the wishlist.
 class ItemProvider extends ChangeNotifier {
-  final mainData = [];
+  final List<Product> mainData = [];
 
-/// We are calling [getData] inside the Constructor of the class to initialize it as soon as we call the class
-  ItemProvider(){
+  /// We are calling [getData] inside the Constructor of the class to initialize it as soon as we call the class
+  ItemProvider() {
     getData();
   }
+
+  /// We used [data] to get the collection then used the property [docs] to get all the documents inside this collection
+  /// [map] is super important because it takes each [doc] then transform it as we like,
+  /// here we decided to transform doc into [Map<String, dynamic>] using the constructor of the [Product] class
+  /// then [fromJson] give us the Product object that we want
   Future getData() async {
     try {
       QuerySnapshot data =
@@ -21,8 +26,13 @@ class ItemProvider extends ChangeNotifier {
 
       if (data.docs.isNotEmpty) {
         // mainData.clear();
+
         mainData.addAll(data.docs.map(
             (doc) => Product.fromJson(doc.data() as Map<String, dynamic>)));
+
+        /// Since we don't have any way to add new items to this list, so we don't need to use [notifyListeners()]
+
+        notifyListeners();
       } else {
         log("No data found");
         return;

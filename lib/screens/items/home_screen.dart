@@ -21,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     bool isLoading = Provider.of<ItemProvider>(context).receivedData.isEmpty;
-    bool isClosed = false;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -138,7 +138,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           },
                         ),
                       ),
-
                       Card(
                         margin: const EdgeInsets.all(3),
                         shape: RoundedRectangleBorder(
@@ -184,7 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ),
-
                             ),
                           ],
                         ),
