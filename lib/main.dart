@@ -17,7 +17,6 @@ import 'provider/auth_provider.dart';
 import 'provider/e_provider.dart';
 import 'provider/signup_provider.dart';
 import 'provider/wishList_provider.dart';
-import 'provider/wishlist_content_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,8 +35,7 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => LoginProvider(),
       ),
-      ChangeNotifierProvider(create: (_) => WishListProvider()),
-      ChangeNotifierProvider(create: (_) => WishListContentProvider(_)),
+      ChangeNotifierProvider(create: (_) => WishListProvider(_)),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");

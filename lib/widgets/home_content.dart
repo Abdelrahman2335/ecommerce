@@ -121,6 +121,7 @@ class _HomeContentState extends State<HomeContent> {
                                     onPressed: () async {
                                       await wishedItems.fetchData();
                                       await wishedItems.addWish(data.id);
+                                       wishedItems.fetchWishedItems;
 
                                     },
                                     icon: isWished

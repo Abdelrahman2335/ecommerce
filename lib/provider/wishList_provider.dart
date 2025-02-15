@@ -2,8 +2,11 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
+import '../models/product_model.dart';
+import 'e_provider.dart';
 
 class WishListProvider extends ChangeNotifier {
   bool itemExist = false;
@@ -12,20 +15,20 @@ class WishListProvider extends ChangeNotifier {
   late DocumentSnapshot<Map<String, dynamic>> docSnapshot;
   Map<String, dynamic>? wishData;
   late List productIds;
+  late List<Product> items = [];
 
   /// We are calling [fetchData] inside the Constructor of the class to initialize it as soon as we call the class
-  WishListProvider(){
-    fetchData();
+  WishListProvider(BuildContext ctx) {
+    fetchData().then((_) => fetchWishedItems(ctx));
   }
+
   Future fetchData() async {
     /// Don't take [docSnapshot] out of the try block, when we are creating the doc for the first time it's null
     docSnapshot = await wishListRef.doc(userId).get();
-     wishData = docSnapshot.data();
+    wishData = docSnapshot.data();
 
     productIds = wishData?["productId"] ?? [];
     notifyListeners();
-
-
   }
 
   addWish(String productId) async {
@@ -91,5 +94,20 @@ class WishListProvider extends ChangeNotifier {
 
     notifyListeners();
   }
-   get receivedWish => productIds;
+
+  fetchWishedItems(BuildContext context) {
+    /// Important to know that we don't listen to [ItemProvider], because there is no changes will happen, at least for now
+    final allItems = Provider.of<ItemProvider>(context, listen: false);
+
+    for (Product element in allItems.mainData) {
+      if (productIds.contains(element.id)) {
+        items.add(element);
+      }
+    }
+    notifyListeners();
+  }
+
+  get receivedWish => productIds;
+
+  List<Product> get lovedItems => items;
 }
