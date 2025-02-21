@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
+import '../../provider/wishList_provider.dart';
 import '../../widgets/search_field.dart';
 import '../../widgets/wishlist_content.dart';
 
@@ -13,16 +15,9 @@ class Wishlist extends StatefulWidget {
 }
 
 class _WishlistState extends State<Wishlist> {
-
-
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
+    WishListProvider wishedItems = Provider.of<WishListProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -107,7 +102,9 @@ class _WishlistState extends State<Wishlist> {
                   ],
                 ),
               ),
-              WishListContent(),
+              wishedItems.docSnapshot == null
+                  ? const Center(child: Text("No Items Added"))
+                  : WishListContent(),
             ],
           ),
         ),

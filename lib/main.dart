@@ -35,7 +35,7 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => LoginProvider(),
       ),
-      ChangeNotifierProvider(create: (_) => WishListProvider(_)),
+      ChangeNotifierProvider(create: (_) => WishListProvider()),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");

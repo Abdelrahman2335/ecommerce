@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/models/product_model.dart';
@@ -14,7 +13,6 @@ class HomeContent extends StatefulWidget {
     super.key,
   });
 
-
   @override
   State<HomeContent> createState() => _HomeContentState();
 }
@@ -22,12 +20,12 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
-
-
   @override
   Widget build(BuildContext context) {
-    ItemProvider ProviderData = Provider.of<ItemProvider>(context, listen: false);
-    WishListProvider wishedItems = Provider.of<WishListProvider>(context, listen: true);
+    ItemProvider providerData =
+        Provider.of<ItemProvider>(context, listen: false);
+    WishListProvider wishedItems =
+        Provider.of<WishListProvider>(context, listen: true);
     return CustomScrollView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -41,17 +39,16 @@ class _HomeContentState extends State<HomeContent> {
           ),
           delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
-            if (index >= ProviderData.receivedData.length) {
+            if (index >= providerData.receivedData.length) {
               return null;
             }
 
             return Selector(
               selector: (BuildContext context, selectorContext) =>
-                  ProviderData.receivedData,
+                  providerData.receivedData,
               builder: (BuildContext context, value, Widget? child) {
                 final Product data = value[index];
-                bool isWished =
-                 wishedItems.productIds.contains((data.id));
+                bool isWished = wishedItems.productIds.contains((data.id));
 
                 return Container(
                   margin: const EdgeInsets.all(9),
@@ -117,21 +114,23 @@ class _HomeContentState extends State<HomeContent> {
                                       Theme.of(context).textTheme.titleMedium,
                                 ),
                                 const Spacer(),
-                                IconButton(
-                                    onPressed: () async {
-                                      await wishedItems.fetchData();
-                                      await wishedItems.addWish(data.id);
-                                       wishedItems.fetchWishedItems;
-
-                                    },
-                                    icon: isWished
-                                        ? Icon(Icons.favorite)
-                                        : Icon(Icons.favorite_border),
-                                    color: isWished
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                /// Will edit it later
+                                wishedItems.isLoading
+                                    ? CircularProgressIndicator()
+                                    : IconButton(
+                                        onPressed: () async {
+                                          await wishedItems.fetchData();
+                                          await wishedItems.addWish(data.id);
+                                          wishedItems.fetchData();
+                                        },
+                                        icon: isWished
+                                            ? Icon(Icons.favorite)
+                                            : Icon(Icons.favorite_border),
+                                        color: isWished
+                                            ? Theme.of(context).primaryColor
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
                                 IconButton(
                                     onPressed: () {},
                                     icon: Icon(
