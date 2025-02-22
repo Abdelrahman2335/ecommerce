@@ -26,133 +26,270 @@ class _HomeContentState extends State<HomeContent> {
         Provider.of<ItemProvider>(context, listen: false);
     WishListProvider wishedItems =
         Provider.of<WishListProvider>(context, listen: true);
-    return CustomScrollView(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      slivers: [
-        SliverGrid(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 4,
-            mainAxisSpacing: 3,
-            mainAxisExtent: MediaQuery.of(context).size.height * 0.4,
-          ),
-          delegate:
-              SliverChildBuilderDelegate((BuildContext context, int index) {
-            if (index >= providerData.receivedData.length) {
-              return null;
-            }
+        
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 3,
+        mainAxisExtent: MediaQuery.of(context).size.width * 0.4,
+      ),
 
-            return Selector(
-              selector: (BuildContext context, selectorContext) =>
-                  providerData.receivedData,
-              builder: (BuildContext context, value, Widget? child) {
-                final Product data = value[index];
-                bool isWished = wishedItems.productIds.contains((data.id));
+      /// [delegate] is the best choice here because we don't know the length of the list, and how many items to build
+      /// and uses lazy loading which is more efficient.
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        if (index >= providerData.receivedData.length) {
+          return null;
+        }
 
-                return Container(
-                  margin: const EdgeInsets.all(9),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.white),
-                  clipBehavior: Clip.antiAlias,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(17),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ItemDetails(
-                                itemData: data,
-                              )));
-                    },
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minWidth: double.infinity,
-                        // Ensure the container takes full width
-                        maxWidth: double.infinity,
-                        minHeight:
-                            200, // Set a minimum height to avoid unconstrained issues
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CachedNetworkImage(
-                            placeholderFadeInDuration:
-                                Duration(milliseconds: 150),
+        /// We are getting the Big data from the [ItemProvider] class and consuming it here
+        /// this data will not change at least for now.
+        return Consumer<ItemProvider>(
+          builder: (BuildContext context, value, Widget? child) {
+            final Product data = value.receivedData[index];
+            bool isWished = wishedItems.productIds.contains((data.id));
 
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            // placeholder: MemoryImage(kTransparentImage),
-                            memCacheWidth:
-                                (MediaQuery.of(context).size.width * 0.8)
-                                    .round(),
-                            memCacheHeight:
-                                (MediaQuery.of(context).size.height * 0.4)
-                                    .round(),
-
-                            imageUrl: "${data.imageUrl[0]}",
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 6, top: 5, bottom: 2),
-                            child: Text(
-                              data.title,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 6,
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  "\$${data.price}",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const Spacer(),
-                                /// Will edit it later
-                                wishedItems.isLoading
-                                    ? CircularProgressIndicator()
-                                    : IconButton(
-                                        onPressed: () async {
-                                          await wishedItems.fetchData();
-                                          await wishedItems.addWish(data.id);
-                                          wishedItems.fetchData();
-                                        },
-                                        icon: isWished
-                                            ? Icon(Icons.favorite)
-                                            : Icon(Icons.favorite_border),
-                                        color: isWished
-                                            ? Theme.of(context).primaryColor
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(
-                                      Icons.shopping_cart_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+            return Container(
+              margin: const EdgeInsets.all(9),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16), color: Colors.white),
+              clipBehavior: Clip.antiAlias,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(17),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ItemDetails(
+                            itemData: data,
+                          )));
+                },
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: double.infinity,
+                    // Ensure the container takes full width
+                    maxWidth: double.infinity,
+                    minHeight:
+                        200, // Set a minimum height to avoid unconstrained issues
                   ),
-                );
-              },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CachedNetworkImage(
+                        placeholderFadeInDuration: Duration(milliseconds: 150),
+
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        // placeholder: MemoryImage(kTransparentImage),
+                        memCacheWidth:
+                            (MediaQuery.of(context).size.width * 0.8).round(),
+                        memCacheHeight:
+                            (MediaQuery.of(context).size.height * 0.4).round(),
+
+                        imageUrl: "${data.imageUrl[0]}",
+
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 6, top: 5, bottom: 2),
+                        child: Text(
+                          data.title,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 6,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "\$${data.price}",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const Spacer(),
+
+                            /// we are using [Selector] here to listen to the [isLoading] value from [WishListProvider]
+                            /// and build only this widget when the value changes
+                            /// note if we didn't add Selector here when isLoading is true,
+                            /// the all buttons will load at once even if we didn't press it
+                            Selector(
+                              selector: (context, selectorContext) =>
+                                  wishedItems.isLoading,
+                              builder: (context, value, child) {
+                                if (!value) {
+                                  return IconButton(
+                                      onPressed: () async {
+                                        await wishedItems.fetchData();
+                                        await wishedItems.addWish(data.id);
+                                        wishedItems.fetchData();
+                                      },
+                                      icon: isWished
+                                          ? Icon(Icons.favorite)
+                                          : Icon(Icons.favorite_border),
+                                      color: isWished
+                                          ? Theme.of(context).primaryColor
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary);
+                                } else {
+                                  return const CircularProgressIndicator();
+                                }
+                              },
+                            ),
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.shopping_cart_outlined,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             );
-          }),
-        ),
-      ],
+          },
+        );
+      }),
     );
+
+    // CustomScrollView(
+    //   // shrinkWrap: true,
+    //   // physics: NeverScrollableScrollPhysics(),
+    //   slivers: [
+    //     SliverGrid(
+    //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //         crossAxisCount: 2,
+    //         crossAxisSpacing: 4,
+    //         mainAxisSpacing: 3,
+    //         mainAxisExtent: MediaQuery.of(context).size.height * 0.4,
+    //       ),
+    //       delegate:
+    //           SliverChildBuilderDelegate((BuildContext context, int index) {
+    //         if (index >= providerData.receivedData.length) {
+    //           return null;
+    //         }
+
+    //         return Selector(
+    //           selector: (BuildContext context, selectorContext) =>
+    //               providerData.receivedData,
+    //           builder: (BuildContext context, value, Widget? child) {
+    //             final Product data = value[index];
+    //             bool isWished = wishedItems.productIds.contains((data.id));
+
+    //             return Container(
+    //               margin: const EdgeInsets.all(9),
+    //               decoration: BoxDecoration(
+    //                   borderRadius: BorderRadius.circular(16),
+    //                   color: Colors.white),
+    //               clipBehavior: Clip.antiAlias,
+    //               child: InkWell(
+    //                 borderRadius: BorderRadius.circular(17),
+    //                 onTap: () {
+    //                   Navigator.of(context).push(MaterialPageRoute(
+    //                       builder: (context) => ItemDetails(
+    //                             itemData: data,
+    //                           )));
+    //                 },
+    //                 child: ConstrainedBox(
+    //                   constraints: BoxConstraints(
+    //                     minWidth: double.infinity,
+    //                     // Ensure the container takes full width
+    //                     maxWidth: double.infinity,
+    //                     minHeight:
+    //                         200, // Set a minimum height to avoid unconstrained issues
+    //                   ),
+    //                   child: Column(
+    //                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                     children: [
+    //                       CachedNetworkImage(
+    //                         placeholderFadeInDuration:
+    //                             Duration(milliseconds: 150),
+
+    //                         height: 200,
+    //                         width: double.infinity,
+    //                         fit: BoxFit.cover,
+    //                         // placeholder: MemoryImage(kTransparentImage),
+    //                         memCacheWidth:
+    //                             (MediaQuery.of(context).size.width * 0.8)
+    //                                 .round(),
+    //                         memCacheHeight:
+    //                             (MediaQuery.of(context).size.height * 0.4)
+    //                                 .round(),
+
+    //                         imageUrl: "${data.imageUrl[0]}",
+    //                       ),
+    //                       Padding(
+    //                         padding: const EdgeInsets.only(
+    //                             left: 6, top: 5, bottom: 2),
+    //                         child: Text(
+    //                           data.title,
+    //                           style: Theme.of(context).textTheme.bodyMedium,
+    //                           overflow: TextOverflow.ellipsis,
+    //                           maxLines: 1,
+    //                         ),
+    //                       ),
+    //                       Padding(
+    //                         padding: const EdgeInsets.only(
+    //                           left: 6,
+    //                         ),
+    //                         child: Row(
+    //                           children: [
+    //                             Text(
+    //                               "\$${data.price}",
+    //                               style:
+    //                                   Theme.of(context).textTheme.titleMedium,
+    //                             ),
+    //                             const Spacer(),
+
+    //                             /// Will edit it later
+    //                             wishedItems.isLoading
+    //                                 ? CircularProgressIndicator()
+    //                                 : IconButton(
+    //                                     onPressed: () async {
+    //                                       await wishedItems.fetchData();
+    //                                       await wishedItems.addWish(data.id);
+    //                                       wishedItems.fetchData();
+    //                                     },
+    //                                     icon: isWished
+    //                                         ? Icon(Icons.favorite)
+    //                                         : Icon(Icons.favorite_border),
+    //                                     color: isWished
+    //                                         ? Theme.of(context).primaryColor
+    //                                         : Theme.of(context)
+    //                                             .colorScheme
+    //                                             .secondary),
+    //                             IconButton(
+    //                                 onPressed: () {},
+    //                                 icon: Icon(
+    //                                   Icons.shopping_cart_outlined,
+    //                                   color: Theme.of(context)
+    //                                       .colorScheme
+    //                                       .secondary,
+    //                                 )),
+    //                           ],
+    //                         ),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                 ),
+    //               ),
+    //             );
+    //           },
+    //         );
+    //       }),
+    //     ),
+    //   ],
+    // );
 
     /// Instead of using [GridView.builder] we used [CustomScrollView] for better performance.
     //   GridView.builder(

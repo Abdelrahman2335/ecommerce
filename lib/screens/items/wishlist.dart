@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/wishList_provider.dart';
-import '../../widgets/search_field.dart';
 import '../../widgets/wishlist_content.dart';
 
 class Wishlist extends StatefulWidget {
@@ -41,7 +40,7 @@ class _WishlistState extends State<Wishlist> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.search),
           ),
         ],
       ),
@@ -50,10 +49,6 @@ class _WishlistState extends State<Wishlist> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: searchField(),
-              ),
               const SizedBox(
                 height: 10,
               ),
