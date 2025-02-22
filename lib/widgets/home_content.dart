@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/models/product_model.dart';
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
@@ -26,13 +27,15 @@ class _HomeContentState extends State<HomeContent> {
         Provider.of<ItemProvider>(context, listen: false);
     WishListProvider wishedItems =
         Provider.of<WishListProvider>(context, listen: true);
-        
+    CartProvider inCartProvider =
+        Provider.of<CartProvider>(context, listen: true);
+
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 4,
         mainAxisSpacing: 3,
-        mainAxisExtent: MediaQuery.of(context).size.width * 0.4,
+        mainAxisExtent: MediaQuery.of(context).size.height * 0.4,
       ),
 
       /// [delegate] is the best choice here because we don't know the length of the list, and how many items to build
@@ -48,6 +51,7 @@ class _HomeContentState extends State<HomeContent> {
           builder: (BuildContext context, value, Widget? child) {
             final Product data = value.receivedData[index];
             bool isWished = wishedItems.productIds.contains((data.id));
+            bool isInCart = inCartProvider.productIds.contains((data.id));
 
             return Container(
               margin: const EdgeInsets.all(9),
@@ -118,36 +122,28 @@ class _HomeContentState extends State<HomeContent> {
                             /// and build only this widget when the value changes
                             /// note if we didn't add Selector here when isLoading is true,
                             /// the all buttons will load at once even if we didn't press it
-                            Selector(
-                              selector: (context, selectorContext) =>
-                                  wishedItems.isLoading,
-                              builder: (context, value, child) {
-                                if (!value) {
-                                  return IconButton(
-                                      onPressed: () async {
-                                        await wishedItems.fetchData();
-                                        await wishedItems.addWish(data.id);
-                                        wishedItems.fetchData();
-                                      },
-                                      icon: isWished
-                                          ? Icon(Icons.favorite)
-                                          : Icon(Icons.favorite_border),
-                                      color: isWished
-                                          ? Theme.of(context).primaryColor
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary);
-                                } else {
-                                  return const CircularProgressIndicator();
-                                }
-                              },
-                            ),
+
                             IconButton(
-                                onPressed: () {},
-                                icon: Icon(
+                                onPressed: () async {
+                                  await wishedItems.addWish(data);
+                                  wishedItems.fetchData();
+                                },
+                                icon: isWished
+                                    ? Icon(Icons.favorite)
+                                    : Icon(Icons.favorite_border),
+                                color: isWished
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).colorScheme.secondary),
+
+                            IconButton(
+                                onPressed: () async {
+                                  await inCartProvider.addToCart(data);
+                                  await inCartProvider.fetchCartData();
+                                },
+                                icon: isInCart? Icon(Icons.shopping_cart,color: Theme.of(context).colorScheme.secondary ,): Icon(
                                   Icons.shopping_cart_outlined,
                                   color:
-                                      Theme.of(context).colorScheme.secondary,
+                                  Theme.of(context).colorScheme.secondary,
                                 )),
                           ],
                         ),

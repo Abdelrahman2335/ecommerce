@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ecommerce/layout.dart';
-import 'package:ecommerce/screens/items/item_details.dart';
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
@@ -36,6 +36,7 @@ void main() async {
         create: (_) => LoginProvider(),
       ),
       ChangeNotifierProvider(create: (_) => WishListProvider()),
+      ChangeNotifierProvider(create: (_)=> CartProvider()),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
@@ -60,7 +61,6 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const ProfileScreen(),
         '/signup': (context) => const SignUp(),
         '/forgot': (context) => const ForgotPassword(),
-        '/item': (context) => const ItemDetails(itemData: null),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,

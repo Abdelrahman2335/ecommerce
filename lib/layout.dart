@@ -1,6 +1,6 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:ecommerce/screens/cart_screen.dart';
+import 'package:ecommerce/screens/items/cart_screen.dart';
 import 'package:ecommerce/screens/items/home_screen.dart';
 import 'package:ecommerce/screens/profile_screen.dart';
 import 'package:ecommerce/screens/items/wishlist.dart';
@@ -20,7 +20,6 @@ class _LayOutState extends State<LayOut> {
     const TabItem(icon: Icons.home_outlined, title: 'Home'),
     const TabItem(icon: Icons.favorite_border, title: 'Wishlist'),
     const TabItem(icon: Icons.shopping_cart_outlined, title: 'Wishlist'),
-    const TabItem(icon: Icons.search, title: 'Search'),
     const TabItem(icon: Icons.settings_outlined, title: 'Settings'),
   ];
 
@@ -35,9 +34,6 @@ class _LayOutState extends State<LayOut> {
       Icons.shopping_cart_outlined,
     ),
     const Icon(
-      Icons.search,
-    ),
-    const Icon(
       Icons.settings_outlined,
     ),
   ];
@@ -46,7 +42,6 @@ class _LayOutState extends State<LayOut> {
     const HomeScreen(),
     const Wishlist(),
     const CartScreen(),
-    const HomeScreen(),
     const ProfileScreen(),
   ];
 

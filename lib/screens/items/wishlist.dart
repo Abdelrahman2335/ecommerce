@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../provider/wishList_provider.dart';
 import '../../widgets/wishlist_content.dart';
@@ -44,66 +45,69 @@ class _WishlistState extends State<Wishlist> {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
+      body:
+         Skeletonizer(
+              switchAnimationConfig: SwitchAnimationConfig(
+                duration: const Duration(milliseconds: 500),
               ),
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: Row(
+              enabled: wishedItems.isLoading,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: Column(
                   children: [
-                    const Spacer(),
-                    ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.all(9),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        onPressed: () {},
-                        label: Text(
-                          "Sort",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        icon: const Icon(
-                          CupertinoIcons.arrow_up_arrow_down,
-                          size: 18,
-                        )),
                     const SizedBox(
-                      width: 9,
+                      height: 10,
                     ),
-                    ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.all(9),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: Row(
+                        children: [
+                          const Spacer(),
+                          ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                padding: const EdgeInsets.all(9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {},
+                              label: Text(
+                                "Sort",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              icon: const Icon(
+                                CupertinoIcons.arrow_up_arrow_down,
+                                size: 18,
+                              )),
+                          const SizedBox(
+                            width: 9,
                           ),
-                        ),
-                        onPressed: () {},
-                        label: Text(
-                          "Filter",
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        icon: const Icon(
-                          Icons.filter_alt_outlined,
-                          size: 21,
-                        )),
+                          ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                padding: const EdgeInsets.all(9),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {},
+                              label: Text(
+                                "Filter",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              icon: const Icon(
+                                Icons.filter_alt_outlined,
+                                size: 21,
+                              )),
+                        ],
+                      ),
+                    ),
+                    WishListContent(),
                   ],
                 ),
               ),
-              wishedItems.docSnapshot == null
-                  ? const Center(child: Text("No Items Added"))
-                  : WishListContent(),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

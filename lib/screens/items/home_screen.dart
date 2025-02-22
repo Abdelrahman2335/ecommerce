@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
         switchAnimationConfig: SwitchAnimationConfig(
           duration: const Duration(milliseconds: 500),
         ),
-        enabled: isLoading ? true : false,
+        enabled: isLoading,
         child: CustomScrollView(
           slivers: [
           

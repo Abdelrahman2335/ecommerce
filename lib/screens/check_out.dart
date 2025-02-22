@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/widgets/address_with_order.dart';
 import 'package:ecommerce/widgets/payment_method.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class CheckOutScreen extends StatefulWidget {
   const CheckOutScreen({super.key});
@@ -12,13 +14,16 @@ class CheckOutScreen extends StatefulWidget {
   State<CheckOutScreen> createState() => _CheckOutScreenState();
 }
 
+
+
 class _CheckOutScreenState extends State<CheckOutScreen> {
   @override
   Widget build(BuildContext context) {
+    CartProvider checkOutData = Provider.of<CartProvider>(context,listen: false); /// will be used later
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Check Out",
+          "Check Out",style: Theme.of(context).textTheme.labelMedium,
         ),
         centerTitle: true,
       ),

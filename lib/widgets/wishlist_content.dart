@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../models/product_model.dart';
+import '../provider/cart_provider.dart';
 import '../provider/wishList_provider.dart';
 import '../screens/items/item_details.dart';
 
@@ -20,10 +21,10 @@ class _WishListContentState extends State<WishListContent> {
   Widget build(BuildContext context) {
     WishListProvider wishedItems =
         Provider.of<WishListProvider>(context, listen: true);
+    CartProvider inCartProvider =
+        Provider.of<CartProvider>(context, listen: true);
 
-    return wishedItems.isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : CustomScrollView(
+    return  CustomScrollView(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             slivers: [
@@ -36,14 +37,17 @@ class _WishListContentState extends State<WishListContent> {
                 ),
                 delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                  if (index >= wishedItems.docSnapshot![index].length) {
-                    log(wishedItems.docSnapshot![index].length.toString());
+                  if (index >= wishedItems.items.length) {
+                    log(wishedItems.items.length.toString());
                     return null;
                   }
 
                   return Consumer<WishListProvider>(
                       builder: (context, usedProvider, child) {
-                    final Product data = usedProvider.docSnapshot![index];
+                    final Product data = usedProvider.items[index];
+                    bool isInCart =
+                        inCartProvider.productIds.contains((data.id));
+
                     return Container(
                         margin: const EdgeInsets.all(9),
                         decoration: BoxDecoration(
@@ -113,19 +117,29 @@ class _WishListContentState extends State<WishListContent> {
                                       IconButton(
                                         onPressed: () {
                                           wishedItems.fetchData();
-                                          wishedItems.addWish(data.id);
+                                          wishedItems.addWish(data);
                                         },
                                         icon: Icon(Icons.favorite),
                                         color: Theme.of(context).primaryColor,
                                       ),
                                       IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(
-                                            Icons.shopping_cart_outlined,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          )),
+                                          onPressed: () async {
+                                            await inCartProvider
+                                                .addToCart(data);
+                                            await inCartProvider
+                                                .fetchCartData();
+                                          },
+                                          icon: isInCart
+                                              ? Icon(
+                                                  Icons.shopping_cart,
+                                                  color: Theme.of(context).colorScheme.secondary,
+                                                )
+                                              : Icon(
+                                                  Icons.shopping_cart_outlined,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary,
+                                                )),
                                     ],
                                   ),
                                 ),
