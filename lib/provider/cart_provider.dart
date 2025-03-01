@@ -16,6 +16,7 @@ class CartProvider extends ChangeNotifier {
   final List<Product> items = [];
   late List productIds;
   bool isLoading = false;
+  bool noItemsInCart = true;
 
   /// We are calling [fetchCartData] inside the Constructor of the class to initialize it as soon as we call the class
   CartProvider() {
@@ -43,6 +44,7 @@ class CartProvider extends ChangeNotifier {
         if (docSnapshot.docs.isNotEmpty) {
           items.addAll(docSnapshot.docs
               .map((element) => Product.fromJson(element.data())));
+          noItemsInCart = false;
           notifyListeners();
         }
       } else {
@@ -53,7 +55,6 @@ class CartProvider extends ChangeNotifier {
     } finally {
       isLoading = false;
     }
-
     notifyListeners();
   }
 
@@ -72,6 +73,7 @@ class CartProvider extends ChangeNotifier {
           }).then((onValue) {
             productIds.remove(product.id);
             items.remove(product);
+            items.isEmpty ? noItemsInCart = true : noItemsInCart = false;
             notifyListeners();
             scaffoldMessengerKey.currentState?.clearSnackBars();
 
@@ -84,6 +86,7 @@ class CartProvider extends ChangeNotifier {
             "productId": FieldValue.arrayUnion([product.id])
           }).then((onValue) {
             productIds.add(product.id);
+            noItemsInCart = false;
             notifyListeners();
             scaffoldMessengerKey.currentState?.clearSnackBars();
             scaffoldMessengerKey.currentState?.showSnackBar(
@@ -100,6 +103,7 @@ class CartProvider extends ChangeNotifier {
           },
         ).then((onValue) {
           productIds.add(product.id);
+          noItemsInCart = false;
 
           notifyListeners();
           scaffoldMessengerKey.currentState?.clearSnackBars();
@@ -125,6 +129,5 @@ class CartProvider extends ChangeNotifier {
       isLoading = false;
     }
     notifyListeners();
-    }
-
+  }
 }
