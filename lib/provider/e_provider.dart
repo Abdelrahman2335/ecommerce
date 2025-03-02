@@ -49,29 +49,56 @@ class ItemProvider extends ChangeNotifier {
 }
 
 /// Use this function when you want to add a new item.
-//   Future addProducts(String category, List imageUrl, String description,
-//       String title, int price, List? size,id) async {
-//     try {
-//       Product newProduct = Product(
-//         category: category,
-//         imageUrl: imageUrl,
-//         description: description,
-//         title: title,
-//         price: price,
-//         size: size, id: id,
-//       );
+// Future addProducts(String category, List imageUrl, String description,
+//     String title, int price, List? size,id,quantity) async {
+//   try {
+//     Product newProduct = Product(
+//       category: category,
+//       imageUrl: imageUrl,
+//       description: description,
+//       title: title,
+//       price: price,
+//       size: size, id: id, quantity: quantity,
+//     );
 //
-//       Map<String, dynamic> data = newProduct.toJson();
+//     Map<String, dynamic> data = newProduct.toJson();
 //
-//       await fireStore.collection("mainData").doc(newProduct.id).set(data);
+//     await fireStore.collection("mainData").doc(newProduct.id).set(data);
 //
-//       log("Item added successfully, ID: ${newProduct.id}");
-//     } catch (error) {
-//       scaffoldMessengerKey.currentState?.showSnackBar(
-//         const SnackBar(
-//           content: Text("Failed to add the item."),
-//         ),
-//       );
-//       log(error.toString());
-//     }
+//     log("Item added successfully, ID: ${newProduct.id}");
+//   } catch (error) {
+//     scaffoldMessengerKey.currentState?.showSnackBar(
+//       const SnackBar(
+//         content: Text("Failed to add the item."),
+//       ),
+//     );
+//     log(error.toString());
 //   }
+// }
+//
+// Future addProducts(String category, List imageUrl, String description,
+//     String title, int price, List? size,id,quantity) async {
+//   try {
+//     Product newProduct = Product(
+//       category: category,
+//       imageUrl: imageUrl,
+//       description: description,
+//       title: title,
+//       price: price,
+//       size: size, id: id, quantity: quantity,
+//     );
+//
+//     Map<String, dynamic> data = newProduct.toJson();
+//
+//     await fireStore.collection("mainData").doc(newProduct.id).set(data);
+//
+//     log("Item added successfully, ID: ${newProduct.id}");
+//   } catch (error) {
+//     scaffoldMessengerKey.currentState?.showSnackBar(
+//       const SnackBar(
+//         content: Text("Failed to add the item."),
+//       ),
+//     );
+//     log(error.toString());
+//   }
+// }

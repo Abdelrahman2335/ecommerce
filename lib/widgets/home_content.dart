@@ -123,28 +123,44 @@ class _HomeContentState extends State<HomeContent> {
                             /// note if we didn't add Selector here when isLoading is true,
                             /// the all buttons will load at once even if we didn't press it
 
-                            IconButton(
-                                onPressed: () async {
-                                  await wishedItems.addWish(data);
-                                  wishedItems.fetchData();
-                                },
-                                icon: isWished
-                                    ? Icon(Icons.favorite)
-                                    : Icon(Icons.favorite_border),
-                                color: isWished
-                                    ? Theme.of(context).primaryColor
-                                    : Theme.of(context).colorScheme.secondary),
+                            isInCart
+                                ? IconButton(
+                                    onPressed: () async {
+                                      inCartProvider.removeFromCart(data);
+                                    },
+                                    icon: Icon(Icons.minimize_outlined))
+                                : IconButton(
+                                    onPressed: () async {
+                                      await wishedItems.addWish(data);
+                                      wishedItems.fetchData();
+                                    },
+                                    icon: isWished
+                                        ? Icon(Icons.favorite)
+                                        : Icon(Icons.favorite_border),
+                                    color: isWished
+                                        ? Theme.of(context).primaryColor
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
 
                             IconButton(
                                 onPressed: () async {
                                   await inCartProvider.addToCart(data);
                                   await inCartProvider.fetchCartData();
                                 },
-                                icon: isInCart? Icon(Icons.shopping_cart,color: Theme.of(context).colorScheme.secondary ,): Icon(
-                                  Icons.shopping_cart_outlined,
-                                  color:
-                                  Theme.of(context).colorScheme.secondary,
-                                )),
+                                icon: isInCart
+                                    ? Icon(
+                                        Icons.add_circle_outline,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      )
+                                    : Icon(
+                                        Icons.shopping_cart_outlined,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      )),
                           ],
                         ),
                       ),

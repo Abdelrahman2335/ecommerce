@@ -1,5 +1,3 @@
-
-
 class Product {
   final String id;
   final String category;
@@ -8,6 +6,7 @@ class Product {
   final String description;
   final int price;
   final List? size;
+  final int quantity;
 
   Product({
     required this.id,
@@ -17,6 +16,7 @@ class Product {
     required this.title,
     required this.price,
     required this.size,
+    required this.quantity,
   });
 
   /// Convert Firestore document to Product object
@@ -29,6 +29,7 @@ class Product {
       price: json['price'] ?? 0,
       size: json['size'] != null ? List<String>.from(json['size']) : null,
       id: json["id"] ?? "",
+      quantity: json["quantity"],
     );
   }
 
@@ -42,6 +43,7 @@ class Product {
       'price': price,
       'size': size,
       'id': id,
+      'quantity': quantity,
     };
   }
 }

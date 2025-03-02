@@ -15,6 +15,7 @@ class WishListProvider extends ChangeNotifier {
   final List<Product> items = [];
   late List productIds;
   bool isLoading = false;
+  bool noItemsInWishList = true;
 
   /// We are calling [fetchData] inside the Constructor of the class to initialize it as soon as we call the class
   WishListProvider() {
@@ -46,6 +47,7 @@ class WishListProvider extends ChangeNotifier {
         if (docSnapshot.docs.isNotEmpty) {
           items.addAll(docSnapshot.docs
               .map((element) => Product.fromJson(element.data())));
+          noItemsInWishList = false;
           notifyListeners();
         }
       } else {
@@ -74,6 +76,9 @@ class WishListProvider extends ChangeNotifier {
           }).then((onValue) {
             productIds.remove(product.id);
             items.remove(product);
+            items.isEmpty
+                ? noItemsInWishList = true
+                : noItemsInWishList = false;
             notifyListeners();
             scaffoldMessengerKey.currentState?.clearSnackBars();
 
@@ -86,6 +91,7 @@ class WishListProvider extends ChangeNotifier {
             "productId": FieldValue.arrayUnion([product.id])
           }).then((onValue) {
             productIds.add(product.id);
+            noItemsInWishList = false;
             notifyListeners();
             scaffoldMessengerKey.currentState?.clearSnackBars();
             scaffoldMessengerKey.currentState?.showSnackBar(
@@ -102,6 +108,7 @@ class WishListProvider extends ChangeNotifier {
           },
         ).then((onValue) {
           productIds.add(product.id);
+          noItemsInWishList = false;
           notifyListeners();
           scaffoldMessengerKey.currentState?.clearSnackBars();
           scaffoldMessengerKey.currentState?.showSnackBar(

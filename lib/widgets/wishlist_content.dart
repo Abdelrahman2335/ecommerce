@@ -112,15 +112,15 @@ class _WishListContentState extends State<WishListContent> {
                                 ),
                                 const Spacer(),
                                 IconButton(
-                                  onPressed: () async {
-                                    await wishedItems.addWish(data);
+                                  onPressed: () {
+                                    wishedItems.addWish(data);
                                   },
                                   icon: Icon(Icons.favorite),
                                   color: Theme.of(context).primaryColor,
                                 ),
                                 IconButton(
-                                    onPressed: ()  {
-                                       inCartProvider.addToCart(data);
+                                    onPressed: () {
+                                      inCartProvider.addToCart(data);
                                     },
                                     icon: isInCart
                                         ? Icon(

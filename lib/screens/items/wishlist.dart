@@ -45,8 +45,13 @@ class _WishlistState extends State<Wishlist> {
           ),
         ],
       ),
-      body:
-         Skeletonizer(
+      body:wishedItems.noItemsInWishList? Center(
+        child:
+        Text("No items in the cart",
+            style: Theme.of(context).textTheme.labelMedium),
+
+      ):
+      Skeletonizer(
               switchAnimationConfig: SwitchAnimationConfig(
                 duration: const Duration(milliseconds: 500),
               ),

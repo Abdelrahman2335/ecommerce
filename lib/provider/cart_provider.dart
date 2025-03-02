@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/models/cart_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -12,9 +13,10 @@ class CartProvider extends ChangeNotifier {
   String userId = FirebaseAuth.instance.currentUser!.uid;
   final mainListRef = FirebaseFirestore.instance.collection("mainData");
   final cartListRef = FirebaseFirestore.instance.collection("cartData");
-  Map<String, dynamic>? cartData;
+  QuerySnapshot<Map<String, dynamic>>? cartData;
   final List<Product> items = [];
-  late List productIds;
+  List<CartModel> fetchedItems = [];
+  List productIds = [];
   bool isLoading = false;
   bool noItemsInCart = true;
 
@@ -32,14 +34,24 @@ class CartProvider extends ChangeNotifier {
     items.clear();
 
     try {
-      cartData =
-          await cartListRef.doc(userId).get().then((value) => value.data());
+      /// Get the data from the database where the userId is equal to the current userId
+      /// each doc contain 3 fields userId, productId, quantity
+      cartData = await cartListRef.where("userId", isEqualTo: userId).get();
 
-      productIds = cartData?["productId"] ?? [];
+      if (cartData != null && cartData!.docs.isNotEmpty) {
+        log("cartData is not null");
 
-      if (cartData != null && !cartData?["productId"].isEmpty) {
-        QuerySnapshot<Map<String, dynamic>> docSnapshot =
+        /// Get the cart items from the cartData
+        fetchedItems.addAll(cartData!.docs
+            .map((element) => CartModel.fromJson(element.data())));
+        log(fetchedItems.length.toString());
+        productIds = fetchedItems.map((element) => element.itemId).toList();
+
+        /// List of ids of the items in the cart
+        QuerySnapshot<Map<String, dynamic>>? docSnapshot =
             await mainListRef.where("id", whereIn: productIds).get();
+
+        /// Get only the products that we have it's id
 
         if (docSnapshot.docs.isNotEmpty) {
           items.addAll(docSnapshot.docs
@@ -48,10 +60,12 @@ class CartProvider extends ChangeNotifier {
           notifyListeners();
         }
       } else {
+        log("nothing in the cartData: $cartData");
         return;
       }
     } catch (error) {
       log("Error in the Cart: $error");
+      log("Error in the Cart: ${cartData?.docs.length.toString()}");
     } finally {
       isLoading = false;
     }
@@ -60,33 +74,40 @@ class CartProvider extends ChangeNotifier {
 
   addToCart(Product product) async {
     isLoading = true;
-    notifyListeners();
     itemExist = productIds.contains(product.id);
+    notifyListeners();
+    List<String> docId = [userId, product.id];
 
     try {
       log("itemExist: ${itemExist.toString()}");
       log("productId: ${product.id}");
-      if (cartData != null && cartData!.isNotEmpty) {
+      log("Quantity: ${product.quantity}");
+
+      if (cartData != null && cartData!.docs.isNotEmpty) {
         if (itemExist) {
-          await cartListRef.doc(userId).update({
-            "productId": FieldValue.arrayRemove([product.id])
+          await cartListRef.doc(docId.toString()).update({
+            "quantity": FieldValue.increment(1),
           }).then((onValue) {
-            productIds.remove(product.id);
-            items.remove(product);
-            items.isEmpty ? noItemsInCart = true : noItemsInCart = false;
+            noItemsInCart = false;
             notifyListeners();
             scaffoldMessengerKey.currentState?.clearSnackBars();
-
-            scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-              content: Text("Item removed"),
-            ));
+            scaffoldMessengerKey.currentState?.showSnackBar(
+              const SnackBar(
+                content: Text("Item added to Cart!"),
+              ),
+            );
           });
         } else {
-          await cartListRef.doc(userId).update({
-            "productId": FieldValue.arrayUnion([product.id])
-          }).then((onValue) {
+          await cartListRef.doc(docId.toString()).set(
+            {
+              "userId": userId,
+              "itemId": product.id,
+              "quantity": 1,
+            },
+          ).then((onValue) {
             productIds.add(product.id);
             noItemsInCart = false;
+
             notifyListeners();
             scaffoldMessengerKey.currentState?.clearSnackBars();
             scaffoldMessengerKey.currentState?.showSnackBar(
@@ -97,9 +118,11 @@ class CartProvider extends ChangeNotifier {
           });
         }
       } else {
-        await cartListRef.doc(userId).set(
+        await cartListRef.doc(docId.toString()).set(
           {
-            "productId": [product.id]
+            "userId": userId,
+            "itemId": product.id,
+            "quantity": 1,
           },
         ).then((onValue) {
           productIds.add(product.id);
@@ -128,6 +151,33 @@ class CartProvider extends ChangeNotifier {
     } finally {
       isLoading = false;
     }
+    notifyListeners();
+  }
+
+  removeFromCart(Product product) async {
+    isLoading = true;
+
+    List<String> docId = [userId, product.id];
+    try {
+
+      await cartListRef.doc(docId.toString()).update({
+        "quantity": FieldValue.increment(-1),
+      }).then((onValue) {
+        productIds.remove(product.id);
+        items.remove(product);
+        items.isEmpty ? noItemsInCart = true : noItemsInCart = false;
+        notifyListeners();
+        scaffoldMessengerKey.currentState?.clearSnackBars();
+
+        scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+          content: Text("Item removed"),
+        ));
+      });
+    } catch (error) {
+      isLoading = false;
+      log(error.toString());
+    }
+    isLoading = false;
     notifyListeners();
   }
 }

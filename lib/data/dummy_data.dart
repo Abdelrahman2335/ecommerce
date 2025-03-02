@@ -17,7 +17,9 @@ final List<Product> productData = [
     price: 299,
     size: ['S', 'M', 'L'],
     description:
-        "A stylish and comfortable shirt with a windowpane pattern, perfect for casual and formal occasions.", id: uuid.v4(),
+        "A stylish and comfortable shirt with a windowpane pattern, perfect for casual and formal occasions.",
+    id: uuid.v4(),
+    quantity: 10,
   ),
   Product(
     category: "Footwear",
@@ -28,7 +30,9 @@ final List<Product> productData = [
     price: 999,
     size: ['40-41', '42-43', '44-45'],
     description:
-        "High-performance Nike shoes designed for comfort and durability, ideal for sports and everyday wear.", id: uuid.v4(),
+        "High-performance Nike shoes designed for comfort and durability, ideal for sports and everyday wear.",
+    id: uuid.v4(),
+    quantity: 5,
   ),
   Product(
     title: "Elegant Women's Printed Kurta",
@@ -41,6 +45,7 @@ final List<Product> productData = [
     description:
         "Elegant printed kurta with vibrant colors, perfect for traditional and festive occasions.",
     id: uuid.v4(),
+    quantity: 4,
   ),
   Product(
     title: "Marwa Platform Moccasin - Green",
@@ -53,6 +58,7 @@ final List<Product> productData = [
     description:
         "Stylish platform moccasins with a classic design, adding elegance and comfort to your steps.",
     id: uuid.v4(),
+    quantity: 6,
   ),
   Product(
     title: "Men's Casual Shirt",
@@ -65,6 +71,7 @@ final List<Product> productData = [
     description:
         "Casual shirt for men, crafted with breathable fabric for everyday comfort and style.",
     id: uuid.v4(),
+    quantity: 2,
   ),
   Product(
     title: "Running Shoes - Blue",
@@ -77,6 +84,7 @@ final List<Product> productData = [
     description:
         "Lightweight running shoes designed for optimal performance, with a stylish blue finish.",
     id: uuid.v4(),
+    quantity: 5,
   ),
   Product(
     title: "Leather Handbag - Brown",
@@ -89,6 +97,7 @@ final List<Product> productData = [
         "Elegant brown leather handbag with ample storage, perfect for both formal and casual settings.",
     size: null,
     id: uuid.v4(),
+    quantity: 14,
   ),
   Product(
     category: "Clothing",
@@ -101,30 +110,33 @@ final List<Product> productData = [
     description:
         "Classic black jacket for men, designed to provide warmth and style during colder days.",
     id: uuid.v4(),
+    quantity: 9,
   ),
   Product(
-      title: "Men's Classic Watch",
-      price: 999,
-      imageUrl: [
-        "https://ng.jumia.is/unsafe/fit-in/680x680/filters:fill(white)/product/91/4377262/1.jpg?3687"
-      ],
-      category: "Accessories",
-      description:
-          "Sophisticated classic watch, ideal for formal wear and everyday elegance.",
-      size: null,
-      id: uuid.v4(),
+    title: "Men's Classic Watch",
+    price: 999,
+    imageUrl: [
+      "https://ng.jumia.is/unsafe/fit-in/680x680/filters:fill(white)/product/91/4377262/1.jpg?3687"
+    ],
+    category: "Accessories",
+    description:
+        "Sophisticated classic watch, ideal for formal wear and everyday elegance.",
+    size: null,
+    id: uuid.v4(),
+    quantity: 2,
   ),
   Product(
-      title: "Shirt - Black",
-      price: 699,
-      imageUrl: [
-        "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/pexels-gustavo-11576960.jpg?alt=media&token=07c57d92-e30d-4acc-88df-974a8c6e17af"
-      ],
-      category: "Accessories",
-      description:
-          "Versatile black shirt that pairs well with any outfit for a sleek, modern look.",
-      size: null,
-      id: uuid.v4(),
+    title: "Shirt - Black",
+    price: 699,
+    imageUrl: [
+      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/pexels-gustavo-11576960.jpg?alt=media&token=07c57d92-e30d-4acc-88df-974a8c6e17af"
+    ],
+    category: "Accessories",
+    description:
+        "Versatile black shirt that pairs well with any outfit for a sleek, modern look.",
+    size: null,
+    id: uuid.v4(),
+    quantity: 2,
   ),
   Product(
     title: "Women High Heels - Red",
@@ -135,19 +147,22 @@ final List<Product> productData = [
     category: "Footwear",
     size: ['38-39', '40-41', '42-43'],
     description:
-        "Elegant high heels in a striking red color, designed to make a statement.", id: uuid.v4(),
+        "Elegant high heels in a striking red color, designed to make a statement.",
+    id: uuid.v4(),
+    quantity: 6,
   ),
   Product(
-      title: "Bluetooth Headphone",
-      price: 699,
-      imageUrl: [
-        "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Headphones.png?alt=media&token=9faa4534-6962-4876-afb2-f7a455533d13"
-      ],
-      category: "Electronics",
-      description:
-          "Wireless Bluetooth headphones with high-quality sound and comfortable design for long wear.",
-      size: null,
-      id: uuid.v4(),
+    title: "Bluetooth Headphone",
+    price: 699,
+    imageUrl: [
+      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Headphones.png?alt=media&token=9faa4534-6962-4876-afb2-f7a455533d13"
+    ],
+    category: "Electronics",
+    description:
+        "Wireless Bluetooth headphones with high-quality sound and comfortable design for long wear.",
+    size: null,
+    id: uuid.v4(),
+    quantity: 3,
   ),
   Product(
     title: "Men's Formal Trousers",
@@ -160,6 +175,7 @@ final List<Product> productData = [
     description:
         "Smart formal trousers for men, offering a tailored fit suitable for business and formal events.",
     id: uuid.v4(),
+    quantity: 4,
   ),
   Product(
     title: "Men's Watch - Classic",
@@ -172,5 +188,6 @@ final List<Product> productData = [
         "Elegant men's watch with classic styling, perfect for daily wear or special occasions.",
     size: null,
     id: uuid.v4(),
+    quantity: 7,
   ),
 ];
