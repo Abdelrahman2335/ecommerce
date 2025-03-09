@@ -5,7 +5,6 @@ import 'package:ecommerce/models/cart_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import '../models/product_model.dart';
 
 class CartProvider extends ChangeNotifier {
@@ -19,6 +18,7 @@ class CartProvider extends ChangeNotifier {
   List productIds = [];
   bool isLoading = false;
   bool noItemsInCart = true;
+  int totalQuantity = 0;
 
   /// We are calling [fetchCartData] inside the Constructor of the class to initialize it as soon as we call the class
   CartProvider() {
@@ -32,36 +32,59 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
 
     items.clear();
+    fetchedItems.clear();
+    productIds.clear(); // Ensure productIds is cleared before repopulating
+    totalQuantity = 0; // Reset totalQuantity to prevent incorrect accumulation
 
     try {
       /// Get the data from the database where the userId is equal to the current userId
-      /// each doc contain 3 fields userId, productId, quantity
+      /// each doc contains 3 fields: userId, productId, quantity
       cartData = await cartListRef.where("userId", isEqualTo: userId).get();
 
-      if (cartData != null && cartData!.docs.isNotEmpty) {
+      if (cartData?.docs.isNotEmpty ?? false) {
         log("cartData is not null");
 
         /// Get the cart items from the cartData
         fetchedItems.addAll(cartData!.docs
             .map((element) => CartModel.fromJson(element.data())));
-        log(fetchedItems.length.toString());
-        productIds = fetchedItems.map((element) => element.itemId).toList();
 
-        /// List of ids of the items in the cart
-        QuerySnapshot<Map<String, dynamic>>? docSnapshot =
-            await mainListRef.where("id", whereIn: productIds).get();
+        /// List of IDs of the items in the cart
+        productIds
+            .addAll(fetchedItems.map((element) => element.itemId).toList());
+        log("fetchedItems is ${fetchedItems.length}, ${fetchedItems.first.itemId}");
 
-        /// Get only the products that we have it's id
+        /// Firestore `whereIn` only supports a max of 10 items, so we need to split queries if needed
+        List<Product> fetchedProducts = [];
+        if (productIds.isNotEmpty) {
+          for (int i = 0; i < productIds.length; i += 10) {
+            List batch = productIds.sublist(
+                i, (i + 10 > productIds.length) ? productIds.length : i + 10);
+            QuerySnapshot<Map<String, dynamic>> docSnapshot =
+                await mainListRef.where("id", whereIn: batch).get();
 
-        if (docSnapshot.docs.isNotEmpty) {
-          items.addAll(docSnapshot.docs
-              .map((element) => Product.fromJson(element.data())));
+            /// Get only the products that we have their ID
+            if (docSnapshot.docs.isNotEmpty) {
+              fetchedProducts.addAll(docSnapshot.docs
+                  .map((element) => Product.fromJson(element.data())));
+            }
+          }
+        }
+
+        /// Now add the fetched products to the items list
+        if (fetchedProducts.isNotEmpty) {
+          items.addAll(fetchedProducts);
           noItemsInCart = false;
-          notifyListeners();
+        } else {
+          noItemsInCart = true;
+        }
+
+        /// Update total quantity based on fetched items
+        for (CartModel item in fetchedItems) {
+          totalQuantity += item.quantity;
         }
       } else {
         log("nothing in the cartData: $cartData");
-        return;
+        noItemsInCart = true;
       }
     } catch (error) {
       log("Error in the Cart: $error");
@@ -72,112 +95,102 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  addToCart(Product product) async {
+  Future<void> addToCart(Product product) async {
     isLoading = true;
-    itemExist = productIds.contains(product.id);
     notifyListeners();
-    List<String> docId = [userId, product.id];
+
+    String docId = "${userId}_${product.id}";
+    bool itemExist = productIds.contains(product.id);
 
     try {
-      log("itemExist: ${itemExist.toString()}");
+      log("itemExist: $itemExist");
       log("productId: ${product.id}");
-      log("Quantity: ${product.quantity}");
+      log("Quantity for the main data: ${product.quantity}");
 
-      if (cartData != null && cartData!.docs.isNotEmpty) {
-        if (itemExist) {
-          await cartListRef.doc(docId.toString()).update({
-            "quantity": FieldValue.increment(1),
-          }).then((onValue) {
-            noItemsInCart = false;
-            notifyListeners();
-            scaffoldMessengerKey.currentState?.clearSnackBars();
-            scaffoldMessengerKey.currentState?.showSnackBar(
-              const SnackBar(
-                content: Text("Item added to Cart!"),
-              ),
-            );
-          });
-        } else {
-          await cartListRef.doc(docId.toString()).set(
-            {
-              "userId": userId,
-              "itemId": product.id,
-              "quantity": 1,
-            },
-          ).then((onValue) {
-            productIds.add(product.id);
-            noItemsInCart = false;
+      if (itemExist) {
+        /// If the item is already in the cart, increment the quantity
+        await cartListRef.doc(docId).update({
+          "quantity": FieldValue.increment(1),
+        });
 
-            notifyListeners();
-            scaffoldMessengerKey.currentState?.clearSnackBars();
-            scaffoldMessengerKey.currentState?.showSnackBar(
-              const SnackBar(
-                content: Text("Item added!"),
-              ),
-            );
-          });
+        /// Update fetchedItems immediately
+        for (var item in fetchedItems) {
+          if (item.itemId == product.id) {
+            item.quantity++;
+            log("Item quantity updated: ${item.itemId}: ${item.quantity}");
+            break;
+          }
         }
       } else {
-        await cartListRef.doc(docId.toString()).set(
-          {
-            "userId": userId,
-            "itemId": product.id,
-            "quantity": 1,
-          },
-        ).then((onValue) {
-          productIds.add(product.id);
-          noItemsInCart = false;
-
-          notifyListeners();
-          scaffoldMessengerKey.currentState?.clearSnackBars();
-          scaffoldMessengerKey.currentState?.showSnackBar(
-            const SnackBar(
-              content: Text("Item added!"),
-            ),
-          );
+        await cartListRef.doc(docId).set({
+          "userId": userId,
+          "itemId": product.id,
+          "quantity": 1,
         });
+
+        fetchedItems
+            .add(CartModel(userId: userId, itemId: product.id, quantity: 1));
+        items.add(product);
+        productIds.add(product.id);
       }
-      // log("After the function is called: ${productIds.toString()}");
-      // log("wishData content?: ${wishData.toString()}");
-      // log("wishData is empty?: ${wishData?["productId"].isEmpty}");
-      // log("docSnapshot is null?: ${docSnapshot?["id"]}");
+
+      noItemsInCart = fetchedItems.isEmpty;
+      totalQuantity++;
     } catch (error) {
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        const SnackBar(
-          content: Text("Failed to add the item."),
-        ),
-      );
-      log("addWish error: ${error.toString()}");
+      log("addToCart error: ${error.toString()}");
     } finally {
       isLoading = false;
     }
     notifyListeners();
   }
 
-  removeFromCart(Product product) async {
+  Future<void> removeFromCart(Product product, bool deleteItem) async {
     isLoading = true;
+    notifyListeners();
 
-    List<String> docId = [userId, product.id];
+    String docId = "${userId}_${product.id}";
+
     try {
+      /// Get the document from the database with this ID
+      DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+          await cartListRef.doc(docId).get();
+      if (!docSnapshot.exists) return;
 
-      await cartListRef.doc(docId.toString()).update({
-        "quantity": FieldValue.increment(-1),
-      }).then((onValue) {
+      int currentQuantity = docSnapshot.data()?["quantity"] ?? 0;
+      log("Current quantity: $currentQuantity");
+
+      if (currentQuantity > 1 && !deleteItem) {
+        await cartListRef.doc(docId).update({
+          "quantity": FieldValue.increment(-1),
+        });
+
+        /// Update fetchedItems immediately
+        for (var item in fetchedItems) {
+          if (item.itemId == product.id) {
+            item.quantity--;
+            log("Item quantity updated: ${item.itemId}: ${item.quantity}");
+            break;
+          }
+        }
+        totalQuantity--;
+      } else {
+        await cartListRef.doc(docId).delete();
+        CartModel item =
+            fetchedItems.firstWhere((element) => element.itemId == product.id);
+
+        fetchedItems.removeWhere((element) => element.itemId == product.id);
+        items.removeWhere((element) => element.id == product.id);
         productIds.remove(product.id);
-        items.remove(product);
-        items.isEmpty ? noItemsInCart = true : noItemsInCart = false;
-        notifyListeners();
-        scaffoldMessengerKey.currentState?.clearSnackBars();
 
-        scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text("Item removed"),
-        ));
-      });
+        totalQuantity -= item.quantity;
+      }
+
+      noItemsInCart = fetchedItems.isEmpty;
     } catch (error) {
+      log("removeFromCart error: ${error.toString()}");
+    } finally {
       isLoading = false;
-      log(error.toString());
     }
-    isLoading = false;
     notifyListeners();
   }
 }

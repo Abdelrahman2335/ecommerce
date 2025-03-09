@@ -1,3 +1,4 @@
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/models/product_model.dart';
@@ -5,6 +6,7 @@ import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/e_provider.dart';
 import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/wishList_provider.dart';
@@ -20,7 +22,7 @@ class HomeContent extends StatefulWidget {
 
 class _HomeContentState extends State<HomeContent> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
-
+  int itemCount = 0;
   @override
   Widget build(BuildContext context) {
     ItemProvider providerData =
@@ -52,87 +54,111 @@ class _HomeContentState extends State<HomeContent> {
             final Product data = value.receivedData[index];
             bool isWished = wishedItems.productIds.contains((data.id));
             bool isInCart = inCartProvider.productIds.contains((data.id));
+            if(isInCart) {
 
-            return Container(
-              margin: const EdgeInsets.all(9),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16), color: Colors.white),
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(17),
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ItemDetails(
-                            itemData: data,
-                          )));
-                },
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: double.infinity,
-                    // Ensure the container takes full width
-                    maxWidth: double.infinity,
-                    minHeight:
-                        200, // Set a minimum height to avoid unconstrained issues
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CachedNetworkImage(
-                        placeholderFadeInDuration: Duration(milliseconds: 150),
+               itemCount = inCartProvider.fetchedItems.where((element)=> element.itemId == data.id).first.quantity;
+            }else {
+              itemCount = 0;
+            }
 
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                        // placeholder: MemoryImage(kTransparentImage),
-                        memCacheWidth:
-                            (MediaQuery.of(context).size.width * 0.8).round(),
-                        memCacheHeight:
-                            (MediaQuery.of(context).size.height * 0.4).round(),
+            /// this boolean is used to check if the item is in the wishlist
 
-                        imageUrl: "${data.imageUrl[0]}",
 
-                        errorWidget: (context, url, error) => const Icon(
-                          Icons.error,
-                          color: Colors.red,
+            /// this boolean is used to check if the item is in the cart
+
+            return Animate(
+              effects: const [
+                FadeEffect(
+                  duration: Duration(milliseconds: 500),
+                ),
+              ],
+              child: Container(
+                margin: const EdgeInsets.all(9),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16), color: Colors.white),
+                clipBehavior: Clip.antiAlias,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(17),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ItemDetails(
+                              itemData: data,
+                            )));
+                  },
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: double.infinity,
+                      // Ensure the container takes full width
+                      maxWidth: double.infinity,
+                      minHeight:
+                          200, // Set a minimum height to avoid unconstrained issues
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CachedNetworkImage(
+                          placeholderFadeInDuration: Duration(milliseconds: 150),
+
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          // placeholder: MemoryImage(kTransparentImage),
+                          memCacheWidth:
+                              (MediaQuery.of(context).size.width * 0.8).round(),
+                          memCacheHeight:
+                              (MediaQuery.of(context).size.height * 0.4).round(),
+
+                          imageUrl: "${data.imageUrl[0]}",
+
+                          errorWidget: (context, url, error) => const Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(left: 6, top: 5, bottom: 2),
-                        child: Text(
-                          data.title,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 6, top: 5, bottom: 2),
+                          child: Text(
+                            data.title,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 6,
-                        ),
-                        child: Row(
-                          children: [
-                            Text(
-                              "\$${data.price}",
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 6,
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                "\$${data.price}",
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              const Spacer(),
 
-                            /// we are using [Selector] here to listen to the [isLoading] value from [WishListProvider]
-                            /// and build only this widget when the value changes
-                            /// note if we didn't add Selector here when isLoading is true,
-                            /// the all buttons will load at once even if we didn't press it
+                              /// we are using [Selector] here to listen to the [isLoading] value from [WishListProvider]
+                              /// and build only this widget when the value changes
+                              /// note if we didn't add Selector here when isLoading is true,
+                              /// the all buttons will load at once even if we didn't press it
 
-                            isInCart
-                                ? IconButton(
+                              /// Edit this later because it take some time to load
+                              Row(children: [
+                                isInCart
+                                    ? IconButton(
                                     onPressed: () async {
-                                      inCartProvider.removeFromCart(data);
+                                      await inCartProvider.removeFromCart(
+                                          data, false);
                                     },
-                                    icon: Icon(Icons.minimize_outlined))
-                                : IconButton(
+                                    icon: Icon(
+                                      Icons.remove_circle_outline,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ))
+                                    : IconButton(
                                     onPressed: () async {
                                       await wishedItems.addWish(data);
-                                      wishedItems.fetchData();
                                     },
                                     icon: isWished
                                         ? Icon(Icons.favorite)
@@ -140,31 +166,41 @@ class _HomeContentState extends State<HomeContent> {
                                     color: isWished
                                         ? Theme.of(context).primaryColor
                                         : Theme.of(context)
-                                            .colorScheme
-                                            .secondary),
+                                        .colorScheme
+                                        .secondary),
+                                isInCart
+                                    ? Text(
+                                  itemCount.toString(),
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                )
+                                    : Container(),
+                                IconButton(
+                                    onPressed: () async {
 
-                            IconButton(
-                                onPressed: () async {
-                                  await inCartProvider.addToCart(data);
-                                  await inCartProvider.fetchCartData();
-                                },
-                                icon: isInCart
-                                    ? Icon(
-                                        Icons.add_circle_outline,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )
-                                    : Icon(
-                                        Icons.shopping_cart_outlined,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      )),
-                          ],
+                                      await inCartProvider.addToCart(data);
+
+                                    },
+                                    icon: isInCart
+                                        ? Icon(
+                                      Icons.add_circle_outline,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    )
+                                        : Icon(
+                                      Icons.shopping_cart_outlined,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    )),],),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

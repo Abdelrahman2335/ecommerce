@@ -1,6 +1,7 @@
 import 'package:ecommerce/data/category_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -45,20 +46,26 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+
       /// [Skeletonizer] is a place holder while the data is loading.
       body: Skeletonizer(
         switchAnimationConfig: SwitchAnimationConfig(
-          duration: const Duration(milliseconds: 500),
+          duration: const Duration(seconds: 1),
         ),
         enabled: isLoading,
         child: CustomScrollView(
           slivers: [
-          
             SliverToBoxAdapter(
+
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
-                  children: [
+                  children: AnimateList(
+                    effects: const[
+                      FadeEffect(
+                        duration: Duration(seconds: 1),
+                      ),],
+                      children: [
                     Padding(
                       padding: const EdgeInsets.all(6),
                       child: Row(
@@ -182,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                  ],
+                  ]),
                 ),
               ),
             ),

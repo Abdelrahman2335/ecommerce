@@ -40,7 +40,7 @@ class WishListProvider extends ChangeNotifier {
       if (wishData != null && !wishData?["productId"].isEmpty) {
         /// Important to know that whereIn is limited with only 10 elements.
         /// this variable is used to get the data from the database
-        /// [where] go inside the collection and [whereIn] go inside the document note doc id is the same as the product id
+        /// [where] and [whereIn] go inside the document. Note: doc id is the same as the product id
         QuerySnapshot<Map<String, dynamic>> docSnapshot =
             await mainListRef.where("id", whereIn: productIds).get();
 
@@ -73,33 +73,29 @@ class WishListProvider extends ChangeNotifier {
         if (itemExist) {
           await wishListRef.doc(userId).update({
             "productId": FieldValue.arrayRemove([product.id])
-          }).then((onValue) {
-            productIds.remove(product.id);
-            items.remove(product);
-            items.isEmpty
-                ? noItemsInWishList = true
-                : noItemsInWishList = false;
-            notifyListeners();
-            scaffoldMessengerKey.currentState?.clearSnackBars();
-
-            scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-              content: Text("Item removed"),
-            ));
           });
+
+          productIds.remove(product.id);
+          items.remove(product);
+          items.isEmpty ? noItemsInWishList = true : noItemsInWishList = false;
+          scaffoldMessengerKey.currentState?.clearSnackBars();
+
+          scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+            content: Text("Item removed"),
+          ));
         } else {
           await wishListRef.doc(userId).update({
             "productId": FieldValue.arrayUnion([product.id])
-          }).then((onValue) {
-            productIds.add(product.id);
-            noItemsInWishList = false;
-            notifyListeners();
-            scaffoldMessengerKey.currentState?.clearSnackBars();
-            scaffoldMessengerKey.currentState?.showSnackBar(
-              SnackBar(
-                content: Text("Item added!"),
-              ),
-            );
           });
+          productIds.add(product.id);
+          items.add(product);
+          noItemsInWishList = false;
+          scaffoldMessengerKey.currentState?.clearSnackBars();
+          scaffoldMessengerKey.currentState?.showSnackBar(
+            SnackBar(
+              content: Text("Item added!"),
+            ),
+          );
         }
       } else {
         await wishListRef.doc(userId).set(
@@ -107,9 +103,6 @@ class WishListProvider extends ChangeNotifier {
             "productId": [product.id]
           },
         ).then((onValue) {
-          productIds.add(product.id);
-          noItemsInWishList = false;
-          notifyListeners();
           scaffoldMessengerKey.currentState?.clearSnackBars();
           scaffoldMessengerKey.currentState?.showSnackBar(
             SnackBar(
@@ -117,6 +110,11 @@ class WishListProvider extends ChangeNotifier {
             ),
           );
         });
+
+        productIds.add(product.id);
+        items.add(product);
+        items.add(product);
+        noItemsInWishList = false;
       }
       // log("After the function is called: ${productIds.toString()}");
       // log("wishData content?: ${wishData.toString()}");
@@ -131,9 +129,7 @@ class WishListProvider extends ChangeNotifier {
       log("addWish error: ${error.toString()}");
     } finally {
       isLoading = false;
-      notifyListeners();
     }
-
     notifyListeners();
   }
 
