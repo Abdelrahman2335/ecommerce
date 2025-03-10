@@ -14,16 +14,22 @@ class CheckOutScreen extends StatefulWidget {
   State<CheckOutScreen> createState() => _CheckOutScreenState();
 }
 
-
-
 class _CheckOutScreenState extends State<CheckOutScreen> {
   @override
   Widget build(BuildContext context) {
-    CartProvider checkOutData = Provider.of<CartProvider>(context,listen: false); /// will be used later
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+
+    /// Here we can use to two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
+    /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
+    int itemsPrice = cartProvider.items
+        .map((item) => item.price)
+        .fold(0, (previousValue, element) => previousValue + element);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Check Out",style: Theme.of(context).textTheme.labelMedium,
+          "Check Out",
+          style: Theme.of(context).textTheme.labelMedium,
         ),
         centerTitle: true,
       ),
@@ -45,11 +51,12 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               Gap(13),
               Row(
                 children: [
-                  Text("Total items (${Random().nextInt(10)}):"),
+                  Text("Total items (${cartProvider.totalQuantity}):"),
 
                   /// Edit the style of the text
                   const Spacer(),
-                  Text("\$${Random().nextDouble().toStringAsFixed(2)}"),
+
+                  Text("\$$itemsPrice"),
                 ],
               ),
               Gap(12),
