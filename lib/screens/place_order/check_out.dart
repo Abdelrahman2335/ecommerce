@@ -65,9 +65,17 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
     /// Here we can use to two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
     /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
-    int itemsPrice = cartProvider.items
-        .map((item) => item.price)
-        .fold(0, (previousValue, element) => previousValue + element);
+      
+    int itemsPrice = 0;
+    for (var cartItem in cartProvider.items) {
+  // Find the corresponding product
+  var product = cartProvider.fetchedItems.firstWhere(
+    (prod) => prod. itemId== cartItem.id,
+     // Avoids crash if no match is found
+  );
+
+  itemsPrice += product.quantity * cartItem.price;
+}
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: (){
