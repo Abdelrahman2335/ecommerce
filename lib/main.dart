@@ -5,7 +5,7 @@ import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
-import 'package:ecommerce/screens/profile_screen.dart';
+import 'package:ecommerce/screens/login_setup/profile_screen.dart';
 import 'package:ecommerce/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

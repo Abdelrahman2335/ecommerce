@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../models/product_model.dart';
-import '../check_out.dart';
-import 'item_details.dart';
+import 'check_out.dart';
+import '../items/item_details.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});

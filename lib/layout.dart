@@ -1,8 +1,8 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:ecommerce/screens/items/cart_screen.dart';
+import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/items/home_screen.dart';
-import 'package:ecommerce/screens/profile_screen.dart';
+import 'package:ecommerce/screens/login_setup/profile_screen.dart';
 import 'package:ecommerce/screens/items/wishlist.dart';
 import 'package:flutter/material.dart';
 

@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:developer';
 
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/widgets/address_with_order.dart';
@@ -15,6 +15,49 @@ class CheckOutScreen extends StatefulWidget {
 }
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
+  Map promoCodes = {
+    "FLAT10": 10,
+    "FLAT20": 20,
+    "NewOrder": 50,
+  };
+  int shippingFee = 10;
+  TextEditingController promoController = TextEditingController();
+  int promo = 0;
+  bool isNotValidPromo = true;
+  String? errorMessage;
+
+  addPromo(String code) {
+    if (!isNotValidPromo) {
+      return setState(() {
+        promo = 0;
+        promoController.clear();
+        isNotValidPromo = true;
+      });
+    }
+
+    if (code.isNotEmpty && promoCodes.containsKey(code)) {
+      setState(() {
+        promo = promoCodes[code]!.toInt();
+        isNotValidPromo = false;
+        errorMessage = null;
+      });
+      log(promoCodes[code]!.toString());
+    } else {
+      code.isEmpty
+          ? null
+          : setState(() {
+              errorMessage = " Invalid Code";
+              isNotValidPromo = true;
+            });
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    promoController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     CartProvider cartProvider =
@@ -43,78 +86,95 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                   style: TextStyle(
                     fontStyle: FontStyle.italic,
                   )),
-              Gap(6),
+              const Gap(6),
               Divider(
                 thickness: 1.5,
                 height: 1,
               ),
-              Gap(13),
+              const Gap(13),
               Row(
                 children: [
                   Text("Total items (${cartProvider.totalQuantity}):"),
-
-                  /// Edit the style of the text
                   const Spacer(),
-
                   Text("\$$itemsPrice"),
                 ],
               ),
-              Gap(12),
+              const Gap(12),
               Row(
                 children: [
                   const Text("Shipping:"),
-
-                  /// Edit the style of the text
                   const Spacer(),
-                  Text("\$${Random().nextDouble().toStringAsFixed(2)}"),
+                  Text("\$$shippingFee"),
                 ],
               ),
-              Gap(12),
+              const Gap(12),
+              Row(
+                children: [
+                  const Text("Discount:"),
+                  const Spacer(),
+                  Text(
+                    "\$$promo",
+                    style: TextStyle(
+                      color: promo > 0 ? Colors.green : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(12),
               Row(
                 children: [
                   const Text(
                     "Total:",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-
-                  /// Edit the style of the text
                   const Spacer(),
                   Text(
-                    "\$${Random().nextInt(100)}",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    "\$${(shippingFee + itemsPrice) - promo}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: promo > 0 ? Colors.green : Colors.black),
                   ),
-
-                  /// replace this with the correct amount
                 ],
               ),
               Divider(
                 thickness: 1.5,
                 height: 1,
               ),
-              Gap(19),
+              const Gap(19),
               Row(
                 children: [
                   Expanded(
-                    child: const TextField(
+                    child: TextField(
+
+                        /// When the user tap outside you should unfocused the text field
+                        enabled: isNotValidPromo,
+                        controller: promoController,
                         decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Promo Code',
-                    )),
+                          border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Theme.of(context).primaryColor)),
+
+                          /// This give us the border around the text field
+                          labelText: 'Promo Code',
+                          errorText: errorMessage,
+                        )),
                   ),
                   const Spacer(),
                   InkWell(
+                    onTap: () {
+                      addPromo(promoController.text.trim());
+                    },
                     child: Text(
-                      "Apply",
+                      isNotValidPromo ? "Apply" : "Remove",
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 16),
                     ),
-                    onTap: () {},
                   ),
                 ],
               ),
-              Gap(19),
+              const Gap(19),
               const Row(
                 children: [
                   Icon(Icons.location_on_outlined),
@@ -125,9 +185,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                 9,
               ),
               AddressWithOrder(),
-              Gap(26),
+              const Gap(26),
               PaymentMethod(),
-              Gap(19),
+              const Gap(19),
               ElevatedButton(
                 onPressed: () {},
                 style: ElevatedButton.styleFrom(
