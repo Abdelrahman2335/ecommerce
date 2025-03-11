@@ -6,6 +6,8 @@ import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/screens/login_setup/profile_screen.dart';
+import 'package:ecommerce/screens/place_order/cart_screen.dart';
+import 'package:ecommerce/screens/place_order/check_out.dart';
 import 'package:ecommerce/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,6 +63,8 @@ class MyApp extends StatelessWidget {
         '/profile': (context) => const ProfileScreen(),
         '/signup': (context) => const SignUp(),
         '/forgot': (context) => const ForgotPassword(),
+        '/checkout': (context) => const CheckOutScreen(),
+        '/cart': (context) => const CartScreen(),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,

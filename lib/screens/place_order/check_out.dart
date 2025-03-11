@@ -70,6 +70,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         .fold(0, (previousValue, element) => previousValue + element);
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.pushReplacementNamed(context, "/cart");
+        }, icon: Icon(Icons.arrow_back)),
         title: Text(
           "Check Out",
           style: Theme.of(context).textTheme.labelMedium,

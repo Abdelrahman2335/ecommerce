@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../models/product_model.dart';
-import 'check_out.dart';
 import '../items/item_details.dart';
 
 class CartScreen extends StatefulWidget {
@@ -196,11 +195,7 @@ class _CartScreenState extends State<CartScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: CustomButton(
-                              pressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CheckOutScreen()));
-                              },
+                              pressed: () {Navigator.pushNamed(context, "/checkout");},
                               text: "Check Out",
                             ),
                           ),

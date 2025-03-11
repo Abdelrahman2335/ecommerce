@@ -37,21 +37,25 @@ class _ItemDetailsState extends State<ItemDetails> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back),
         ),
         actions: [
           Badge(
-            largeSize: 24,
+            largeSize: 10,
             label: Text(cartList.totalQuantity.toString()),
             backgroundColor: Theme.of(context).colorScheme.primary,
-            alignment: Alignment.topCenter,
+            alignment: Alignment.lerp(Alignment(0, -0.7), Alignment(0, 0), 0),
             child: Padding(
-              padding: const EdgeInsets.only(right: 16.0, top: 8),
-              child: Icon(
-                Icons.shopping_cart_outlined,
-                color: Theme.of(context).colorScheme.secondary,
-                size: 26,
-              ),
+              padding: const EdgeInsets.only(right: 10.0, bottom: 5),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/cart");
+                  },
+                  icon: (Icon(
+                    Icons.shopping_cart_outlined,
+                    color: Theme.of(context).colorScheme.secondary,
+                    size: 26,
+                  ))),
             ),
           )
         ],
@@ -148,7 +152,16 @@ class _ItemDetailsState extends State<ItemDetails> {
                     Padding(
                       padding: const EdgeInsets.all(5),
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (cartList.productIds
+                              .contains(widget.itemData!.id)) {
+                            Navigator.pushNamed(context, "/checkout");
+                            return;
+                          }
+
+                          cartList.addToCart(widget.itemData!).then((value) =>
+                              Navigator.pushReplacementNamed(context, "/checkout"));
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).primaryColor,
                             shape: RoundedRectangleBorder(
@@ -162,50 +175,56 @@ class _ItemDetailsState extends State<ItemDetails> {
                     Padding(
                       padding: const EdgeInsets.all(5),
                       child: isInCart
-                          ? cartList.isLoading
-                              ? Container(
-                        padding: EdgeInsets.only(left: 14),
-                                  child: LoadingAnimationWidget.progressiveDots(
-                                      color:
-                                          Theme.of(context).colorScheme.primary,
-                                      size: 40),
-                                )
-                              : Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    IconButton(
-                                        onPressed: () async {
-                                          await cartList.removeFromCart(
-                                              widget.itemData!, false);
-                                        },
-                                        icon: Icon(
-                                          Icons.remove_circle_outline,
-                                          color: Theme.of(context)
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                IconButton(
+                                    onPressed: cartList.isLoading
+                                        ? null
+                                        : () async {
+                                            await cartList.removeFromCart(
+                                                widget.itemData!, false);
+                                          },
+                                    icon: Icon(
+                                      Icons.remove_circle_outline,
+                                      color: cartList.isLoading
+                                          ? Colors.blueGrey
+                                          : Theme.of(context)
                                               .colorScheme
                                               .secondary,
-                                          size: 29,
-                                        )),
-                                    Text(
-                                      itemCount.toString(),
-                                      style: TextStyle(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .primary),
-                                    ),
-                                    IconButton(
-                                        onPressed: () {
-                                          cartList.addToCart(widget.itemData!);
-                                        },
-                                        icon: Icon(
-                                          Icons.add_circle_outline,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                          size: 29,
-                                        )),
-                                  ],
-                                )
+                                      size: 29,
+                                    )),
+                                cartList.isLoading
+                                    ?  SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator(strokeWidth: 3,))
+                                    :
+                                Text(
+                                  itemCount.toString(),
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                                ),
+                                IconButton(
+                                    onPressed: cartList.isLoading
+                                        ? null
+                                        : () {
+                                            cartList
+                                                .addToCart(widget.itemData!);
+                                          },
+                                    icon: Icon(
+                                      Icons.add_circle_outline,
+                                      color:cartList.isLoading
+                                          ? Colors.blueGrey
+                                          :  Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      size: 29,
+                                    )),
+                              ],
+                            )
                           : ElevatedButton(
                               onPressed: () {
                                 cartList.addToCart(widget.itemData!);
