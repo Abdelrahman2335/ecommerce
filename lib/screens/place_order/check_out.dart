@@ -63,14 +63,14 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     CartProvider cartProvider =
         Provider.of<CartProvider>(context, listen: false);
 
-    /// Here we can use to two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
+    /// Here we can use two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
     /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
       
     int itemsPrice = 0;
     for (var cartItem in cartProvider.items) {
   // Find the corresponding product
   var product = cartProvider.fetchedItems.firstWhere(
-    (prod) => prod. itemId== cartItem.id,
+    (prod) => prod.itemId== cartItem.id,
      // Avoids crash if no match is found
   );
 
@@ -188,16 +188,16 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               const Gap(19),
               const Row(
                 children: [
-                  Icon(Icons.location_on_outlined),
-                  Text("Delivery Address"),
+                  Icon(Icons.location_on_outlined,color: Colors.blueAccent,),
+                  Text("Delivery Address",style: TextStyle(fontWeight: FontWeight.bold),),
                 ],
               ),
               const Gap(
                 9,
               ),
-              AddressWithOrder(),
+             const AddressWithOrder(),
               const Gap(26),
-              PaymentMethod(),
+              const PaymentMethod(),
               const Gap(19),
               ElevatedButton(
                 onPressed: () {},

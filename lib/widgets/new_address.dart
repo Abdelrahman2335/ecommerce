@@ -1,16 +1,31 @@
 import 'package:ecommerce/data/cities.dart';
+import 'package:ecommerce/models/address_model.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class NewAddress extends StatelessWidget {
-  final TextEditingController addressCon;
-  final TextEditingController landCon;
+class NewAddress extends StatefulWidget {
+  const NewAddress({super.key, required this.addAddress});
 
-  const NewAddress(
-      {super.key, required this.addressCon, required this.landCon});
+  final void Function(AddressModel address) addAddress;
+
+  @override
+  State<NewAddress> createState() => _NewAddressState();
+}
+
+class _NewAddressState extends State<NewAddress> {
+  TextEditingController areaCon = TextEditingController();
+  TextEditingController streetCon = TextEditingController();
+  String selectedCity = egyptCities[0];
+
+  @override
+  dispose() {
+    areaCon.dispose();
+    streetCon.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    String selectedCity = egyptCities[0];
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -22,15 +37,15 @@ class NewAddress extends StatelessWidget {
                 child: TextFormField(
                   maxLines: 1,
                   maxLength: 50,
-                  controller: addressCon,
+                  controller: areaCon,
                   decoration: const InputDecoration(
-                    hintText: "Address",
+                    hintText: "Area",
                     contentPadding: EdgeInsets.all(9),
                   ),
                 ),
               ),
-              const SizedBox(
-                width: 6,
+              const Gap(
+                6,
               ),
               Expanded(
                 child: DropdownButtonFormField(
@@ -53,24 +68,33 @@ class NewAddress extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(
-            height: 19,
+          const Gap(
+             19,
           ),
           TextFormField(
             maxLines: 1,
-            controller: landCon,
+            controller: streetCon,
             decoration: const InputDecoration(
-              hintText: "More Details",
-              contentPadding: EdgeInsets.all(9),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
+              hintText: "Street",
+              contentPadding: EdgeInsets.all(14),
             ),
           ),
-          const SizedBox(
-            height: 26,
+          const Gap(
+             26,
           ),
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  widget.addAddress(AddressModel(
+                      city: selectedCity,
+                      area: areaCon.text,
+                      street: streetCon.text));
+                  Navigator.pop(context);
+                },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).primaryColor),
                 child: const Text(
@@ -78,13 +102,13 @@ class NewAddress extends StatelessWidget {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              const SizedBox(
-                width: 14,
+              const Gap(
+               14,
               ),
               OutlinedButton(
                 onPressed: () {
-                  addressCon.clear();
-                  landCon.clear();
+                  areaCon.clear();
+                  streetCon.clear();
                   Navigator.pop(context);
                 },
                 style: OutlinedButton.styleFrom(

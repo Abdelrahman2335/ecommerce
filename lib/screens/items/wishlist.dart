@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -20,9 +19,11 @@ class _WishlistState extends State<Wishlist> {
     WishListProvider wishedItems = Provider.of<WishListProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: SvgPicture.asset("assets/align-left.svg"),
+        leading:IconButton(
+          onPressed: () {
+            Navigator.pushNamed(context, "/profile");
+          },
+          icon: Icon(Icons.person_outlined),
         ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,

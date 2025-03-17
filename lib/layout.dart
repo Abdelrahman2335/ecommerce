@@ -2,7 +2,6 @@ import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/items/home_screen.dart';
-import 'package:ecommerce/screens/login_setup/profile_screen.dart';
 import 'package:ecommerce/screens/items/wishlist.dart';
 import 'package:flutter/material.dart';
 
@@ -20,29 +19,25 @@ class _LayOutState extends State<LayOut> {
     const TabItem(icon: Icons.home_outlined, title: 'Home'),
     const TabItem(icon: Icons.favorite_border, title: 'Wishlist'),
     const TabItem(icon: Icons.shopping_cart_outlined, title: 'Wishlist'),
-    const TabItem(icon: Icons.settings_outlined, title: 'Settings'),
   ];
 
   final List<Widget> curvedIcons = [
     const Icon(
-      Icons.home_outlined,
+      Icons.home_outlined,size: 26,
     ),
     const Icon(
-      Icons.favorite_border,
+      Icons.favorite_border,size: 26,
     ),
     const Icon(
-      Icons.shopping_cart_outlined,
+      Icons.shopping_cart_outlined,size: 26,
     ),
-    const Icon(
-      Icons.settings_outlined,
-    ),
+
   ];
 
   final List<Widget> selectedPage = [
     const HomeScreen(),
     const Wishlist(),
     const CartScreen(),
-    const ProfileScreen(),
   ];
 
   @override

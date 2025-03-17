@@ -1,8 +1,8 @@
 import 'package:ecommerce/data/category_data.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -20,14 +20,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     bool isLoading = Provider.of<ItemProvider>(context).receivedData.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: SvgPicture.asset("assets/align-left.svg"),
-        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -46,6 +43,68 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      drawer: Drawer(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          child: ListView(
+            children: [
+              UserAccountsDrawerHeader(
+                currentAccountPictureSize: Size.square(59),
+                accountName: Text("Abdelrahman"),
+                accountEmail: Text(user!.email.toString(),style: TextStyle(fontSize: 12),),
+                currentAccountPicture: const CircleAvatar(
+                  child: Opacity(
+                      opacity: 0.5,
+                      child: Icon(
+                        Icons.person,
+                        size: 29,
+                      )),
+                ),
+              ),
+              ListTile(
+                textColor: Theme.of(context).colorScheme.secondary,
+                iconColor: Theme.of(context).colorScheme.secondary,
+                titleTextStyle: TextStyle(fontSize: 17),
+                contentPadding: const EdgeInsets.all(19),
+                title: const Text("Profile"),
+                leading: const Icon(Icons.person),
+                onTap: () {
+                  Navigator.of(context).pushNamed("/profile");
+                },
+                trailing: Icon(Icons.arrow_forward_outlined),
+              ),
+              Divider(
+                height: 2,
+              ),
+              ListTile(
+                textColor: Theme.of(context).colorScheme.secondary,
+                iconColor: Theme.of(context).colorScheme.secondary,
+                titleTextStyle: TextStyle(fontSize: 17),
+                contentPadding: const EdgeInsets.all(19),
+                title: const Text("Orders"),
+                leading: const Icon(Icons.gif_box_rounded),
+                trailing: Icon(Icons.arrow_forward_outlined),
+                onTap: () {
+                  // Navigator.of(context).pushNamed("/cart");
+                },
+              ),
+              Divider(
+                height: 2,
+              ),
+              ListTile(
+                textColor: Theme.of(context).colorScheme.secondary,
+                iconColor: Theme.of(context).colorScheme.secondary,
+                titleTextStyle: TextStyle(fontSize: 17),
+                contentPadding: const EdgeInsets.all(19),
+                title: const Text("Settings"),
+                leading: const Icon(Icons.settings),
+                trailing: Icon(Icons.arrow_forward_outlined),
+                onTap: () {
+                  // Navigator.of(context).pushNamed("/settings");
+                },
+              ),
+
+            ],
+          )),
 
       /// [Skeletonizer] is a place holder while the data is loading.
       body: Skeletonizer(
@@ -56,16 +115,14 @@ class _HomeScreenState extends State<HomeScreen> {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
-                  children: AnimateList(
-                    effects: const[
-                      FadeEffect(
-                        duration: Duration(seconds: 1),
-                      ),],
-                      children: [
+                  children: AnimateList(effects: const [
+                    FadeEffect(
+                      duration: Duration(seconds: 1),
+                    ),
+                  ], children: [
                     Padding(
                       padding: const EdgeInsets.all(6),
                       child: Row(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
+import '../../models/address_model.dart';
 import '../../provider/auth_provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,13 +16,22 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final firebase = FirebaseAuth.instance;
   bool hidePass = true;
   TextEditingController userCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
   TextEditingController rePassCon = TextEditingController();
   TextEditingController addressCon = TextEditingController();
   TextEditingController landCon = TextEditingController();
-  final firebase = FirebaseAuth.instance;
+  AddressModel address =
+      AddressModel(city: 'City', area: 'Area', street: 'Street');
+
+  void getAddress(AddressModel newAddress) {
+    /// Change the setState later
+    setState(() {
+      address = newAddress;
+    });
+  }
 
   @override
   void dispose() {
@@ -32,26 +42,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     landCon.dispose();
 
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     // GlobalKey formKey = GlobalKey();
     return Scaffold(
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.only(top: 14),
           child:
-          Text("Profile", style: Theme.of(context).textTheme.labelMedium),
+              Text("Profile", style: Theme.of(context).textTheme.labelMedium),
         ),
         centerTitle: true,
-        automaticallyImplyLeading: false,
         actions: [
           IconButton(
             onPressed: () {
-             Provider.of<LoginProvider>(context, listen: false).signOut();
+              Provider.of<LoginProvider>(context, listen: false).signOut();
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),
@@ -144,6 +151,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5)),
                     context: context,
+                    sheetAnimationStyle: AnimationStyle(
+                      curve: Curves.easeInOut,
+                      reverseDuration: Duration(milliseconds: 600),
+                      duration: const Duration(milliseconds: 600),
+                    ),
 
                     /// Note: The ctx is the context for the BottomSheet, but context is refer to the main context.
                     builder: (ctx) {
@@ -151,8 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           height: double.infinity,
                           width: double.infinity,
                           child: NewAddress(
-                            addressCon: addressCon,
-                            landCon: landCon,
+                            addAddress: getAddress,
                           ));
                     },
                   );
