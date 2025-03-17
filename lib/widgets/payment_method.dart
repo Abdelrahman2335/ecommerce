@@ -1,10 +1,23 @@
-
+import 'package:ecommerce/widgets/payment_bottomSheet.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 
-class PaymentMethod extends StatelessWidget {
+class PaymentMethod extends StatefulWidget {
   const PaymentMethod({
     super.key,
   });
+
+  @override
+  State<PaymentMethod> createState() => _PaymentMethodState();
+}
+
+class _PaymentMethodState extends State<PaymentMethod> {
+  String selectedMethod = "Cash On Delivery";
+  void paymentMethod(String method) {
+    setState(() {
+      selectedMethod = method;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +29,7 @@ class PaymentMethod extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           boxShadow: [
             BoxShadow(
-              color: const Color.fromARGB(255, 129, 129, 129)
-                  .withAlpha(140),
+              color: const Color.fromARGB(255, 129, 129, 129).withAlpha(140),
               spreadRadius: 2,
               blurRadius: 5,
               offset: const Offset(-2, 3),
@@ -36,10 +48,13 @@ class PaymentMethod extends StatelessWidget {
             Positioned(
               bottom: 11,
               left: 3,
-              child: const Text(
-                "Cash On Delivery",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
+              child: Opacity(
+                opacity: 0.5,
+                child: Text(
+                  selectedMethod,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
               ),
             ),
             Positioned(
@@ -47,7 +62,25 @@ class PaymentMethod extends StatelessWidget {
               right: -6,
               child: IconButton(
                 iconSize: 19,
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5)),
+                    context: context,
+                    sheetAnimationStyle: AnimationStyle(
+                      curve: Curves.easeInOut,
+                      reverseDuration: Duration(milliseconds: 600),
+                      duration: const Duration(milliseconds: 600),
+                    ),
+
+                    /// Note: The ctx is the context for the BottomSheet, but context is refer to the main context.
+                    builder: (ctx) {
+                      return PaymentBottomSheet(
+                        paymentMethod: paymentMethod,
+                      );
+                    },
+                  );
+                },
                 icon: const Icon(Icons.edit),
               ),
             ),
