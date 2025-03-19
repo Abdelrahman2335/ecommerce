@@ -1,15 +1,13 @@
+import 'package:ecommerce/provider/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class PaymentBottomSheet extends StatefulWidget {
   const PaymentBottomSheet({
     super.key,
-    required this.paymentMethod,
   });
 
-  final Function(
-    String selectedPayment,
-  ) paymentMethod;
 
   @override
   State<PaymentBottomSheet> createState() => _PaymentBottomSheetState();
@@ -18,11 +16,18 @@ class PaymentBottomSheet extends StatefulWidget {
 class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
   @override
   Widget build(BuildContext context) {
+    PaymentProvider paymentProvider = Provider.of<PaymentProvider>(context);
     return SizedBox(
       height: double.infinity,
       width: double.infinity,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+
         children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Text("Choose a Payment Method",style: TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.primary),),
+          ),
           ListTile(
             contentPadding: const EdgeInsets.only(left: 26, right: 30),
             title: Text(
@@ -33,9 +38,8 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
               color: Colors.green,
             ),
             onTap: () {
-              widget.paymentMethod(
-                "Cash On Delivery",
-              );
+              paymentProvider.payByCard("Cash On Delivery");
+              Navigator.pop(context);
             },
           ),
           Divider(
@@ -45,33 +49,21 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
             contentPadding: const EdgeInsets.only(left: 26, right: 30),
             selectedColor: Theme.of(context).colorScheme.primary.withAlpha(5),
             title: const Text(
-              "Pay With Card",
+              "Pay By Card",
             ),
             trailing: Icon(
               Icons.credit_card,
               color: Theme.of(context).colorScheme.secondary,
             ),
             onTap: () {
-              widget.paymentMethod(
-                "Pay With Card",
-              );
+              paymentProvider.payByCard("Pay By Card");
+              Navigator.pop(context);
             },
           ),
           Divider(
             height: 2,
           ),
           Gap(36),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary),
-            child: Text(
-              "Confirm Payment Method",
-              style: TextStyle(color: Colors.white),
-            ),
-          )
         ],
       ),
     );

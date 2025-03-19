@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:ecommerce/provider/cart_provider.dart';
+import 'package:ecommerce/screens/payment/payment_configuration.dart';
 import 'package:ecommerce/widgets/address_with_order.dart';
-import 'package:ecommerce/widgets/payment_method.dart';
+import 'package:ecommerce/screens/payment/payment_method.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+
+import '../../provider/payment_provider.dart';
 
 class CheckOutScreen extends StatefulWidget {
   const CheckOutScreen({super.key});
@@ -15,6 +18,7 @@ class CheckOutScreen extends StatefulWidget {
 }
 
 class _CheckOutScreenState extends State<CheckOutScreen> {
+
   Map promoCodes = {
     "FLAT10": 10,
     "FLAT20": 20,
@@ -63,9 +67,14 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     CartProvider cartProvider =
         Provider.of<CartProvider>(context, listen: false);
 
+    PaymentProvider paymentProvider =
+    Provider.of<PaymentProvider>(context, listen: true);
+    PaymentConfiguration paymentConfiguration =
+    Provider.of<PaymentConfiguration>(context, listen: true);
+
     /// Here we can use two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
     /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
-      
+
     int itemsPrice = 0;
     for (var cartItem in cartProvider.items) {
   // Find the corresponding product
@@ -87,7 +96,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
+      body: paymentConfiguration.isLoading? const Center(child: CircularProgressIndicator()): SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(18.0),
           child: Column(
@@ -200,7 +209,20 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
               const PaymentMethod(),
               const Gap(19),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if(paymentProvider.paymentMethod == "Cash On Delivery"){
+                    log("Cash on Delivery");
+                  }
+                  else{
+                    log("Online Payment");
+                    if(paymentConfiguration.isLoading){
+
+                    }else{
+                    paymentConfiguration.makePayment(shippingFee + itemsPrice - promo);
+
+                    }
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).primaryColor,
                   shape: RoundedRectangleBorder(

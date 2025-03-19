@@ -1,6 +1,7 @@
-import 'package:ecommerce/widgets/payment_bottomSheet.dart';
+import 'package:ecommerce/provider/payment_provider.dart';
+import 'package:ecommerce/screens/payment/payment_bottomSheet.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class PaymentMethod extends StatefulWidget {
   const PaymentMethod({
@@ -12,15 +13,10 @@ class PaymentMethod extends StatefulWidget {
 }
 
 class _PaymentMethodState extends State<PaymentMethod> {
-  String selectedMethod = "Cash On Delivery";
-  void paymentMethod(String method) {
-    setState(() {
-      selectedMethod = method;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    PaymentProvider paymentProvider =
+        Provider.of<PaymentProvider>(context, listen: true);
     return Container(
       height: MediaQuery.of(context).size.height * 0.10,
       width: MediaQuery.of(context).size.width,
@@ -47,11 +43,11 @@ class _PaymentMethodState extends State<PaymentMethod> {
             ),
             Positioned(
               bottom: 11,
-              left: 3,
+              left: 6,
               child: Opacity(
                 opacity: 0.5,
                 child: Text(
-                  selectedMethod,
+                  paymentProvider.paymentMethod,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
@@ -75,9 +71,7 @@ class _PaymentMethodState extends State<PaymentMethod> {
 
                     /// Note: The ctx is the context for the BottomSheet, but context is refer to the main context.
                     builder: (ctx) {
-                      return PaymentBottomSheet(
-                        paymentMethod: paymentMethod,
-                      );
+                      return PaymentBottomSheet();
                     },
                   );
                 },

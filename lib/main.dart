@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
+import 'package:ecommerce/provider/payment_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/screens/login_setup/profile_screen.dart';
+import 'package:ecommerce/screens/payment/payment_configuration.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/place_order/check_out.dart';
 import 'package:ecommerce/theme.dart';
@@ -38,7 +40,9 @@ void main() async {
         create: (_) => LoginProvider(),
       ),
       ChangeNotifierProvider(create: (_) => WishListProvider()),
-      ChangeNotifierProvider(create: (_)=> CartProvider()),
+      ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => PaymentProvider()),
+      ChangeNotifierProvider(create: (_) => PaymentConfiguration()),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
