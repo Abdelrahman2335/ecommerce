@@ -142,7 +142,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         onPressed: (){
                          var response = Provider.of<LoginProvider>(context, listen: false).signInWithGoogle();
-                         response.then((_) => {navigatorKey.currentState?.pushReplacementNamed('/layout')});
+                         // response.then((value) {
+                         //   if(value != null){
+                         //
+                         //   return {navigatorKey.currentState?.pushReplacementNamed('/layout')};
+                         //   }
+                         // });
                         },
                         child: const Image(
                           image: AssetImage(

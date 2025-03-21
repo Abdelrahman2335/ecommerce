@@ -1,3 +1,4 @@
+import 'dart:developer';
 
 import 'package:ecommerce/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,14 @@ class LoginProvider extends ChangeNotifier {
 
   bool isLoading = false;
 
+  /// will be used to update the UI
+
+  bool isGoogleAccount =
+      FirebaseAuth.instance.currentUser?.providerData[0].providerId ==
+          'google.com';
+
+  /// Will check if the user sign in with google
+
   /// To use [Selector] you have to create getter.
 
   get loading => isLoading;
@@ -20,17 +29,20 @@ class LoginProvider extends ChangeNotifier {
       GlobalKey<FormState> formKey, String passCon, String userCon) async {
     final valid = formKey.currentState!.validate();
     isLoading = true;
-    notifyListeners();
 
     try {
       if (!valid) {
         isLoading = false;
-        notifyListeners();
 
         return;
       } else {
-        final UserCredential userCredential = await firebase
-            .signInWithEmailAndPassword(email: userCon, password: passCon);
+        await firebase
+            .signInWithEmailAndPassword(email: userCon, password: passCon)
+            .then((value) {
+          return value.user != null
+              ? navigatorKey.currentState?.pushReplacementNamed('/layout')
+              : null;
+        });
       }
     } on FirebaseAuthException catch (error) {
       /// Important to know that we are using Scaffold global Key from the main.dart
@@ -43,31 +55,42 @@ class LoginProvider extends ChangeNotifier {
       );
     } finally {
       isLoading = false;
-      notifyListeners();
     }
+
     formKey.currentState!.save();
+    notifyListeners();
   }
 
   Future signInWithGoogle() async {
     isLoading = true;
     notifyListeners();
 
+    /// to update the UI you have to use [notifyListeners()] even if you are using in many times in the function.
+    /// (this is may lead to unnecessary rebuild)
+
     /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
       isLoading = false;
       notifyListeners();
+
+      /// to update the UI you have to use [notifyListeners()] even if you are using in many times in the function.
+      /// (this is may lead to unnecessary rebuild)
+
       return;
     } else {
       try {
         isLoading = true;
-        notifyListeners();
         GoogleSignInAuthentication googleAuth =
             await googleSignInAccount.authentication;
 
         AuthCredential authCredential = GoogleAuthProvider.credential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-        firebase.signInWithCredential(authCredential);
+        firebase.signInWithCredential(authCredential).then((value) {
+        return  value.user != null
+              ? navigatorKey.currentState?.pushReplacementNamed('/layout')
+              : null;
+        });
       } on FirebaseAuthException catch (error) {
         scaffoldMessengerKey.currentState?.clearSnackBars();
         scaffoldMessengerKey.currentState?.showSnackBar(
@@ -77,30 +100,45 @@ class LoginProvider extends ChangeNotifier {
         );
       } finally {
         isLoading = false;
-        notifyListeners();
       }
     }
+    notifyListeners();
   }
 
   void signOut() async {
+    isLoading = true;
     try {
-      await firebase.signOut();
-      await google.signOut();
+      if (isGoogleAccount) {
+        log("Google Account");
 
-        if (firebase.currentUser == null) {
-          navigatorKey.currentState?.pushReplacementNamed('/login');
-        } else {
-          scaffoldMessengerKey.currentState?.clearSnackBars();
-          scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-            content: Text("Couldn't sign out please try again."),
-          ));
-        }
+        /// Forces account chooser next time, This means that if the user sign out it will be forced to sign in again.
+        await google.signOut();
+        await firebase.signOut();
+        log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
+            "log: Null");
+      } else {
+        await firebase.signOut();
+        log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
+            "log: Null");
+      }
+
+      if (firebase.currentUser == null) {
+        navigatorKey.currentState?.pushReplacementNamed('/login');
+      } else {
+        scaffoldMessengerKey.currentState?.clearSnackBars();
+        scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+          content: Text("Couldn't sign out please try again."),
+        ));
+      }
     } catch (error) {
       scaffoldMessengerKey.currentState!.showSnackBar(
         SnackBar(
           content: Text("Couldn't sign out please try again. $error"),
         ),
       );
+    } finally {
+      isLoading = false;
     }
+    notifyListeners();
   }
 }

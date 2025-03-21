@@ -13,7 +13,7 @@ class WishListProvider extends ChangeNotifier {
   final wishListRef = FirebaseFirestore.instance.collection("wishList");
   Map<String, dynamic>? wishData;
   final List<Product> items = [];
-  late List productIds;
+   List productIds = [];
   bool isLoading = false;
   bool noItemsInWishList = true;
 

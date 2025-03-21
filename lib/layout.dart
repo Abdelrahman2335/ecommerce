@@ -3,6 +3,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/items/home_screen.dart';
 import 'package:ecommerce/screens/items/wishlist.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LayOut extends StatefulWidget {
@@ -13,6 +14,9 @@ class LayOut extends StatefulWidget {
 }
 
 class _LayOutState extends State<LayOut> {
+
+
+
   int currentIndex = 0;
   final double iconSize = 30;
   final List items = [

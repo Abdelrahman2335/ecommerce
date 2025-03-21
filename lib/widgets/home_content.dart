@@ -1,4 +1,3 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/models/product_model.dart';
@@ -23,6 +22,7 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
   int itemCount = 0;
+
   @override
   Widget build(BuildContext context) {
     ItemProvider providerData =
@@ -52,19 +52,22 @@ class _HomeContentState extends State<HomeContent> {
         return Consumer<ItemProvider>(
           builder: (BuildContext context, value, Widget? child) {
             final Product data = value.receivedData[index];
-            bool isWished = wishedItems.productIds.contains((data.id));
-            bool isInCart = inCartProvider.productIds.contains((data.id));
-            if(isInCart) {
-
-               itemCount = inCartProvider.fetchedItems.where((element)=> element.itemId == data.id).first.quantity;
-            }else {
-              itemCount = 0;
-            }
 
             /// this boolean is used to check if the item is in the wishlist
 
+            bool isWished = wishedItems.productIds.contains((data.id));
 
             /// this boolean is used to check if the item is in the cart
+
+            bool isInCart = inCartProvider.productIds.contains((data.id));
+            if (isInCart) {
+              itemCount = inCartProvider.fetchedItems
+                  .where((element) => element.itemId == data.id)
+                  .first
+                  .quantity;
+            } else {
+              itemCount = 0;
+            }
 
             return Animate(
               effects: const [
@@ -75,7 +78,8 @@ class _HomeContentState extends State<HomeContent> {
               child: Container(
                 margin: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16), color: Colors.white),
+                    borderRadius: BorderRadius.circular(16),
+                    color: Colors.white),
                 clipBehavior: Clip.antiAlias,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(17),
@@ -97,7 +101,8 @@ class _HomeContentState extends State<HomeContent> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CachedNetworkImage(
-                          placeholderFadeInDuration: Duration(milliseconds: 150),
+                          placeholderFadeInDuration:
+                              Duration(milliseconds: 150),
 
                           height: 200,
                           width: double.infinity,
@@ -106,7 +111,8 @@ class _HomeContentState extends State<HomeContent> {
                           memCacheWidth:
                               (MediaQuery.of(context).size.width * 0.8).round(),
                           memCacheHeight:
-                              (MediaQuery.of(context).size.height * 0.4).round(),
+                              (MediaQuery.of(context).size.height * 0.4)
+                                  .round(),
 
                           imageUrl: "${data.imageUrl[0]}",
 
@@ -143,59 +149,60 @@ class _HomeContentState extends State<HomeContent> {
                               /// the all buttons will load at once even if we didn't press it
 
                               /// Edit this later because it take some time to load
-                              Row(children: [
-                                isInCart
-                                    ? IconButton(
-                                    onPressed: () async {
-                                      await inCartProvider.removeFromCart(
-                                          data, false);
-                                    },
-                                    icon: Icon(
-                                      Icons.remove_circle_outline,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    ))
-                                    : IconButton(
-                                    onPressed: () async {
-                                      await wishedItems.addWish(data);
-                                    },
-                                    icon: isWished
-                                        ? Icon(Icons.favorite)
-                                        : Icon(Icons.favorite_border),
-                                    color: isWished
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(context)
-                                        .colorScheme
-                                        .secondary),
-                                isInCart
-                                    ? Text(
-                                  itemCount.toString(),
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                )
-                                    : Container(),
-                                IconButton(
-                                    onPressed: () async {
-
-                                      await inCartProvider.addToCart(data);
-
-                                    },
-                                    icon: isInCart
-                                        ? Icon(
-                                      Icons.add_circle_outline,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    )
-                                        : Icon(
-                                      Icons.shopping_cart_outlined,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    )),],),
+                              Row(
+                                children: [
+                                  isInCart
+                                      ? IconButton(
+                                          onPressed: () async {
+                                            await inCartProvider.removeFromCart(
+                                                data, false);
+                                          },
+                                          icon: Icon(
+                                            Icons.remove_circle_outline,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                          ))
+                                      : IconButton(
+                                          onPressed: () async {
+                                            await wishedItems.addWish(data);
+                                          },
+                                          icon: isWished
+                                              ? Icon(Icons.favorite)
+                                              : Icon(Icons.favorite_border),
+                                          color: isWished
+                                              ? Theme.of(context).primaryColor
+                                              : Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary),
+                                  isInCart
+                                      ? Text(
+                                          itemCount.toString(),
+                                          style: TextStyle(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary),
+                                        )
+                                      : Container(),
+                                  IconButton(
+                                      onPressed: () async {
+                                        await inCartProvider.addToCart(data);
+                                      },
+                                      icon: isInCart
+                                          ? Icon(
+                                              Icons.add_circle_outline,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                            )
+                                          : Icon(
+                                              Icons.shopping_cart_outlined,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                            )),
+                                ],
+                              ),
                             ],
                           ),
                         ),

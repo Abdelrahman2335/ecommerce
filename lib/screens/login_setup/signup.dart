@@ -1,5 +1,6 @@
-
+import 'package:ecommerce/main.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
+import 'package:ecommerce/screens/login_setup/user_info.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-
 import '../../provider/signup_provider.dart';
+
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
 
@@ -100,25 +101,28 @@ class _SignUpState extends State<SignUp> {
                     builder: (context, isLoading, child) {
                       return !isLoading
                           ? CustomButton(
-                        pressed: () {
-                          Provider.of<SignUpProvider>(context,
-                              listen: false)
-                              .createUser(formKey, passCon.text,
-                              userCon.text, rePassCon.text).then((value) {
-                            if (firebase.currentUser != null) {
-                              Navigator.of(context).pushReplacementNamed('/layout');
-                            }else{
-                              return;
-                            }
-                          });
-                        },
-                        text: "Login",
-                      )
+                              pressed: () {
+                                navigatorKey.currentState!.push(
+                                    MaterialPageRoute(
+                                        builder: (context) => UserDetails()));
+                                // Provider.of<SignUpProvider>(context,
+                                //     listen: false)
+                                //     .createUser(formKey, passCon.text,
+                                //     userCon.text, rePassCon.text).then((value) {
+                                //   if (firebase.currentUser != null) {
+                                //     Navigator.of(context).pushReplacementNamed('/layout');
+                                //   }else{
+                                //     return;
+                                //   }
+                                // });
+                              },
+                              text: "Create Account",
+                            )
                           : Center(
-                        child: CircularProgressIndicator(
-                          color: theme.primaryColor,
-                        ),
-                      );
+                              child: CircularProgressIndicator(
+                                color: theme.primaryColor,
+                              ),
+                            );
                     }),
                 const Gap(46),
                 const Center(

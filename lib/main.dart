@@ -7,6 +7,7 @@ import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/screens/login_setup/profile_screen.dart';
+import 'package:ecommerce/screens/login_setup/user_info.dart';
 import 'package:ecommerce/screens/payment/payment_configuration.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/place_order/check_out.dart';
@@ -31,7 +32,9 @@ void main() async {
       name: 'e-commerce-2699c',
     );
     await Firebase.initializeApp();
-    runApp(MultiProvider(providers: [
+    runApp(
+      /// This widget is the root of your application.
+        MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => SignUpProvider()),
       ChangeNotifierProvider(
         create: (_) => ItemProvider(),
@@ -69,6 +72,7 @@ class MyApp extends StatelessWidget {
         '/forgot': (context) => const ForgotPassword(),
         '/checkout': (context) => const CheckOutScreen(),
         '/cart': (context) => const CartScreen(),
+        '/userInfo': (context) => const UserDetails(),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,
@@ -78,12 +82,12 @@ class MyApp extends StatelessWidget {
           builder: ((context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
-            }
-            if (snapshot.hasData) {
+            }  else if (snapshot.data != null && snapshot.hasData) {
               return const LayOut();
             } else {
               return const LoginScreen();
             }
+
           })),
     );
   }

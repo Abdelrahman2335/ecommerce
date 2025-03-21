@@ -1,4 +1,5 @@
 import 'package:ecommerce/data/category_data.dart';
+import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +19,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  User? user;
+  bool isLoading = true;
+
+
+  /// We can't add this boolean to the init state because of the context
+  /// this issue don't exist in Riverpod.
+  /// didChangeDependencies is the best choice here
+  @override
+  void didChangeDependencies() {
+    user = Provider.of<LoginProvider>(context).firebase.currentUser;
+    isLoading = Provider.of<ItemProvider>(context).receivedData.isEmpty;
+    super.didChangeDependencies();
+  }
   @override
   Widget build(BuildContext context) {
-    User? user = FirebaseAuth.instance.currentUser;
-    bool isLoading = Provider.of<ItemProvider>(context).receivedData.isEmpty;
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -49,8 +63,8 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               UserAccountsDrawerHeader(
                 currentAccountPictureSize: Size.square(59),
-                accountName: Text("Abdelrahman"),
-                accountEmail: Text(user!.email.toString(),style: TextStyle(fontSize: 12),),
+                accountName: Text(user?.displayName.toString()??"No Name",style: TextStyle(fontSize: 19),),
+                accountEmail: Text(user?.email.toString()??"No Email",style: TextStyle(fontSize: 12),),
                 currentAccountPicture: const CircleAvatar(
                   child: Opacity(
                       opacity: 0.5,

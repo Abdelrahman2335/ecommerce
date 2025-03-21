@@ -2,13 +2,14 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:ecommerce/screens/payment/payment_web_view.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
 import '../../main.dart';
 
 class PaymentConfiguration extends ChangeNotifier {
-  static String api_key =
-      "ZXlKaGJHY2lPaUpJVXpVeE1pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiR0Z6Y3lJNklrMWxjbU5vWVc1MElpd2ljSEp2Wm1sc1pWOXdheUk2TVRBek1qRXpNQ3dpYm1GdFpTSTZJakUzTkRJeU56WXhPVFF1T0RBME16WTNJbjAuUjg2bG5GMDN5WDRzbnc1dXBSLWJRc3BKOThnLW9UWWJPQThJTmtLU21QZWJsTHVHMjcyczk4NV81eHlQT09OaVplNGNYUzV1SkI0R2ZkMDFJZ2R6eEE=";
+  static String apiKey = FirebaseRemoteConfig.instance.getString("api_key");
+
   Dio dio = Dio();
   bool isLoading = false;
 
@@ -40,7 +41,7 @@ class PaymentConfiguration extends ChangeNotifier {
     try {
       final response =
           await dio.post("https://accept.paymob.com/api/auth/tokens", data: {
-        "api_key": api_key,
+        "api_key": apiKey,
       });
       return response.data["token"];
     } catch (error) {
