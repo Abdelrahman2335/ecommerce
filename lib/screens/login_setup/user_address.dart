@@ -1,30 +1,39 @@
-import 'package:ecommerce/main.dart';
+import 'package:ecommerce/models/address_model.dart';
 import 'package:ecommerce/provider/signup_provider.dart';
-import 'package:ecommerce/screens/login_setup/user_address.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-class UserDetails extends StatefulWidget {
-  const UserDetails({super.key, required this.email, required this.password});
+import '../../data/cities.dart';
+
+class UserAddress extends StatefulWidget {
+  const UserAddress({super.key,
+    required this.email,
+    required this.password,
+    required this.name,
+    required this.phone});
 
   final String email;
   final String password;
+  final String name;
+  final String phone;
 
   @override
-  State<UserDetails> createState() => _UserDetailsState();
+  State<UserAddress> createState() => _UserAddressState();
 }
 
-class _UserDetailsState extends State<UserDetails> {
+class _UserAddressState extends State<UserAddress> {
   /// This key manage the state of the form
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TextEditingController nameCon = TextEditingController();
-  TextEditingController phoneCon = TextEditingController();
+  TextEditingController areaCon = TextEditingController();
+  TextEditingController streetCon = TextEditingController();
+  String selectedCity = egyptCities[0];
 
   @override
   void dispose() {
-    nameCon.dispose();
-    phoneCon.dispose();
+    areaCon.dispose();
+    streetCon.dispose();
 
     super.dispose();
   }
@@ -35,26 +44,26 @@ class _UserDetailsState extends State<UserDetails> {
     return Scaffold(
       body: signUpProvider.isLoading
           ? const Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : Animate(
-              effects: [
-                FadeEffect(
-                  duration: Duration(milliseconds: 1000),
-                )
-              ],
-              child: Center(
-                child: Form(
-                  key: formKey,
-                  child: buildContainer(context, signUpProvider),
-                ),
-              ),
-            ),
+        effects: [
+          FadeEffect(
+            duration: Duration(milliseconds: 1000),
+          )
+        ],
+        child: Center(
+          child: Form(
+            key: formKey,
+            child: buildContainer(context, signUpProvider),
+          ),
+        ),
+      ),
     );
   }
 
-  Container buildContainer(
-      BuildContext context, SignUpProvider signUpProvider) {
+  Container buildContainer(BuildContext context,
+      SignUpProvider signUpProvider) {
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -68,61 +77,90 @@ class _UserDetailsState extends State<UserDetails> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
       ),
-      height: MediaQuery.of(context).size.height * 0.41,
-      width: MediaQuery.of(context).size.width * 0.90,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height * 0.70,
+      width: MediaQuery
+          .of(context)
+          .size
+          .width * 0.90,
       child: Padding(
         padding: const EdgeInsets.all(19.0),
         child: Column(
           children: [
             const Text(
-              "Personal Information",
+              "Address Information",
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
             Text(
               "Step ${signUpProvider.counter} of 2",
               style: TextStyle(fontSize: 13, color: Colors.grey),
             ),
+            Row(
+              children: [
+                Icon(Icons.location_pin),
+                Expanded(
+                  child: DropdownButtonFormField(
+                    items: [
+                      for (String city in egyptCities)
+                        DropdownMenuItem(
+                          value: city,
+                          child: FittedBox(
+                              child: Text(
+                                city,
+                                overflow: TextOverflow.ellipsis,
+                              )),
+                        ),
+                    ],
+                    value: selectedCity,
+                    onChanged: (value) {
+                      selectedCity = value!;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const Gap(18),
             SizedBox(
-              width: MediaQuery.of(context).size.width *
-                  0.85, // Adjust dynamically
-
+              width: 370,
               child: TextFormField(
-                /// Make the keyboard capitalize the first letter of each word
-                textCapitalization: TextCapitalization.words,
-                autocorrect: true,
-                controller: nameCon,
+                controller: areaCon,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please Enter Valid a Name";
+                  if (value == null || value
+                      .trim()
+                      .isEmpty) {
+                    return "Please Enter a valid area";
                   }
                   return null;
                 },
                 decoration: InputDecoration(
-                  hintText: "Full Name",
+                  hintText: "Enter you area name",
                   icon: Icon(
-                    Icons.person,
+                    Icons.map,
                     color: Colors.grey,
                     size: 24,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 14),
+            const Gap(18),
             SizedBox(
               width: 370,
               child: TextFormField(
-                keyboardType: TextInputType.phone,
-                controller: phoneCon,
+                controller: streetCon,
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please Enter a valid phone number";
+                  if (value == null || value
+                      .trim()
+                      .isEmpty) {
+                    return "Please Enter a valid street";
                   }
                   return null;
                 },
                 decoration: InputDecoration(
-                  hintText: "Phone Number",
+                  hintText: "Enter your street name",
                   icon: Icon(
-                    Icons.phone,
+                    Icons.streetview,
                     color: Colors.grey,
                     size: 24,
                   ),
@@ -137,23 +175,26 @@ class _UserDetailsState extends State<UserDetails> {
               children: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: Theme
+                          .of(context)
+                          .primaryColor,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12))),
                   onPressed: () {
+                    AddressModel address = AddressModel(
+                      area: areaCon.text,
+                      city: selectedCity,
+                      street: streetCon.text,
+                    );
                     final valid = formKey.currentState!.validate();
                     if (valid) {
-                      navigatorKey.currentState?.push(
-
-                        MaterialPageRoute(
-                          builder: (context) => UserAddress(
-                              email: widget.email,
-                              password: widget.password,
-                              name: nameCon.text,
-                              phone: phoneCon.text),
-                        ),
-                      );
+                      signUpProvider.createUser(
+                          name: widget.name,
+                          phone: widget.phone,
+                          email: widget.email,
+                          password: widget.password,
+                          address: address);
                     }
                   },
                   child: const Text(
@@ -162,13 +203,13 @@ class _UserDetailsState extends State<UserDetails> {
                 ),
               ],
             ),
-            Spacer(),
             Text("Progress ${signUpProvider.sliderValue.toStringAsFixed(0)}%"),
             SliderTheme(
               data: SliderTheme.of(context).copyWith(
                 thumbShape: SliderComponentShape.noThumb,
               ),
               child: Slider(
+
                 /// Making onChange null this will make the slider read only
                 value: signUpProvider.sliderValue,
                 onChanged: null,

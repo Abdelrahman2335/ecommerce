@@ -1,5 +1,8 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/models/address_model.dart';
+import 'package:ecommerce/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -10,9 +13,16 @@ class SignUpProvider extends ChangeNotifier {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final firebase = FirebaseAuth.instance;
 
+  double sliderValue = 0.0;
+
+  /// used when creating account
+  int counter = 1;
+
+  /// used when creating account
+
   bool isLoading = false;
 
-    get loading => isLoading;
+  get loading => isLoading;
 
   void signInWithGoogle() async {
     /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
@@ -38,17 +48,40 @@ class SignUpProvider extends ChangeNotifier {
     }
   }
 
-   createUser(GlobalKey<FormState> formKey, String passCon,
-      String userCon,String rePassCon) async {
-    final valid = formKey.currentState!.validate();
-
+  createUser(
+      {required String name,
+      required String phone,
+      required String email,
+      required String password,
+      required AddressModel address}) async {
+    isLoading = true;
+    counter++;
+    sliderValue = (100 / 3) / 100;
+    notifyListeners();
+    UserModel newUser = UserModel(
+      name: name,
+      email: email,
+      role: "user",
+      phone: phone,
+      address: address,
+      createdAt: DateTime.now(),
+    );
     try {
-      if (valid) {
-        final UserCredential userCredential =
-            await firebase.createUserWithEmailAndPassword(
-                email: userCon, password: rePassCon);
+      UserCredential userCredential = await firebase
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      if (userCredential.user != null) {
+        String uid = userCredential.user!.uid;
+
+        await FirebaseFirestore.instance
+            .collection("user")
+            .doc(uid)
+            .set(newUser.toJson())
+            .then((value) {
+          navigatorKey.currentState?.pushNamed('/layout');
+        });
       } else {
-        log("We are going back");
+        log("User is null");
         return;
       }
     } on FirebaseAuthException catch (error) {
@@ -59,6 +92,30 @@ class SignUpProvider extends ChangeNotifier {
         ),
       );
     }
-    formKey.currentState!.save();
+    isLoading = false;
+    notifyListeners();
   }
 }
+//  createUser(GlobalKey<FormState> formKey, String passCon,
+//     String userCon,) async {
+//   final valid = formKey.currentState!.validate();
+//
+//   try {
+//     if (valid) {
+//       final UserCredential userCredential =
+//           await firebase.createUserWithEmailAndPassword(
+//               email: userCon, password: passCon);
+//     } else {
+//       log("We are going back");
+//       return;
+//     }
+//   } on FirebaseAuthException catch (error) {
+//     scaffoldMessengerKey.currentState?.clearSnackBars();
+//     scaffoldMessengerKey.currentState?.showSnackBar(
+//       SnackBar(
+//         content: Text(error.message ?? "Authentication Error!"),
+//       ),
+//     );
+//   }
+//   formKey.currentState!.save();
+// }

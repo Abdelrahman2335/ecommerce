@@ -1,10 +1,12 @@
+import 'package:ecommerce/models/address_model.dart';
+
 class UserModel {
   /// Required information
   final String name;
   final String email;
   final String role;
   final String phone;
-  final String address;
+  final AddressModel address;
   final DateTime createdAt;
   /// Optional
    DateTime? age;
