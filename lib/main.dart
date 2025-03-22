@@ -73,6 +73,8 @@ class MyApp extends StatelessWidget {
         '/forgot': (context) => const ForgotPassword(),
         '/checkout': (context) => const CheckOutScreen(),
         '/cart': (context) => const CartScreen(),
+        '/address': (context) => const UserAddress(),
+        '/user_setup': (context) => const UserDetails(),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,

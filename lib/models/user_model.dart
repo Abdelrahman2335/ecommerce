@@ -2,31 +2,29 @@ import 'package:ecommerce/models/address_model.dart';
 
 class UserModel {
   /// Required information
-  final String name;
-  final String email;
-  final String role;
-  final String phone;
-  final AddressModel address;
-  final DateTime createdAt;
+  String? name;
+  String? role;
+  String? phone;
+  AddressModel? address;
+  DateTime? createdAt;
+
   /// Optional
-   DateTime? age;
-   DateTime? gender;
+  DateTime? age;
+  DateTime? gender;
 
   UserModel({
-    required this.name,
-    required this.email,
-    required this.role,
-    required this.phone,
-    required this.address,
-    required this.createdAt,
+    this.name,
+    this.role,
+    this.phone,
+    this.address,
+    this.createdAt,
     this.age,
     this.gender,
   });
 
-  factory UserModel.fromJson(Map<String,dynamic>json){
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       name: json['name'],
-      email: json['email'],
       role: json['role'],
       phone: json['phone'],
       address: json['address'],
@@ -35,10 +33,10 @@ class UserModel {
       gender: json['gender'],
     );
   }
-  Map<String, dynamic> toJson(){
+
+  Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'email': email,
       'role': role,
       'phone': phone,
       'address': address,

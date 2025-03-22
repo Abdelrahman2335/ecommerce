@@ -1,6 +1,5 @@
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
-import 'package:ecommerce/screens/login_setup/user_info.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,7 +37,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    ;
+    final signUpProvider = Provider.of<SignUpProvider>(context);
 
     return Scaffold(
       body: Animate(
@@ -110,24 +109,17 @@ class _SignUpState extends State<SignUp> {
                       builder: (context, isLoading, child) {
                         return !isLoading
                             ? CustomButton(
-                                pressed: () {
-                                  if(!formKey.currentState!.validate()) return;
-                                  navigatorKey.currentState!
-                                      .push(MaterialPageRoute(
-                                          builder: (context) => UserDetails(
-                                                email: emailCon.text,
-                                                password: passCon.text,
-                                              )));
-                                  // Provider.of<SignUpProvider>(context,
-                                  //     listen: false)
-                                  //     .createUser(formKey, passCon.text,
-                                  //     userCon.text, rePassCon.text).then((value) {
-                                  //   if (firebase.currentUser != null) {
-                                  //     Navigator.of(context).pushReplacementNamed('/layout');
-                                  //   }else{
-                                  //     return;
-                                  //   }
-                                  // });
+                                pressed: () async {
+                                  await signUpProvider.createUser(
+                                    formKey,
+                                    passCon.text,
+                                    emailCon.text,
+                                  );
+                                  if (firebase.currentUser != null) {
+                                    navigatorKey.currentState?.pushReplacementNamed(
+                                      "/user_setup",
+                                    );
+                                  }
                                 },
                                 text: "Create Account",
                               )

@@ -9,15 +9,8 @@ import '../../data/cities.dart';
 
 class UserAddress extends StatefulWidget {
   const UserAddress({super.key,
-    required this.email,
-    required this.password,
-    required this.name,
-    required this.phone});
+    });
 
-  final String email;
-  final String password;
-  final String name;
-  final String phone;
 
   @override
   State<UserAddress> createState() => _UserAddressState();
@@ -189,12 +182,7 @@ class _UserAddressState extends State<UserAddress> {
                     );
                     final valid = formKey.currentState!.validate();
                     if (valid) {
-                      signUpProvider.createUser(
-                          name: widget.name,
-                          phone: widget.phone,
-                          email: widget.email,
-                          password: widget.password,
-                          address: address);
+                  ///  Here we are going to update the address information
                     }
                   },
                   child: const Text(
