@@ -1,22 +1,25 @@
-import 'package:ecommerce/models/address_model.dart';
 
 class UserModel {
   /// Required information
   String? name;
   String? role;
   String? phone;
-  AddressModel? address;
+  String? city;
+  String? area;
+  String? street;
   DateTime? createdAt;
 
   /// Optional
-  DateTime? age;
-  DateTime? gender;
+  String? age;
+  String? gender;
 
   UserModel({
     this.name,
     this.role,
     this.phone,
-    this.address,
+    this.city,
+    this.area,
+    this.street,
     this.createdAt,
     this.age,
     this.gender,
@@ -27,7 +30,9 @@ class UserModel {
       name: json['name'],
       role: json['role'],
       phone: json['phone'],
-      address: json['address'],
+      city: json['city'],
+      area: json['area'],
+      street: json['street'],
       createdAt: json['createdAt'],
       age: json['age'],
       gender: json['gender'],
@@ -36,13 +41,15 @@ class UserModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'name': name,
-      'role': role,
-      'phone': phone,
-      'address': address,
-      'createdAt': createdAt,
-      'age': age,
-      'gender': gender,
+      if (name != null) 'name': name!.trim(),
+      if (role != null) 'role': role,
+      if (phone != null) 'phone': phone!.trim(),
+      if (city != null) 'address': city!.trim(),
+      if (area != null) 'area': area!.trim(),
+      if (street != null) 'street': street!.trim(),
+      if (createdAt != null) 'createdAt': createdAt,
+      if (age != null) 'age': age!.trim(),
+      if (gender != null) 'gender': gender,
     };
   }
 }

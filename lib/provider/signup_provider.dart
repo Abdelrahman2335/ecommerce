@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/models/address_model.dart';
 import 'package:ecommerce/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,17 +12,36 @@ import '../main.dart';
 class SignUpProvider extends ChangeNotifier {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final firebase = FirebaseAuth.instance;
+  final firebaseStore = FirebaseFirestore.instance;
+  bool hasInfo = false;
 
+  /// used when creating account
+
+  /// you can't assign non static value to variable in initializer like [firebaseStore] or [firebase]
   double sliderValue = 0.0;
-
-  /// used when creating account
-  int counter = 1;
-
-  /// used when creating account
 
   bool isLoading = false;
 
   get loading => isLoading;
+
+  /// used when login and creating account to check if we have any info about the user or not
+  Future<bool> checkUserExistence() async {
+    try {
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebase.currentUser!.uid)
+          .get();
+
+      return hasInfo = doc.exists;
+    } catch (error) {
+      log("Error in the signUpProvider constructor: $error");
+      return false;
+    }
+  }
+
+  SignUpProvider() {
+    checkUserExistence();
+  }
 
   void signInWithGoogle() async {
     /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
@@ -36,6 +56,7 @@ class SignUpProvider extends ChangeNotifier {
         AuthCredential authCredential = GoogleAuthProvider.credential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
         firebase.signInWithCredential(authCredential);
+        checkUserExistence();
       } catch (error) {
         scaffoldMessengerKey.currentState?.clearSnackBars();
         scaffoldMessengerKey.currentState?.showSnackBar(
@@ -47,20 +68,24 @@ class SignUpProvider extends ChangeNotifier {
     }
   }
 
-  personalInfo(String name, String phone) async {
+  personalInfo(String name, String phone, User user) async {
     isLoading = true;
     notifyListeners();
     UserModel newUser = UserModel(
       name: name,
       phone: phone,
       role: "user",
-      createdAt: DateTime.now(),
     );
     try {
-      await FirebaseFirestore.instance
-          .collection("user")
-          .doc()
-          .set(newUser.toJson());
+      await firebaseStore
+          .collection("users")
+          .doc(user.uid)
+          .update(newUser.toJson());
+
+      /// update method does not return anything indicate success or fail,
+      /// so we have to use try catch, if you want to do something after is ends successfully just write it here
+      hasInfo = true;
+      sliderValue = 0.50;
     } on FirebaseAuthException catch (error) {
       scaffoldMessengerKey.currentState?.clearSnackBars();
       scaffoldMessengerKey.currentState?.showSnackBar(
@@ -73,7 +98,35 @@ class SignUpProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  createUser(
+  Future addressInfo(AddressModel address, User user) async {
+    isLoading = true;
+    notifyListeners();
+    UserModel newUser = UserModel(
+      city: address.city,
+      area: address.area,
+      street: address.street,
+    );
+    try {
+      await firebaseStore
+          .collection("users")
+          .doc(user.uid)
+          .update(newUser.toJson());
+
+      sliderValue = 0.75;
+    } on FirebaseAuthException catch (error) {
+      scaffoldMessengerKey.currentState?.clearSnackBars();
+      scaffoldMessengerKey.currentState?.showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? "Authentication Error!"),
+        ),
+      );
+    } finally {
+      isLoading = false;
+    }
+    notifyListeners();
+  }
+
+  Future createUser(
     GlobalKey<FormState> formKey,
     String passCon,
     String userCon,
@@ -84,8 +137,22 @@ class SignUpProvider extends ChangeNotifier {
       if (valid) {
         final UserCredential userCredential = await firebase
             .createUserWithEmailAndPassword(email: userCon, password: passCon);
+
+        UserModel newUser = UserModel(
+          createdAt: DateTime.now(),
+        );
+        if (userCredential.user != null) {
+          String uid = userCredential.user!.uid;
+          await firebaseStore
+              .collection("users")
+              .doc(uid)
+              .set(newUser.toJson());
+
+          /// add user date of join to firestore
+          hasInfo = false;
+        }
       } else {
-        log("We are going back");
+        log("createUser not working, We are going back");
         return;
       }
     } on FirebaseAuthException catch (error) {
@@ -97,5 +164,11 @@ class SignUpProvider extends ChangeNotifier {
       );
     }
     formKey.currentState!.save();
+  }
+
+  onPop() {
+    hasInfo = false;
+    sliderValue = 0.0;
+    notifyListeners();
   }
 }

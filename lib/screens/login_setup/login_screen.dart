@@ -1,4 +1,5 @@
 import 'package:ecommerce/provider/auth_provider.dart';
+import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -147,15 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             side: BorderSide(color: theme.primaryColor),
                           ),
                           onPressed: () {
-                            var response = Provider.of<LoginProvider>(context,
-                                    listen: false)
-                                .signInWithGoogle();
-                            // response.then((value) {
-                            //   if(value != null){
-                            //
-                            //   return {navigatorKey.currentState?.pushReplacementNamed('/layout')};
-                            //   }
-                            // });
+                           context.read<SignUpProvider>().signInWithGoogle();
                           },
                           child: const Image(
                             image: AssetImage(

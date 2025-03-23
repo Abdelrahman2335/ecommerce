@@ -36,6 +36,15 @@ class ThemeDataConfig {
             fontStyle: FontStyle.italic,
             color: Colors.white),
       ),
+      sliderTheme: SliderThemeData(
+          activeTrackColor: _colorScheme.primary, // Matches primary color (main brand color)
+          inactiveTrackColor: _colorScheme.primary.withAlpha(76), // Lighter version for inactive track
+          thumbColor: _colorScheme.primary, // Thumb matches primary color
+          overlayColor: _colorScheme.primary.withAlpha(90), // Subtle glow effect when sliding
+          trackHeight: 5.0, // Adjust track thickness
+          thumbShape: SliderComponentShape.noThumb, // Remove thumb if needed
+          disabledActiveTrackColor: _colorScheme.primary.withAlpha(200), // Disabled state still visible
+      ),
       useMaterial3: true,
     );
   }

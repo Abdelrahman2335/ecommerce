@@ -7,13 +7,11 @@ import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/screens/login_setup/profile_screen.dart';
-import 'package:ecommerce/screens/login_setup/user_address.dart';
-import 'package:ecommerce/screens/login_setup/user_info.dart';
+import 'package:ecommerce/screens/login_setup/user_details_screen.dart';
 import 'package:ecommerce/screens/payment/payment_configuration.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/place_order/check_out.dart';
 import 'package:ecommerce/theme.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -73,24 +71,25 @@ class MyApp extends StatelessWidget {
         '/forgot': (context) => const ForgotPassword(),
         '/checkout': (context) => const CheckOutScreen(),
         '/cart': (context) => const CartScreen(),
-        '/address': (context) => const UserAddress(),
-        '/user_setup': (context) => const UserDetails(),
+        '/user_setup': (context) => const UserDetailsScreen(),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }  else if (snapshot.data != null && snapshot.hasData) {
-              return const LayOut();
-            } else {
-              return const LoginScreen();
-            }
+      home: UserDetailsScreen(),
 
-          })),
+      // StreamBuilder(
+      //     stream: FirebaseAuth.instance.authStateChanges(),
+      //     builder: ((context, snapshot) {
+      //       if (snapshot.connectionState == ConnectionState.waiting) {
+      //         return const CircularProgressIndicator();
+      //       }  else if (snapshot.data != null && snapshot.hasData) {
+      //         return const LayOut();
+      //       } else {
+      //         return const LoginScreen();
+      //       }
+      //
+      //     })),
     );
   }
 }

@@ -3,20 +3,16 @@ import 'package:provider/provider.dart';
 
 import '../provider/signup_provider.dart';
 
-
- Widget personalInfo(BuildContext context, nameCon, phoneCon,GlobalKey<FormState> formKey)  {
+Widget setupUserData(BuildContext context, nameCon, phoneCon, user,
+    GlobalKey<FormState> formKey) {
   SignUpProvider signUpProvider = Provider.of<SignUpProvider>(context);
+
+  /// Both are the same
+  //  SignUpProvider signUpProvider = context.watch<SignUpProvider>();
 
   return Column(
     children: [
-      const Text(
-        "Personal Information",
-        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-      ),
-      Text(
-        "Step ${signUpProvider.counter} of 2",
-        style: TextStyle(fontSize: 13, color: Colors.grey),
-      ),
+
       SizedBox(
         width: MediaQuery.of(context).size.width * 0.85, // Adjust dynamically
 
@@ -45,6 +41,14 @@ import '../provider/signup_provider.dart';
       SizedBox(
         width: 370,
         child: TextFormField(
+          maxLength: 11,
+          buildCounter: (context,
+                  {required currentLength,
+                  required isFocused,
+                  required maxLength}) =>
+              null,
+
+          /// by using [buildCounter] we have disabled the counter shown under the [textFormField]
           keyboardType: TextInputType.phone,
           controller: phoneCon,
           validator: (value) {
@@ -78,7 +82,9 @@ import '../provider/signup_provider.dart';
             onPressed: () {
               final valid = formKey.currentState!.validate();
               if (valid) {
-                signUpProvider.personalInfo(nameCon.text, phoneCon.text);
+                signUpProvider.personalInfo(nameCon.text, phoneCon.text, user);
+                nameCon.clear();
+                phoneCon.clear();
               }
             },
             child: const Text(
@@ -87,21 +93,7 @@ import '../provider/signup_provider.dart';
           ),
         ],
       ),
-      Text("Progress ${signUpProvider.sliderValue.toStringAsFixed(0)}%"),
-      Expanded(
-        child: SliderTheme(
-          data: SliderTheme.of(context).copyWith(
-            thumbShape: SliderComponentShape.noThumb,
-          ),
-          child: Slider(
-            /// Making onChange null this will make the slider read only
-            value: signUpProvider.sliderValue,
-            onChanged: null,
-            min: 0,
-            max: 1,
-          ),
-        ),
-      )
+
     ],
   );
 }

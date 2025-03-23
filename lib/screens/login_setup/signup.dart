@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/widgets/custom_button.dart';
@@ -9,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/user_model.dart';
 import '../../provider/signup_provider.dart';
 
 class SignUp extends StatefulWidget {
@@ -116,6 +118,18 @@ class _SignUpState extends State<SignUp> {
                                     emailCon.text,
                                   );
                                   if (firebase.currentUser != null) {
+                                    UserModel newUser = UserModel(
+                                      createdAt: DateTime.now(),
+                                    );
+                                      String uid = firebase.currentUser!.uid;
+                                      await FirebaseFirestore.instance
+                                          .collection("users")
+                                          .doc(uid)
+                                          .set(newUser.toJson());
+
+                                      /// add user date of join to firestore
+                                      signUpProvider.hasInfo = false;
+
                                     navigatorKey.currentState?.pushReplacementNamed(
                                       "/user_setup",
                                     );
