@@ -4,12 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
 class LocationProvider extends ChangeNotifier {
   bool isGettingLocation = false;
-  LatLng? userLocation; /// will be used to show the user location on the map
+  LatLng? userLocation;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  User? user = FirebaseAuth.instance.currentUser;
+
+  /// will be used to show the user location on the map
   LocationData? locationData;
 
   showLocation() async {
@@ -21,9 +26,9 @@ class LocationProvider extends ChangeNotifier {
         notifyListeners();
 
         /// Update the user location in the database
-        await FirebaseFirestore.instance
+        await firestore
             .collection("users")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .doc(user!.uid)
             .update(UserModel(
               latitude: locationData!.latitude,
               longitude: locationData!.longitude,
@@ -64,6 +69,38 @@ class LocationProvider extends ChangeNotifier {
     log(locationData!.longitude.toString());
     log(isGettingLocation.toString());
     showLocation();
+    getAddressFromCoordinates();
     notifyListeners();
+  }
+
+  Future getAddressFromCoordinates() async {
+    List<geo.Placemark>? placeMarks;
+
+    try {
+      if (locationData == null) return;
+      placeMarks = await geo.placemarkFromCoordinates(
+          locationData!.latitude!, locationData!.longitude!);
+
+      geo.Placemark place = placeMarks.first;
+
+      log("${place.country}"); // Country
+      log("${place.locality}"); // City
+      log("${place.administrativeArea}"); // State
+      log("${place.street}"); // Street
+      log("${place.name}"); // Building Name
+      log("${place.postalCode}"); // Postal Code
+
+      /// sending the address to the database
+      await firestore
+          .collection("users")
+          .doc(user!.uid)
+          .update(UserModel(
+                  city: place.locality,
+                  area: place.administrativeArea,
+                  street: place.street)
+              .toJson());
+    } catch (error) {
+      log("Error getting address: $error");
+    }
   }
 }
