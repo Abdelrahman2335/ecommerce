@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
+import 'package:ecommerce/provider/location_provider.dart';
 import 'package:ecommerce/provider/payment_provider.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
@@ -12,6 +13,7 @@ import 'package:ecommerce/screens/payment/payment_configuration.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/place_order/check_out.dart';
 import 'package:ecommerce/theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => WishListProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
-      ChangeNotifierProvider(create: (_) => PaymentConfiguration()),
+      ChangeNotifierProvider(create: (_) => PaymentConfiguration(),),
+      ChangeNotifierProvider(create: (_) => GetCurrentLocationProvider(),),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
@@ -76,20 +79,21 @@ class MyApp extends StatelessWidget {
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
-      home: UserDetailsScreen(),
+      home:
+      // UserDetailsScreen(),
 
-      // StreamBuilder(
-      //     stream: FirebaseAuth.instance.authStateChanges(),
-      //     builder: ((context, snapshot) {
-      //       if (snapshot.connectionState == ConnectionState.waiting) {
-      //         return const CircularProgressIndicator();
-      //       }  else if (snapshot.data != null && snapshot.hasData) {
-      //         return const LayOut();
-      //       } else {
-      //         return const LoginScreen();
-      //       }
-      //
-      //     })),
+      StreamBuilder(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }  else if (snapshot.data != null && snapshot.hasData) {
+              return const LayOut();
+            } else {
+              return const LoginScreen();
+            }
+
+          })),
     );
   }
 }

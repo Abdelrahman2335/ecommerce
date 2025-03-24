@@ -1,13 +1,16 @@
-import 'dart:developer';
-
+import 'package:ecommerce/main.dart';
 import 'package:ecommerce/methods/setup_address.dart';
+import 'package:ecommerce/provider/location_provider.dart';
 import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:gap/gap.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../methods/setup_user_data.dart';
+import '../../models/address_model.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({super.key});
@@ -34,24 +37,31 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     SignUpProvider signUpProvider = context.watch<SignUpProvider>();
+    GetCurrentLocationProvider locationProvider = context.watch<GetCurrentLocationProvider>();
     Widget personalContent = setupUserData(
         context, firstController, secondController, user, formKey);
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
     int counter = signUpProvider.hasInfo ? 2 : 1;
+
+    /// counter for the steps
     return PopScope(
-      /// If hasInfo info is true and the user want to go back we will set it to false
-      /// so we will update the ui to go back
-      /// but he actually can't pop because canPop is false
       canPop: false,
-      onPopInvokedWithResult: (bool result, value) {
-        if (signUpProvider.hasInfo) signUpProvider.onPop();
-        log(signUpProvider.hasInfo.toString());
+      onPopInvokedWithResult: (bool canPop, dynamic result) {
+        scaffoldMessengerKey.currentState?.clearSnackBars();
+        scaffoldMessengerKey.currentState?.showSnackBar(
+          const SnackBar(content: Text("You can't go back 😈")),
+        );
       },
       child: Scaffold(
         body: Animate(
           effects: [
             FadeEffect(
+              duration: Duration(milliseconds: 1000),
+            ),
+            SlideEffect(
+              begin: const Offset(0.14, 0),
+              end: const Offset(0, 0),
               duration: Duration(milliseconds: 1000),
             )
           ],
@@ -72,7 +82,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 borderRadius: BorderRadius.circular(20),
               ),
               height: signUpProvider.hasInfo
-                  ? MediaQuery.of(context).size.height * 0.49
+                  ? MediaQuery.of(context).size.height * 0.54
                   : MediaQuery.of(context).size.height * 0.40,
               width: MediaQuery.of(context).size.width * 0.90,
               child: Padding(
@@ -89,18 +99,43 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                   signUpProvider.isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(),
+                      // true
+                      ? Center(
+                          heightFactor: 7,
+                          child: LoadingAnimationWidget.inkDrop(
+                              color: Theme.of(context).primaryColor, size: 34),
                         )
-                      : signUpProvider.hasInfo
+                      :
+                  signUpProvider.hasInfo
+                  // true
                           ? addressContent
                           : personalContent,
-                  Spacer(),
+
+                  locationProvider.isGettingLocation ?
+
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20))),
+                      onPressed: () {
+                        /// for now we will navigate ro layout, but next we will edit this page to go to the optional info page (age, gender)
+                        navigatorKey.currentState?.pushNamed('/layout');
+                      },
+                      child: const Text(
+                        "Next",
+                      ),
+                    ),
+                  ) : SizedBox(),
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: Slider(
-                      /// Making onChange null this will make the slider read only
                       value: signUpProvider.sliderValue,
+
+                      /// Making onChange null this will make the slider read only
                       onChanged: null,
                       min: 0,
                       max: 1,

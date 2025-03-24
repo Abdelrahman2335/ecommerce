@@ -26,13 +26,20 @@ class SignUpProvider extends ChangeNotifier {
 
   /// used when login and creating account to check if we have any info about the user or not
   Future<bool> checkUserExistence() async {
+    if (firebase.currentUser == null) return false;
+
+    /// Don't forget that this is the constructor so this function will always run when the provider is created,
+    /// so we have to check if the user is null or not to prevent any errors
     try {
-      DocumentSnapshot doc = await FirebaseFirestore.instance
+      Map<String, dynamic>? doc = await FirebaseFirestore.instance
           .collection("users")
           .doc(firebase.currentUser!.uid)
-          .get();
+          .get()
+          .then((value) => value.data());
 
-      return hasInfo = doc.exists;
+      hasInfo = doc?["name"].isNotEmpty ?? false;
+      log("hasInfo: $hasInfo");
+      return hasInfo;
     } catch (error) {
       log("Error in the signUpProvider constructor: $error");
       return false;

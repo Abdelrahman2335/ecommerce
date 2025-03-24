@@ -112,6 +112,12 @@ class _SignUpState extends State<SignUp> {
                         return !isLoading
                             ? CustomButton(
                                 pressed: () async {
+                                  final valid =
+                                      formKey.currentState?.validate();
+                                  if (valid == null || valid == false) return;
+
+                                  /// here we are using or operator because if (any of the condition is true) it will be true
+
                                   await signUpProvider.createUser(
                                     formKey,
                                     passCon.text,
@@ -121,16 +127,17 @@ class _SignUpState extends State<SignUp> {
                                     UserModel newUser = UserModel(
                                       createdAt: DateTime.now(),
                                     );
-                                      String uid = firebase.currentUser!.uid;
-                                      await FirebaseFirestore.instance
-                                          .collection("users")
-                                          .doc(uid)
-                                          .set(newUser.toJson());
+                                    String uid = firebase.currentUser!.uid;
+                                    await FirebaseFirestore.instance
+                                        .collection("users")
+                                        .doc(uid)
+                                        .set(newUser.toJson());
 
-                                      /// add user date of join to firestore
-                                      signUpProvider.hasInfo = false;
+                                    /// add user date of join to firestore
+                                    signUpProvider.hasInfo = false;
 
-                                    navigatorKey.currentState?.pushReplacementNamed(
+                                    navigatorKey.currentState
+                                        ?.pushReplacementNamed(
                                       "/user_setup",
                                     );
                                   }
