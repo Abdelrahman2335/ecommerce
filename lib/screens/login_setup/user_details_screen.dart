@@ -1,16 +1,13 @@
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/methods/setup_address.dart';
-import 'package:ecommerce/provider/location_provider.dart';
 import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:gap/gap.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../methods/setup_user_data.dart';
-import '../../models/address_model.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({super.key});
@@ -24,7 +21,14 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController firstController = TextEditingController();
   TextEditingController secondController = TextEditingController();
-  User user = FirebaseAuth.instance.currentUser!;
+
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = FirebaseAuth.instance.currentUser!;
+  }
 
   @override
   void dispose() {
@@ -36,8 +40,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SignUpProvider signUpProvider = context.watch<SignUpProvider>();
-    GetCurrentLocationProvider locationProvider = context.watch<GetCurrentLocationProvider>();
+    /// Using provider like this not the best, in terms of performance.
+    ///But we are using the value of the [signUpProvider] many times in the widget tree.
+    ///If we use the [Consumer] or [Selector] widget, the code will be hard to read.
+    final signUpProvider = context.watch<SignUpProvider>();
     Widget personalContent = setupUserData(
         context, firstController, secondController, user, formKey);
     Widget addressContent =
@@ -57,12 +63,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         body: Animate(
           effects: [
             FadeEffect(
-              duration: Duration(milliseconds: 1000),
+              duration: Duration(milliseconds: 500),
             ),
             SlideEffect(
               begin: const Offset(0.14, 0),
               end: const Offset(0, 0),
-              duration: Duration(milliseconds: 1000),
+              duration: Duration(milliseconds: 500),
             )
           ],
           child: Center(
@@ -105,42 +111,25 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                           child: LoadingAnimationWidget.inkDrop(
                               color: Theme.of(context).primaryColor, size: 34),
                         )
-                      :
-                  signUpProvider.hasInfo
-                  // true
+                      : signUpProvider.hasInfo
+                          // true
                           ? addressContent
                           : personalContent,
-
-                  locationProvider.isGettingLocation ?
-
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
-                      onPressed: () {
-                        /// for now we will navigate ro layout, but next we will edit this page to go to the optional info page (age, gender)
-                        navigatorKey.currentState?.pushNamed('/layout');
-                      },
-                      child: const Text(
-                        "Next",
-                      ),
-                    ),
-                  ) : SizedBox(),
                   Expanded(
-                    flex: 2,
-                    child: Slider(
-                      value: signUpProvider.sliderValue,
+                      flex: 2,
+                      /// we are using TweenAnimationBuilder to make some animation to the slider.
+                      child: TweenAnimationBuilder(
+                        tween: Tween(begin: 0, end: signUpProvider.sliderValue),
+                        duration: Duration(milliseconds: 500),
+                        builder: (ctx, value, child) => Slider(
+                          value: signUpProvider.sliderValue,
 
-                      /// Making onChange null this will make the slider read only
-                      onChanged: null,
-                      min: 0,
-                      max: 1,
-                    ),
-                  ),
+                          /// Making onChange null this will make the slider read only
+                          onChanged: null,
+                          min: 0,
+                          max: 1,
+                        ),
+                      )),
                 ]),
               ),
             ),

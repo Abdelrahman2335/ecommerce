@@ -34,7 +34,8 @@ void main() async {
     );
     await Firebase.initializeApp();
     runApp(
-      /// This widget is the root of your application.
+
+        /// This widget is the root of your application.
         MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => SignUpProvider()),
       ChangeNotifierProvider(
@@ -46,8 +47,12 @@ void main() async {
       ChangeNotifierProvider(create: (_) => WishListProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
-      ChangeNotifierProvider(create: (_) => PaymentConfiguration(),),
-      ChangeNotifierProvider(create: (_) => GetCurrentLocationProvider(),),
+      ChangeNotifierProvider(
+        create: (_) => PaymentConfiguration(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => LocationProvider(),
+      ),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
@@ -80,20 +85,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
       home:
-      // UserDetailsScreen(),
+          // UserDetailsScreen(),
 
-      StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: ((context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }  else if (snapshot.data != null && snapshot.hasData) {
-              return const LayOut();
-            } else {
-              return const LoginScreen();
-            }
-
-          })),
+          StreamBuilder(
+              stream: FirebaseAuth.instance.authStateChanges(),
+              builder: ((context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.data != null && snapshot.hasData) {
+                  return const LayOut();
+                } else {
+                  return const LoginScreen();
+                }
+              })),
     );
   }
 }

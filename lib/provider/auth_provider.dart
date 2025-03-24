@@ -111,7 +111,6 @@ class LoginProvider extends ChangeNotifier {
       if (isGoogleAccount) {
         log("Google Account");
 
-        /// Forces account chooser next time, This means that if the user sign out it will be forced to sign in again.
         await google.signOut();
         await firebase.signOut();
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??

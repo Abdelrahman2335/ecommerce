@@ -109,6 +109,7 @@ class _SignUpState extends State<SignUp> {
                   Selector<SignUpProvider, bool>(
                       selector: (_, selectedValue) => selectedValue.loading,
                       builder: (context, isLoading, child) {
+                        /// This isLoading not working properly
                         return !isLoading
                             ? CustomButton(
                                 pressed: () async {
