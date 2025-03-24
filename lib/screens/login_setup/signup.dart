@@ -25,7 +25,6 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passCon = TextEditingController();
   TextEditingController rePassCon = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool isLoading = false;
   FirebaseAuth firebase = FirebaseAuth.instance;
 
   @override
@@ -168,8 +167,12 @@ class _SignUpState extends State<SignUp> {
                           backgroundColor: theme.primaryColor.withAlpha(37),
                           side: BorderSide(color: theme.primaryColor),
                         ),
-                        onPressed: () {
-                          Provider.of<SignUpProvider>(context).googleSignIn;
+                        onPressed: () async {
+                          await signUpProvider.signInWithGoogle();
+
+                          if (firebase.currentUser == null) return;
+                          navigatorKey.currentState
+                              ?.pushReplacementNamed('/user_setup');
                         },
                         child: const Image(
                           image: AssetImage(

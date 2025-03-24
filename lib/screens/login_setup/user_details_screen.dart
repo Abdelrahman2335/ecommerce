@@ -1,10 +1,12 @@
 import 'package:ecommerce/main.dart';
+import 'package:ecommerce/methods/optional_info.dart';
 import 'package:ecommerce/methods/setup_address.dart';
+import 'package:ecommerce/provider/location_provider.dart';
 import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../methods/setup_user_data.dart';
@@ -49,7 +51,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
     int counter = signUpProvider.hasInfo ? 2 : 1;
-
+ counter = context.read<LocationProvider>().nextPageValue ? counter + 1 : counter;
     /// counter for the steps
     return PopScope(
       canPop: false,
@@ -101,28 +103,28 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "Step $counter of 2",
+                    "Step $counter of 3",
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
-                  signUpProvider.isLoading
+                  Gap(7),
+
+                  /// If we have info (phone number) about the user we will show the address form
+                  /// if the nextPageValue is true (which will not happen, unless the user went to the address screen) we will show the optional info
+                  signUpProvider.hasInfo
                       // true
-                      ? Center(
-                          heightFactor: 7,
-                          child: LoadingAnimationWidget.inkDrop(
-                              color: Theme.of(context).primaryColor, size: 34),
-                        )
-                      : signUpProvider.hasInfo
-                          // true
-                          ? addressContent
+                      ? addressContent
+                      : context.read<LocationProvider>().nextPageValue
+                          ? optionalInfo(context, firstController, secondController, user, formKey)
                           : personalContent,
                   Expanded(
                       flex: 2,
+
                       /// we are using TweenAnimationBuilder to make some animation to the slider.
                       child: TweenAnimationBuilder(
                         tween: Tween(begin: 0, end: signUpProvider.sliderValue),
-                        duration: Duration(milliseconds: 500),
+                        duration: Duration(milliseconds: 1000),
                         builder: (ctx, value, child) => Slider(
-                          value: signUpProvider.sliderValue,
+                          value: value.toDouble(),
 
                           /// Making onChange null this will make the slider read only
                           onChanged: null,

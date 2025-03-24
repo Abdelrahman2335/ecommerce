@@ -85,19 +85,19 @@ class MyApp extends StatelessWidget {
       theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
       home:
-          // UserDetailsScreen(),
+          SignUp(),
 
-          StreamBuilder(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: ((context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.data != null && snapshot.hasData) {
-                  return const LayOut();
-                } else {
-                  return const LoginScreen();
-                }
-              })),
+          // StreamBuilder(
+          //     stream: FirebaseAuth.instance.authStateChanges(),
+          //     builder: ((context, snapshot) {
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return const CircularProgressIndicator();
+          //       } else if (snapshot.data != null && snapshot.hasData) {
+          //         return const LayOut();
+          //       } else {
+          //         return const LoginScreen();
+          //       }
+          //     })),
     );
   }
 }

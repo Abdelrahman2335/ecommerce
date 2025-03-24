@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -5,6 +6,7 @@ import 'package:ecommerce/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
+import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
@@ -13,10 +15,18 @@ class LocationProvider extends ChangeNotifier {
   LatLng? userLocation;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
-
   /// will be used to show the user location on the map
   LocationData? locationData;
+  bool _nextPage = false;
 
+  get nextPageValue => _nextPage;
+  void updateNextPageValue(bool newValue) {
+    if (_nextPage != newValue) {  /// Only update if value is different
+      _nextPage = newValue;
+      log("nextPageValue updated: $nextPageValue");
+      notifyListeners();
+    }
+  }
   showLocation() async {
     try {
       if (locationData != null) {
@@ -26,10 +36,7 @@ class LocationProvider extends ChangeNotifier {
         notifyListeners();
 
         /// Update the user location in the database
-        await firestore
-            .collection("users")
-            .doc(user!.uid)
-            .update(UserModel(
+        await firestore.collection("users").doc(user!.uid).update(UserModel(
               latitude: locationData!.latitude,
               longitude: locationData!.longitude,
             ).toJson());
@@ -61,7 +68,9 @@ class LocationProvider extends ChangeNotifier {
       }
     }
 
+
     isGettingLocation = true;
+    notifyListeners();
     locationData = await location.getLocation();
 
     /// update the locationData to use it in the showLocation method
@@ -70,7 +79,6 @@ class LocationProvider extends ChangeNotifier {
     log(isGettingLocation.toString());
     showLocation();
     getAddressFromCoordinates();
-    notifyListeners();
   }
 
   Future getAddressFromCoordinates() async {
@@ -83,22 +91,44 @@ class LocationProvider extends ChangeNotifier {
 
       geo.Placemark place = placeMarks.first;
 
-      log("${place.country}"); // Country
-      log("${place.locality}"); // City
-      log("${place.administrativeArea}"); // State
-      log("${place.street}"); // Street
-      log("${place.name}"); // Building Name
-      log("${place.postalCode}"); // Postal Code
+      final url = Uri.parse(
+          "https://nominatim.openstreetmap.org/reverse?lat=${locationData!.latitude}&lon=${locationData!.longitude}&format=json");
+
+      final response = await http.get(
+        url,
+        headers: {
+          "User-Agent": "MyFlutterApp/1.0 (${user!.email})",
+
+          /// Add your email or app name
+        },
+      );
+      log(response.statusCode.toString());
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        await firestore.collection("users").doc(user!.uid).update(UserModel(
+              fullAddress: data['display_name'] ?? 'Not Found',
+              country: data['address']['country'] ?? place.country,
+              city: data['address']['state'] ?? place.administrativeArea,
+              area: data['address']['city'] ?? place.locality,
+              street: data['address']['road'] ?? 'Not Found',
+            ).toJson());
+
+
+        /// for debugging
+        // log(place.country.toString());
+        // log(place.administrativeArea.toString());
+        // log(place.locality.toString());
+
+        // log("Country: ${data['address']['country'] ?? 'Not Found'}");
+        // log("state: ${data['address']['state'] ?? 'Not Found'}");
+        // log("Area: ${data['address']['city'] ?? 'Not Found'}");
+        // log("Street: ${data['address']['road'] ?? 'Not Found'}");
+        // log("display_name: ${data['display_name'] ?? 'Not Found'}");
+      } else {
+        log("Error: Failed to get address");
+      }
 
       /// sending the address to the database
-      await firestore
-          .collection("users")
-          .doc(user!.uid)
-          .update(UserModel(
-                  city: place.locality,
-                  area: place.administrativeArea,
-                  street: place.street)
-              .toJson());
     } catch (error) {
       log("Error getting address: $error");
     }

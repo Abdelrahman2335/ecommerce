@@ -37,7 +37,7 @@ class SignUpProvider extends ChangeNotifier {
           .get()
           .then((value) => value.data());
 
-      hasInfo = doc?["name"].isNotEmpty ?? false;
+      hasInfo = doc?["phone"].isNotEmpty ?? false;
       log("hasInfo: $hasInfo");
       return hasInfo;
     } catch (error) {
@@ -50,20 +50,36 @@ class SignUpProvider extends ChangeNotifier {
     checkUserExistence();
   }
 
-  void signInWithGoogle() async {
+   signInWithGoogle() async {
+    isLoading = true;
+    notifyListeners();
+
     /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
     GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
     if (googleSignInAccount == null) {
       return;
     } else {
       try {
+        log("signInWithGoogle: GoogleSignInAccount is not null");
         GoogleSignInAuthentication googleAuth =
             await googleSignInAccount.authentication;
 
         AuthCredential authCredential = GoogleAuthProvider.credential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
         firebase.signInWithCredential(authCredential);
-        checkUserExistence();
+
+        /// if the user doesn't have any info we have to create it
+        if (!hasInfo) {
+          await firebaseStore
+              .collection("users")
+              .doc(firebase.currentUser!.uid)
+              .set(UserModel(
+                createdAt: DateTime.now(),
+                role: "user",
+                name: googleSignInAccount.displayName,
+                phone: googleSignInAccount.photoUrl,
+              ).toJson());
+        }
       } catch (error) {
         scaffoldMessengerKey.currentState?.clearSnackBars();
         scaffoldMessengerKey.currentState?.showSnackBar(
@@ -71,7 +87,10 @@ class SignUpProvider extends ChangeNotifier {
             content: Text("Authentication Error!"),
           ),
         );
+      } finally {
+        isLoading = false;
       }
+      notifyListeners();
     }
   }
 
@@ -100,8 +119,9 @@ class SignUpProvider extends ChangeNotifier {
           content: Text(error.message ?? "Authentication Error!"),
         ),
       );
+    } finally {
+      isLoading = false;
     }
-    isLoading = false;
     notifyListeners();
   }
 
@@ -138,6 +158,8 @@ class SignUpProvider extends ChangeNotifier {
     String passCon,
     String userCon,
   ) async {
+    isLoading = true;
+    notifyListeners();
     final valid = formKey.currentState!.validate();
 
     try {
@@ -169,13 +191,10 @@ class SignUpProvider extends ChangeNotifier {
           content: Text(error.message ?? "Authentication Error!"),
         ),
       );
+    } finally {
+      isLoading = false;
     }
     formKey.currentState!.save();
-  }
-
-  onPop() {
-    hasInfo = false;
-    sliderValue = 0.0;
     notifyListeners();
   }
 }

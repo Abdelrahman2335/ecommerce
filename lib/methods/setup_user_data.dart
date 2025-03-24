@@ -7,6 +7,7 @@ import '../provider/signup_provider.dart';
 Widget setupUserData(BuildContext context, nameCon, phoneCon, user,
     GlobalKey<FormState> formKey) {
   SignUpProvider signUpProvider = Provider.of<SignUpProvider>(context);
+  RegExp regex = RegExp(r'^[0-9+]+$'); /// Allows only digits (0-9) and "+"
 
   /// Both are the same
   //  SignUpProvider signUpProvider = context.watch<SignUpProvider>();
@@ -44,6 +45,7 @@ Widget setupUserData(BuildContext context, nameCon, phoneCon, user,
           width: 370,
           child: TextFormField(
             maxLength: 11,
+
             buildCounter: (context,
                     {required currentLength,
                     required isFocused,
@@ -54,7 +56,7 @@ Widget setupUserData(BuildContext context, nameCon, phoneCon, user,
             keyboardType: TextInputType.phone,
             controller: phoneCon,
             validator: (value) {
-              if (value == null || value.trim().isEmpty) {
+              if (value == null || value.trim().isEmpty || regex.hasMatch(value) == false || value.length < 10) {
                 return "Please Enter a valid phone number";
               }
               return null;

@@ -1,9 +1,10 @@
-
 class UserModel {
   /// Required information
   String? name;
   String? role;
   String? phone;
+  String? fullAddress;
+  String? country;
   String? city;
   String? area;
   String? street;
@@ -19,6 +20,8 @@ class UserModel {
     this.name,
     this.role,
     this.phone,
+    this.fullAddress,
+    this.country,
     this.city,
     this.area,
     this.street,
@@ -34,6 +37,8 @@ class UserModel {
       name: json['name'],
       role: json['role'],
       phone: json['phone'],
+      fullAddress: json['address'],
+      country: json['country'],
       city: json['city'],
       area: json['area'],
       street: json['street'],
@@ -50,7 +55,9 @@ class UserModel {
       if (name != null) 'name': name!.trim(),
       if (role != null) 'role': role,
       if (phone != null) 'phone': phone!.trim(),
-      if (city != null) 'address': city!.trim(),
+      if (fullAddress != null) 'address': fullAddress!.trim(),
+      if (country != null) 'country': country!.trim(),
+      if (city != null) 'city': city!.trim(),
       if (area != null) 'area': area!.trim(),
       if (street != null) 'street': street!.trim(),
       if (latitude != null) 'latitude': latitude,

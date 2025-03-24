@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -7,13 +9,12 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../data/cities.dart';
-import '../main.dart';
 import '../models/address_model.dart';
 import '../provider/location_provider.dart';
 
 String selectedCity = egyptCities[0];
 
-Widget setupAddress(BuildContext context, areaCon, streetCon, user,
+Widget setupAddress(BuildContext context, firstCon, secondCon, user,
     GlobalKey<FormState> formKey) {
   SignUpProvider signUpProvider = context.watch<SignUpProvider>();
 
@@ -21,9 +22,13 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
   // SignUpProvider signUpProvider = Provider.of<SignUpProvider>(context);
   LocationProvider locationProvider = context.watch<LocationProvider>();
 
+  final theme = Theme.of(context).primaryColor;
+  final mediaQuery = MediaQuery.of(context).size;
+
   /// Getting the location manually
   /// previewContent is the content of the page
-  Widget previewContent = Column(
+  Widget previewContent = SizedBox();
+  previewContent = Column(
     children: [
       Row(
         children: [
@@ -64,7 +69,7 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
       SizedBox(
         width: 370,
         child: TextFormField(
-          controller: areaCon,
+          controller: firstCon,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return "Please Enter valid area";
@@ -85,7 +90,7 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
       SizedBox(
         width: 370,
         child: TextFormField(
-          controller: streetCon,
+          controller: secondCon,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return "Please Enter valid street";
@@ -111,7 +116,7 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
-              foregroundColor: Theme.of(context).primaryColor,
+              foregroundColor: theme,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
               // minimumSize: Size(100, 40), /// Change the size of the button,
@@ -121,26 +126,27 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
               /// Don't forget to change other buttons as well
             ),
             onPressed: locationProvider.getCurrentLocation,
-            child: const Text("Get Current Location"),
+            child: const Text("Current location"),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: theme,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
             onPressed: () {
               AddressModel address = AddressModel(
-                area: areaCon.text,
+                area: firstCon.text,
                 city: selectedCity,
-                street: streetCon.text,
+                street: secondCon.text,
               );
               final valid = formKey.currentState!.validate();
               if (valid) {
                 ///  Here we are going to update the address information
                 signUpProvider.addressInfo(address, user);
-                areaCon.clear();
-                streetCon.clear();
+                firstCon.clear();
+                secondCon.clear();
+                context.read<LocationProvider>().updateNextPageValue(true);
               }
             },
             child: const Text(
@@ -154,21 +160,33 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
 
   /// the content of the map
   if (locationProvider.isGettingLocation) {
-    previewContent = Center(
-        child: LoadingAnimationWidget.inkDrop(
-            color: Theme.of(context).primaryColor, size: 36));
+    previewContent = SizedBox(
+        height: mediaQuery.height * 0.27,
+        child: LoadingAnimationWidget.inkDrop(color: theme, size: 36));
   }
   if (locationProvider.userLocation != null) {
     previewContent = Column(
       children: [
         Container(
-          height: 170,
+          padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+          height: mediaQuery.height * 0.27,
           width: double.infinity,
           alignment: Alignment.center,
           decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color:
+                      const Color.fromARGB(255, 129, 129, 129).withAlpha(140),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: const Offset(-2, 3),
+                ),
+              ],
               border: Border.all(
-            color: Theme.of(context).colorScheme.primary.withAlpha(20),
-          )),
+                color: theme.withAlpha(20),
+              )),
           child: FlutterMap(
               options: MapOptions(
                 /// The initial center is the user location
@@ -182,8 +200,7 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
               children: [
                 /// OSM does not track your location, it just provides the map images
                 TileLayer(
-                  urlTemplate:
-                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 ),
                 MarkerLayer(markers: [
                   Marker(
@@ -197,18 +214,28 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
                 ])
               ]),
         ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12))),
-          onPressed: () {
-            /// for now we will navigate to layout, but next we will edit this page to go to the optional info page (age, gender)
-            navigatorKey.currentState?.pushReplacementNamed('/layout');
-          },
-          child: const Text(
-            "Next",
+        Container(
+          height: mediaQuery.height * 0.1,
+          width: mediaQuery.width * 0.8,
+          padding: EdgeInsets.only(right: 20, top: 34),
+          alignment: Alignment.centerRight,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                backgroundColor: theme,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8))),
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                context.read<LocationProvider>().updateNextPageValue(true);
+
+                log("Valid");
+              }
+            },
+            child: const Text(
+              "Next",
+            ),
           ),
         ),
       ],
@@ -218,6 +245,7 @@ Widget setupAddress(BuildContext context, areaCon, streetCon, user,
   return Animate(
       effects: [
         FadeEffect(
+          delay: Duration(seconds: 1),
           duration: Duration(milliseconds: 500),
         ),
         SlideEffect(
