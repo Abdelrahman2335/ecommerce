@@ -5,7 +5,8 @@ E-commerce App 🛒
  A full-featured E-commerce App built with Flutter & Firebase,
  featuring smooth UI updates, secure payments, and efficient state management.
 
-📌 Features
+📌 Features:
+
 ✅ User Authentication – Sign up, log in, and sign in persistence using Firebase.
 ✅ Wishlist & Cart System – Users can save products and manage their carts.
 ✅ Product Listings – Displays products with images, details, and prices.
@@ -14,7 +15,8 @@ E-commerce App 🛒
 ✅ Payments Integration – Secure transactions using Paymob.
 ✅ Optimized Performance – Smooth UI with less than 60 FPS frame drops.
 
-🛠️ Technologies Used
+🛠️ Technologies Used:
+
 Flutter – Frontend framework
 
 Dart – Programming language
@@ -24,15 +26,3 @@ Firebase – Authentication, Firestore, Cloud Functions
 Provider – State management
 
 Paymob – Payment gateway integration
-
-🚀 Installation & Setup
-Clone the repository:
-
-git clone https://github.com/Abdelrahman2335/ecommerce-app.git
-cd ecommerce-app
-Install dependencies:
-
-flutter pub get
-Run the app:
-
-flutter run
