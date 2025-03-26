@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             side: BorderSide(color: theme.primaryColor),
                           ),
                           onPressed: () {
-                           context.read<SignUpProvider>().signInWithGoogle();
+                           context.read<LoginProvider>().loginWithGoogle();
                           },
                           child: const Image(
                             image: AssetImage(

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/methods/optional_info.dart';
 import 'package:ecommerce/methods/setup_address.dart';
@@ -51,7 +53,24 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
     int counter = signUpProvider.hasInfo ? 2 : 1;
- counter = context.read<LocationProvider>().nextPageValue ? counter + 1 : counter;
+    double sliderValue = signUpProvider.sliderValue;
+    bool nextPage = context.watch<LocationProvider>().nextPageValue;
+
+    counter = nextPage ? 3 : counter;
+     sliderValue = counter == 3 ? context.read<LocationProvider>().newSliderValue : sliderValue;
+
+    /// If we have info (phone number) about the user we will show the address form
+    /// if the nextPageValue is true (which will not happen, unless the user went to the address screen) we will show the optional info
+
+    Widget content = counter == 1 ? personalContent : addressContent;
+
+    content = counter == 3
+        ? optionalInfo(
+            context, firstController, secondController, user, formKey)
+        : content;
+    log("nextPage: $nextPage");
+    log("hasInfo: ${!signUpProvider.hasInfo}");
+
     /// counter for the steps
     return PopScope(
       canPop: false,
@@ -89,9 +108,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              height: signUpProvider.hasInfo
-                  ? MediaQuery.of(context).size.height * 0.54
-                  : MediaQuery.of(context).size.height * 0.40,
+              height: !signUpProvider.hasInfo || nextPage
+                  ? MediaQuery.of(context).size.height * 0.44
+                  : MediaQuery.of(context).size.height * 0.54,
               width: MediaQuery.of(context).size.width * 0.90,
               child: Padding(
                 padding: const EdgeInsets.all(19.0),
@@ -107,21 +126,13 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                   Gap(7),
-
-                  /// If we have info (phone number) about the user we will show the address form
-                  /// if the nextPageValue is true (which will not happen, unless the user went to the address screen) we will show the optional info
-                  signUpProvider.hasInfo
-                      // true
-                      ? addressContent
-                      : context.read<LocationProvider>().nextPageValue
-                          ? optionalInfo(context, firstController, secondController, user, formKey)
-                          : personalContent,
+                  content,
                   Expanded(
                       flex: 2,
 
                       /// we are using TweenAnimationBuilder to make some animation to the slider.
                       child: TweenAnimationBuilder(
-                        tween: Tween(begin: 0, end: signUpProvider.sliderValue),
+                        tween: Tween(begin: 0, end: sliderValue),
                         duration: Duration(milliseconds: 1000),
                         builder: (ctx, value, child) => Slider(
                           value: value.toDouble(),

@@ -15,18 +15,25 @@ class LocationProvider extends ChangeNotifier {
   LatLng? userLocation;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   User? user = FirebaseAuth.instance.currentUser;
+
   /// will be used to show the user location on the map
   LocationData? locationData;
   bool _nextPage = false;
+  double _sliderValue = 0.50;
 
   get nextPageValue => _nextPage;
+  get newSliderValue => _sliderValue;
+
   void updateNextPageValue(bool newValue) {
-    if (_nextPage != newValue) {  /// Only update if value is different
+    if (_nextPage != newValue) {
+      /// Only update if value is different
       _nextPage = newValue;
       log("nextPageValue updated: $nextPageValue");
+      _sliderValue = 0.75;
       notifyListeners();
     }
   }
+
   showLocation() async {
     try {
       if (locationData != null) {
@@ -67,7 +74,6 @@ class LocationProvider extends ChangeNotifier {
         return;
       }
     }
-
 
     isGettingLocation = true;
     notifyListeners();
@@ -112,7 +118,6 @@ class LocationProvider extends ChangeNotifier {
               area: data['address']['city'] ?? place.locality,
               street: data['address']['road'] ?? 'Not Found',
             ).toJson());
-
 
         /// for debugging
         // log(place.country.toString());

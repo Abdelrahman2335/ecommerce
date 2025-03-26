@@ -1,13 +1,16 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/location_provider.dart';
 import 'package:ecommerce/provider/payment_provider.dart';
+import 'package:ecommerce/screens/items/home_screen.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
-import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/screens/login_setup/profile_screen.dart';
+import 'package:ecommerce/screens/login_setup/signup.dart';
 import 'package:ecommerce/screens/login_setup/user_details_screen.dart';
 import 'package:ecommerce/screens/payment/payment_configuration.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
@@ -15,7 +18,6 @@ import 'package:ecommerce/screens/place_order/check_out.dart';
 import 'package:ecommerce/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:ecommerce/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -69,6 +71,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugInvertOversizedImages = true;
+
     return MaterialApp(
       navigatorKey: navigatorKey,
       routes: {
@@ -84,20 +87,49 @@ class MyApp extends StatelessWidget {
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
-      home:
-          SignUp(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child: CircularProgressIndicator()); // Loading indicator
+          }
+          final user = snapshot.data;
+          if (user == null) {
+            return LoginScreen(); // No user signed in
+          }
 
-          // StreamBuilder(
-          //     stream: FirebaseAuth.instance.authStateChanges(),
-          //     builder: ((context, snapshot) {
-          //       if (snapshot.connectionState == ConnectionState.waiting) {
-          //         return const CircularProgressIndicator();
-          //       } else if (snapshot.data != null && snapshot.hasData) {
-          //         return const LayOut();
-          //       } else {
-          //         return const LoginScreen();
-          //       }
-          //     })),
+          return FutureBuilder<DocumentSnapshot>(
+            future: FirebaseFirestore.instance
+                .collection("users")
+                .doc(user.uid)
+                .get(),
+            builder: (context, userSnapshot) {
+              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                return Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ); // Waiting for Firestore
+              }
+
+              if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
+                return LoginScreen(); // If user data doesn't exist, go to login
+              }
+
+              final userData =
+                  userSnapshot.data!.data() as Map<String, dynamic>;
+
+              /// don't user .isEmpty or you will get Class 'double' has no instance getter 'isEmpty'.
+              if (userData["phone"] == null || userData["longitude"] == null) {
+                return UserDetailsScreen(); // Redirect user to complete details
+              } else {
+                return HomeScreen(); // Navigate to home if all details exist
+              }
+            },
+          );
+        },
+      ),
     );
   }
 }

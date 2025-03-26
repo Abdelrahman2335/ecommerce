@@ -77,7 +77,6 @@ class SignUpProvider extends ChangeNotifier {
                 createdAt: DateTime.now(),
                 role: "user",
                 name: googleSignInAccount.displayName,
-                phone: googleSignInAccount.photoUrl,
               ).toJson());
         }
       } catch (error) {

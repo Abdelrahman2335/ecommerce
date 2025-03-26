@@ -245,7 +245,6 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
   return Animate(
       effects: [
         FadeEffect(
-          delay: Duration(seconds: 1),
           duration: Duration(milliseconds: 500),
         ),
         SlideEffect(
