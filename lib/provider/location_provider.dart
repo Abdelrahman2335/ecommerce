@@ -80,9 +80,7 @@ class LocationProvider extends ChangeNotifier {
     locationData = await location.getLocation();
 
     /// update the locationData to use it in the showLocation method
-    log(locationData!.latitude.toString());
-    log(locationData!.longitude.toString());
-    log(isGettingLocation.toString());
+
     showLocation();
     getAddressFromCoordinates();
   }
@@ -97,6 +95,7 @@ class LocationProvider extends ChangeNotifier {
 
       geo.Placemark place = placeMarks.first;
 
+      /// This url is used to get the address in details, we have to give the latitude and longitude and an email.
       final url = Uri.parse(
           "https://nominatim.openstreetmap.org/reverse?lat=${locationData!.latitude}&lon=${locationData!.longitude}&format=json");
 

@@ -37,7 +37,7 @@ class SignUpProvider extends ChangeNotifier {
           .get()
           .then((value) => value.data());
 
-      hasInfo = doc?["phone"].isNotEmpty ?? false;
+      hasInfo = doc?["phone"] == null ? false : true;
       log("hasInfo: $hasInfo");
       return hasInfo;
     } catch (error) {
@@ -50,13 +50,22 @@ class SignUpProvider extends ChangeNotifier {
     checkUserExistence();
   }
 
-   signInWithGoogle() async {
+  signInWithGoogle() async {
     isLoading = true;
     notifyListeners();
 
     /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
-    GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+    GoogleSignInAccount? googleSignInAccount;
+
+    try {
+      googleSignInAccount = await googleSignIn.signIn();
+    } catch (error) {
+      log("error: $error");
+    }
     if (googleSignInAccount == null) {
+      isLoading = false;
+      notifyListeners();
+
       return;
     } else {
       try {
@@ -76,7 +85,6 @@ class SignUpProvider extends ChangeNotifier {
               .set(UserModel(
                 createdAt: DateTime.now(),
                 role: "user",
-                name: googleSignInAccount.displayName,
               ).toJson());
         }
       } catch (error) {
@@ -89,8 +97,8 @@ class SignUpProvider extends ChangeNotifier {
       } finally {
         isLoading = false;
       }
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   personalInfo(String name, String phone, User user) async {

@@ -31,28 +31,35 @@ class LoginProvider extends ChangeNotifier {
       GlobalKey<FormState> formKey, String passCon, String userCon) async {
     final valid = formKey.currentState!.validate();
     isLoading = true;
-
+    notifyListeners();
     try {
       if (!valid) {
         isLoading = false;
 
         return;
       } else {
-        await firebase
-            .signInWithEmailAndPassword(email: userCon, password: passCon)
-            .then((value) {
-          return value.user != null
-              ? navigatorKey.currentState?.pushReplacementNamed('/layout')
-              : null;
-        });
+         await firebase
+                .signInWithEmailAndPassword(email: userCon, password: passCon);
+
+                  final userDataCheck = await FirebaseFirestore.instance
+                    .collection("users")
+                    .doc(firebase.currentUser!.uid)
+                    .get();
+
+                /// we will check if the user have any info or not
+                userDataCheck.data()?["city"] == null
+                    ? navigatorKey.currentState?.pushReplacementNamed('/user_setup')
+                    : navigatorKey.currentState?.pushReplacementNamed('/layout');
+
       }
     } catch (error) {
+      log(error.toString());
       /// Important to know that we are using Scaffold global Key from the main.dart
       /// This allow us to don't use context + make the work more easy and effectuation.
       scaffoldMessengerKey.currentState?.clearSnackBars();
       scaffoldMessengerKey.currentState?.showSnackBar(
         SnackBar(
-          content: Text(error.toString()),
+          content: Text("Authentication Error!"),
         ),
       );
     } finally {
@@ -66,6 +73,7 @@ class LoginProvider extends ChangeNotifier {
   Future loginWithGoogle() async {
     isLoading = true;
     notifyListeners();
+    log("we are in");
 
     /// to update the UI you have to use [notifyListeners()] even if you are using in many times in the function.
     /// (this is may lead to unnecessary rebuild)
@@ -80,14 +88,12 @@ class LoginProvider extends ChangeNotifier {
     if (googleSignInAccount == null) {
       isLoading = false;
       notifyListeners();
+      return;
 
       /// to update the UI you have to use [notifyListeners()] even if you are using in many times in the function.
       /// (this is may lead to unnecessary rebuild)
-
-      return;
     } else {
       try {
-        isLoading = true;
         GoogleSignInAuthentication googleAuth =
             await googleSignInAccount.authentication;
 
@@ -96,22 +102,25 @@ class LoginProvider extends ChangeNotifier {
 
         final userCredential =
             await firebase.signInWithCredential(authCredential);
-
         if (userCredential.user != null) {
-          var data = await FirebaseFirestore.instance
+          final data = await FirebaseFirestore.instance
               .collection("users")
               .doc(userCredential.user!.uid)
               .get();
-          if (data.exists) {
+
+          /// if the userId is not in the doc create it
+          if (!data.exists) {
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(userCredential.user!.uid)
+                .set(UserModel(createdAt: DateTime.now()).toJson());
+            navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+          } else if (data.data()?["phone"] == null ||
+              data.data()?["longitude"] == null) {
+            navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+          } else {
             navigatorKey.currentState?.pushReplacementNamed('/layout');
           }
-         await FirebaseFirestore.instance
-              .collection("users")
-              .doc(userCredential.user!.uid)
-              .set(UserModel(createdAt: DateTime.now()).toJson());
-          navigatorKey.currentState?.pushReplacementNamed('/user_setup');
-        } else {
-          log("loginWithGoogle: ${userCredential.user}");
         }
       } on FirebaseAuthException catch (error) {
         scaffoldMessengerKey.currentState?.clearSnackBars();
@@ -122,7 +131,6 @@ class LoginProvider extends ChangeNotifier {
         );
       } finally {
         isLoading = false;
-        notifyListeners();
       }
     }
     notifyListeners();
@@ -133,7 +141,6 @@ class LoginProvider extends ChangeNotifier {
     try {
       if (isGoogleAccount) {
         log("Google Account");
-
         await google.signOut();
         await firebase.signOut();
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??

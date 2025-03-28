@@ -6,13 +6,10 @@ import '../provider/signup_provider.dart';
 
 Widget setupUserData(BuildContext context, nameCon, phoneCon, User? user,
     GlobalKey<FormState> formKey) {
-  SignUpProvider signUpProvider = Provider.of<SignUpProvider>(context);
   RegExp regex = RegExp(r'^[0-9+]+$');
 
   /// Allows only digits (0-9) and "+"
 
-  /// Both are the same
-  //  SignUpProvider signUpProvider = context.watch<SignUpProvider>();
 
   return Column(
     children: [
@@ -90,7 +87,7 @@ Widget setupUserData(BuildContext context, nameCon, phoneCon, User? user,
             onPressed: () {
               final valid = formKey.currentState!.validate();
               if (valid) {
-                signUpProvider.personalInfo(nameCon.text, phoneCon.text, user!);
+                context.read<SignUpProvider>().personalInfo(nameCon.text, phoneCon.text, user!);
                 nameCon.clear();
                 phoneCon.clear();
               }

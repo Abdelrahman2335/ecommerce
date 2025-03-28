@@ -6,7 +6,6 @@ import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:ecommerce/provider/location_provider.dart';
 import 'package:ecommerce/provider/payment_provider.dart';
-import 'package:ecommerce/screens/items/home_screen.dart';
 import 'package:ecommerce/screens/login_setup/forgot_password.dart';
 import 'package:ecommerce/screens/login_setup/login_screen.dart';
 import 'package:ecommerce/screens/login_setup/profile_screen.dart';
@@ -54,6 +53,8 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => LocationProvider(),
+
+
       ),
     ], child: const MyApp()));
   } catch (error) {
@@ -121,10 +122,10 @@ class MyApp extends StatelessWidget {
                   userSnapshot.data!.data() as Map<String, dynamic>;
 
               /// don't user .isEmpty or you will get Class 'double' has no instance getter 'isEmpty'.
-              if (userData["phone"] == null || userData["longitude"] == null) {
+              if (userData["city"] == null) {
                 return UserDetailsScreen(); // Redirect user to complete details
               } else {
-                return HomeScreen(); // Navigate to home if all details exist
+                return LayOut(); // Navigate to home if all details exist
               }
             },
           );

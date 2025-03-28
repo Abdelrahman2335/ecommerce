@@ -167,8 +167,11 @@ class _SignUpState extends State<SignUp> {
                           backgroundColor: theme.primaryColor.withAlpha(37),
                           side: BorderSide(color: theme.primaryColor),
                         ),
-                        onPressed: () async {
-                          await signUpProvider.signInWithGoogle();
+                        onPressed: () {
+
+                          Provider.of<SignUpProvider>(
+                              navigatorKey.currentContext!, /// instead of context
+                              listen: false).signInWithGoogle();
 
                           if (firebase.currentUser == null) return;
                           navigatorKey.currentState

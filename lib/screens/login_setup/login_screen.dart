@@ -147,8 +147,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             backgroundColor: theme.primaryColor.withAlpha(37),
                             side: BorderSide(color: theme.primaryColor),
                           ),
-                          onPressed: () {
-                           context.read<LoginProvider>().loginWithGoogle();
+                          onPressed: () async {
+                           await context.read<LoginProvider>().loginWithGoogle();
                           },
                           child: const Image(
                             image: AssetImage(

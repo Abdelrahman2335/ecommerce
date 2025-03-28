@@ -4,29 +4,29 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-Widget optionalInfo(BuildContext context, nameCon, ageCon,User? user,
+Widget optionalInfo(BuildContext context, nameCon, ageCon, User? user,
     GlobalKey<FormState> formKey) {
-  RegExp regex = RegExp(r'^[0-9+]+$');
+  RegExp regex =  RegExp(r'^[0-9+]+$');
 
   /// Allows only digits (0-9) and "+"
-  String? selectedGender;
+  List genders = ["male","female"];
+  String selectedGender = genders[0];
   Future updateUser(User? user, String? selectedGender, String age) async {
     if (user == null) return;
-   await FirebaseFirestore.instance.collection("users").doc(user.uid).update(
-        UserModel(
+    await FirebaseFirestore.instance
+        .collection("users")
+        .doc(user.uid)
+        .update(UserModel(
           age: ageCon.text,
-          gender: selectedGender,).toJson()
-    );
+          gender: selectedGender,
+        ).toJson());
   }
 
   /// Both are the same
   //  SignUpProvider signUpProvider = context.watch<SignUpProvider>();
 
   return SizedBox(
-    height: MediaQuery
-        .of(context)
-        .size
-        .height * 0.30,
+    height: MediaQuery.of(context).size.height * 0.30,
     child: Column(
       children: [
         // SizedBox(height: 26,),
@@ -36,10 +36,10 @@ Widget optionalInfo(BuildContext context, nameCon, ageCon,User? user,
             maxLength: 2,
 
             buildCounter: (context,
-                {required currentLength,
-                  required isFocused,
-                  required maxLength}) =>
-            null,
+                    {required currentLength,
+                    required isFocused,
+                    required maxLength}) =>
+                null,
 
             /// by using [buildCounter] we have disabled the counter shown under the [textFormField]
             keyboardType: TextInputType.phone,
@@ -52,7 +52,7 @@ Widget optionalInfo(BuildContext context, nameCon, ageCon,User? user,
               }
               return null;
             },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: "Age",
               icon: Icon(
                 Icons.cake_outlined,
@@ -63,41 +63,56 @@ Widget optionalInfo(BuildContext context, nameCon, ageCon,User? user,
           ),
         ),
 
-        Gap(9),
+        const Gap(9),
 
         /// Will be tested
-        Expanded(
-          flex: 1,
-          child: DropdownButtonFormField(
-            hint: const Text("Gender"),
-            items: [
-              for (String gender in ["Male", "Female"])
-                DropdownMenuItem(value: gender, child: Text(gender)),
-            ],
-            value: selectedGender,
-            onChanged: (value) {
-              selectedGender = value!;
-            },
+        Row( children: [
+          const  Icon(
+            Icons.male,
+            color: Colors.grey,
           ),
-        ),
+         const Gap(14),
 
+          /// The dropdown button for the cities.
+          /// using Expanded to make the dropdown button take the remaining space (Important)
+          Expanded(
+            child: DropdownButtonFormField(
+              items: [
+                for (String gender in genders)
+                  DropdownMenuItem(
+                    value: gender,
+
+                    /// [FittedBox] adjusts its child based on the available space while maintaining the child’s aspect ratio.
+                    child: FittedBox(
+                        child: Text(
+                          gender,
+
+                          /// if the text is too long, it will be ellipsis (...)
+                          overflow: TextOverflow.ellipsis,
+                        )),
+                  ),
+              ],
+              value: selectedGender,
+              onChanged: (value) {
+                selectedGender = value!;
+              },
+            ),
+          ),
+        ],
+        ),
+        const Gap(40),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: Theme
-                    .of(context)
-                    .primaryColor,
+                foregroundColor: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
                 // minimumSize: Size(100, 40), /// Change the size of the button,
                 padding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-
-                /// Change the padding of the button (the space inside the button)
-                /// Don't forget to change other buttons as well
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               ),
               onPressed: () {
                 Navigator.pushNamed(context, "/layout");
@@ -106,17 +121,14 @@ Widget optionalInfo(BuildContext context, nameCon, ageCon,User? user,
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme
-                      .of(context)
-                      .primaryColor,
+                  backgroundColor: Theme.of(context).primaryColor,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12))),
               onPressed: () async {
                 final valid = formKey.currentState?.validate();
                 if (valid == null || valid == false) return;
-               await updateUser(user, selectedGender, ageCon.text);
-
+                await updateUser(user, selectedGender, ageCon.text);
 
                 Navigator.pushReplacementNamed(context, "/layout");
               },

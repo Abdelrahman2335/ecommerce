@@ -12,6 +12,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../methods/setup_user_data.dart';
+import '../../provider/auth_provider.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({super.key});
@@ -47,21 +48,23 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     /// Using provider like this not the best, in terms of performance.
     ///But we are using the value of the [signUpProvider] many times in the widget tree.
     ///If we use the [Consumer] or [Selector] widget, the code will be hard to read.
-    final signUpProvider = context.watch<SignUpProvider>();
+
     Widget personalContent = setupUserData(
         context, firstController, secondController, user, formKey);
+
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
-    int counter = signUpProvider.hasInfo ? 2 : 1;
-    double sliderValue = signUpProvider.sliderValue;
-    bool nextPage = context.watch<LocationProvider>().nextPageValue;
 
+    int counter = context.watch<SignUpProvider>().hasInfo ? 2 : 1;
+    bool nextPage = context.watch<LocationProvider>().nextPageValue;
     counter = nextPage ? 3 : counter;
-     sliderValue = counter == 3 ? context.read<LocationProvider>().newSliderValue : sliderValue;
 
     /// If we have info (phone number) about the user we will show the address form
     /// if the nextPageValue is true (which will not happen, unless the user went to the address screen) we will show the optional info
+    double sliderValue = 0;
 
+    if(counter == 2) sliderValue = 0.50;
+    if(counter == 3) sliderValue = 0.75;
     Widget content = counter == 1 ? personalContent : addressContent;
 
     content = counter == 3
@@ -69,7 +72,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             context, firstController, secondController, user, formKey)
         : content;
     log("nextPage: $nextPage");
-    log("hasInfo: ${!signUpProvider.hasInfo}");
+    log("hasInfo 2 = true: $counter");
 
     /// counter for the steps
     return PopScope(
@@ -81,6 +84,17 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         );
       },
       child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              onPressed: () {
+                Provider.of<LoginProvider>(context, listen: false).signOut();
+              },
+              icon: const Icon(Icons.exit_to_app_outlined),
+            ),
+          ],
+        ),
         body: Animate(
           effects: [
             FadeEffect(
@@ -108,7 +122,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              height: !signUpProvider.hasInfo || nextPage
+              height: counter == 1 || nextPage
                   ? MediaQuery.of(context).size.height * 0.44
                   : MediaQuery.of(context).size.height * 0.54,
               width: MediaQuery.of(context).size.width * 0.90,
@@ -116,7 +130,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 padding: const EdgeInsets.all(19.0),
                 child: Column(children: [
                   Text(
-                    signUpProvider.hasInfo
+                    counter == 2
                         ? "Address Information"
                         : "Personal Information",
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),

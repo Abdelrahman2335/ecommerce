@@ -16,11 +16,8 @@ String selectedCity = egyptCities[0];
 
 Widget setupAddress(BuildContext context, firstCon, secondCon, user,
     GlobalKey<FormState> formKey) {
-  SignUpProvider signUpProvider = context.watch<SignUpProvider>();
-
   /// Both are the same
   // SignUpProvider signUpProvider = Provider.of<SignUpProvider>(context);
-  LocationProvider locationProvider = context.watch<LocationProvider>();
 
   final theme = Theme.of(context).primaryColor;
   final mediaQuery = MediaQuery.of(context).size;
@@ -125,7 +122,7 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
               /// Change the padding of the button (the space inside the button)
               /// Don't forget to change other buttons as well
             ),
-            onPressed: locationProvider.getCurrentLocation,
+            onPressed: context.read<LocationProvider>().getCurrentLocation,
             child: const Text("Current location"),
           ),
           ElevatedButton(
@@ -143,7 +140,7 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
               final valid = formKey.currentState!.validate();
               if (valid) {
                 ///  Here we are going to update the address information
-                signUpProvider.addressInfo(address, user);
+                context.read<SignUpProvider>().addressInfo(address, user);
                 firstCon.clear();
                 secondCon.clear();
                 context.read<LocationProvider>().updateNextPageValue(true);
@@ -159,12 +156,12 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
   );
 
   /// the content of the map
-  if (locationProvider.isGettingLocation) {
+  if (context.watch<LocationProvider>().isGettingLocation) {
     previewContent = SizedBox(
         height: mediaQuery.height * 0.27,
         child: LoadingAnimationWidget.inkDrop(color: theme, size: 36));
   }
-  if (locationProvider.userLocation != null) {
+  if (context.watch<LocationProvider>().userLocation != null) {
     previewContent = Column(
       children: [
         Container(
@@ -190,7 +187,7 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
           child: FlutterMap(
               options: MapOptions(
                 /// The initial center is the user location
-                initialCenter: locationProvider.userLocation!,
+                initialCenter: context.watch<LocationProvider>().userLocation!,
                 initialZoom: 16,
 
                 /// making the map fixed
@@ -204,7 +201,7 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
                 ),
                 MarkerLayer(markers: [
                   Marker(
-                      point: locationProvider.userLocation!,
+                      point: context.watch<LocationProvider>().userLocation!,
                       width: 40,
                       height: 40,
                       child: const Icon(
