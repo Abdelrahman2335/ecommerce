@@ -22,7 +22,6 @@ class _HomeScreenState extends State<HomeScreen> {
   User? user;
   bool isLoading = true;
 
-
   /// We can't add this boolean to the init state because of the context
   /// this issue don't exist in Riverpod.
   /// didChangeDependencies is the best choice here
@@ -32,11 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
     isLoading = Provider.of<ItemProvider>(context).receivedData.isEmpty;
     super.didChangeDependencies();
   }
+
   @override
   Widget build(BuildContext context) {
-
-
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -63,8 +60,14 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               UserAccountsDrawerHeader(
                 currentAccountPictureSize: Size.square(59),
-                accountName: Text(user?.displayName.toString()??"No Name",style: TextStyle(fontSize: 19),),
-                accountEmail: Text(user?.email.toString()??"No Email",style: TextStyle(fontSize: 12),),
+                accountName: Text(
+                  user?.displayName.toString() ?? "No Name",
+                  style: TextStyle(fontSize: 19),
+                ),
+                accountEmail: Text(
+                  user?.email.toString() ?? "No Email",
+                  style: TextStyle(fontSize: 12),
+                ),
                 currentAccountPicture: const CircleAvatar(
                   child: Opacity(
                       opacity: 0.5,
@@ -116,7 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   // Navigator.of(context).pushNamed("/settings");
                 },
               ),
-
             ],
           )),
 
@@ -264,6 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
             ),
+
             const HomeContent(),
           ],
         ),
@@ -271,3 +274,66 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
+
+
+/// Used when you want to upload data.
+// import 'package:ecommerce/data/dummy_data.dart';
+// import 'package:ecommerce/provider/e_provider.dart';
+// import 'package:flutter/material.dart';
+// import 'package:provider/provider.dart';
+//
+// class HomeScreen extends StatefulWidget {
+//   const HomeScreen({super.key});
+//
+//   @override
+//   State<HomeScreen> createState() => _HomeScreenState();
+// }
+//
+// final data = productData;
+//
+// class _HomeScreenState extends State<HomeScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: GridView.builder(
+//         itemCount: data.length,
+//         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+//           crossAxisCount: 2,
+//           mainAxisSpacing: 10,
+//           crossAxisSpacing: 10,
+//           mainAxisExtent: 300, // Already setting height here
+//         ),
+//         itemBuilder: (BuildContext context, int index) {
+//           return SizedBox( // Use SizedBox instead of Expanded
+//             width: double.infinity, // Ensures it takes full width of the grid cell
+//             child: Container(
+//               decoration: BoxDecoration(
+//                 borderRadius: BorderRadius.circular(20),
+//                 color: Colors.white,
+//               ),
+//               clipBehavior: Clip.hardEdge,
+//               child: InkWell(
+//                 borderRadius: BorderRadius.circular(17),
+//                 onTap: () {
+//                   context.read<ItemProvider>().addProducts(
+//                     data[index].category,
+//                     data[index].imageUrl,
+//                     data[index].description,
+//                     data[index].title,
+//                     data[index].price,
+//                     data[index].size,
+//                     data[index].id,
+//                     data[index].quantity,
+//                   );
+//                 },
+//               ),
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//
+//   }
+// }

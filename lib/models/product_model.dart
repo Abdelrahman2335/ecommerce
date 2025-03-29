@@ -1,6 +1,6 @@
 class Product {
   final String id;
-  final String category;
+  final List category;
   final List imageUrl;
   final String title;
   final String description;
@@ -22,7 +22,7 @@ class Product {
   /// Convert Firestore document to Product object
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      category: json['category'] ?? "",
+      category: List<String>.from(json['category'] ?? []),
       imageUrl: List<String>.from(json['imageUrl'] ?? []),
       title: json['title'] ?? "",
       description: json['description'] ?? "",

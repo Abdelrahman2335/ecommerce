@@ -37,7 +37,7 @@ class _HomeContentState extends State<HomeContent> {
         crossAxisCount: 2,
         crossAxisSpacing: 4,
         mainAxisSpacing: 3,
-        mainAxisExtent: MediaQuery.of(context).size.height * 0.4,
+        mainAxisExtent: MediaQuery.of(context).size.height * 0.43,
       ),
 
       /// [delegate] is the best choice here because we don't know the length of the list, and how many items to build
@@ -78,6 +78,14 @@ class _HomeContentState extends State<HomeContent> {
               child: Container(
                 margin: const EdgeInsets.all(9),
                 decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade300,
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(2, 3),
+                      ),
+                    ],
                     borderRadius: BorderRadius.circular(16),
                     color: Colors.white),
                 clipBehavior: Clip.antiAlias,
@@ -89,23 +97,24 @@ class _HomeContentState extends State<HomeContent> {
                               itemData: data,
                             )));
                   },
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: double.infinity,
-                      // Ensure the container takes full width
-                      maxWidth: double.infinity,
-                      minHeight:
-                          200, // Set a minimum height to avoid unconstrained issues
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CachedNetworkImage(
+
+                  /// if you want to control the child size you can use [ConstrainedBox]
+                  ///
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          // maxHeight: MediaQuery.of(context).size.height * 0.24,
+                          // maxWidth: MediaQuery.of(context).size.width * 0.6,
+                          // minHeight: MediaQuery.of(context).size.height * 0.24,
+                          // minWidth: MediaQuery.of(context).size.width * 0.6,
+                        ),
+                        child: CachedNetworkImage(
                           placeholderFadeInDuration:
                               Duration(milliseconds: 150),
-
-                          height: 200,
-                          width: double.infinity,
+                          height: MediaQuery.of(context).size.height * 0.28,
+                          width: MediaQuery.of(context).size.width * 0.6,
                           fit: BoxFit.cover,
                           // placeholder: MemoryImage(kTransparentImage),
                           memCacheWidth:
@@ -114,100 +123,99 @@ class _HomeContentState extends State<HomeContent> {
                               (MediaQuery.of(context).size.height * 0.4)
                                   .round(),
 
-                          imageUrl: "${data.imageUrl[0]}",
-
+                          imageUrl: data.imageUrl[0],
                           errorWidget: (context, url, error) => const Icon(
                             Icons.error,
                             color: Colors.red,
                           ),
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 6, top: 5, bottom: 2),
-                          child: Text(
-                            data.title,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                          ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(left: 6, top: 20, bottom: 2),
+                        child: Text(
+                          data.title,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            left: 6,
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                "\$${data.price}",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const Spacer(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 6,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "\$${data.price}",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
 
-                              /// we are using [Selector] here to listen to the [isLoading] value from [WishListProvider]
-                              /// and build only this widget when the value changes
-                              /// note if we didn't add Selector here when isLoading is true,
-                              /// the all buttons will load at once even if we didn't press it
+                            /// we are using [Selector] here to listen to the [isLoading] value from [WishListProvider]
+                            /// and build only this widget when the value changes
+                            /// note if we didn't add Selector here when isLoading is true,
+                            /// the all buttons will load at once even if we didn't press it
 
-                              /// Edit this later because it take some time to load
-                              Row(
-                                children: [
-                                  isInCart
-                                      ? IconButton(
-                                          onPressed: () async {
-                                            await inCartProvider.removeFromCart(
-                                                data, false);
-                                          },
-                                          icon: Icon(
-                                            Icons.remove_circle_outline,
+                            /// Edit this later because it take some time to load
+                            Row(
+                              children: [
+                                isInCart
+                                    ? IconButton(
+                                        onPressed: () async {
+                                          await inCartProvider.removeFromCart(
+                                              data, false);
+                                        },
+                                        icon: Icon(
+                                          Icons.remove_circle_outline,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                        ))
+                                    : IconButton(
+                                        onPressed: () async {
+                                          await wishedItems.addWish(data);
+                                        },
+                                        icon: isWished
+                                            ? Icon(Icons.favorite)
+                                            : Icon(Icons.favorite_border),
+                                        color: isWished
+                                            ? Theme.of(context).primaryColor
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .secondary),
+                                isInCart
+                                    ? Text(
+                                        itemCount.toString(),
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                      )
+                                    : Container(),
+                                IconButton(
+                                    onPressed: () async {
+                                      await inCartProvider.addToCart(data);
+                                    },
+                                    icon: isInCart
+                                        ? Icon(
+                                            Icons.add_circle_outline,
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary,
-                                          ))
-                                      : IconButton(
-                                          onPressed: () async {
-                                            await wishedItems.addWish(data);
-                                          },
-                                          icon: isWished
-                                              ? Icon(Icons.favorite)
-                                              : Icon(Icons.favorite_border),
-                                          color: isWished
-                                              ? Theme.of(context).primaryColor
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary),
-                                  isInCart
-                                      ? Text(
-                                          itemCount.toString(),
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary),
-                                        )
-                                      : Container(),
-                                  IconButton(
-                                      onPressed: () async {
-                                        await inCartProvider.addToCart(data);
-                                      },
-                                      icon: isInCart
-                                          ? Icon(
-                                              Icons.add_circle_outline,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                            )
-                                          : Icon(
-                                              Icons.shopping_cart_outlined,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                            )),
-                                ],
-                              ),
-                            ],
-                          ),
+                                          )
+                                        : Icon(
+                                            Icons.shopping_cart_outlined,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                          )),
+                              ],
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

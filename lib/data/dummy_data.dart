@@ -6,188 +6,189 @@ Uuid uuid = Uuid();
 
 final List<Product> productData = [
   Product(
-    category: "Clothing",
+    category: ["Men's Fashion", "Winter Wear", "Sweaters"],
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img_2.png?alt=media&token=99b47ab6-54a9-4250-b5c5-16578d7c0304",
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img_3.png?alt=media&token=69e76f6a-cee0-4bf9-82b7-cf30c7c4324c",
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img_4.png?alt=media&token=094a0661-e36f-4747-ae08-d1c26b2ca3c1",
+      "https://i.pinimg.com/236x/80/87/22/8087221a9c66fdf7e69448e988949c1d.jpg",
     ],
-    title:
-        "Kady Windowpane Pattern Buttons Down Closure Shirt - Navy Blue & Dark Green",
+    title: "Navy Blue Crew Neck Sweater",
     price: 299,
     size: ['S', 'M', 'L'],
     description:
-        "A stylish and comfortable shirt with a windowpane pattern, perfect for casual and formal occasions.",
+        "A stylish navy blue crew neck sweater made from high-quality cotton blend, perfect for casual or semi-formal wear.",
     id: uuid.v4(),
     quantity: 10,
   ),
   Product(
-    category: "Footwear",
+    category: ["Men's Footwear", "Casual Shoes", "Sneakers"],
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img_1.png?alt=media&token=443a3367-f2b9-418b-8a08-fff1e71f5106",
+      "https://i.pinimg.com/736x/ab/de/93/abde932f6612a4333ea864923bc4d08c.jpg",
     ],
-    title: "Nike Shoes",
+    title: "Men's White Chunky Sneakers",
     price: 999,
     size: ['40-41', '42-43', '44-45'],
     description:
-        "High-performance Nike shoes designed for comfort and durability, ideal for sports and everyday wear.",
+        "Stylish all-white chunky sneakers designed for comfort and durability. Perfect for casual and streetwear fashion.",
     id: uuid.v4(),
     quantity: 5,
   ),
   Product(
-    title: "Elegant Women's Printed Kurta",
-    price: 400,
+    title: "Men's Henley Shirt - Army Green",
+    price: 299,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/dress.png?alt=media&token=d8611349-946a-42a0-8038-9a6e10e86e57",
+      "https://i.pinimg.com/236x/d8/a2/cf/d8a2cf9de711089909fd806d734fe82c.jpg",
     ],
-    category: "Clothing",
-    size: ['S', 'M', 'L'],
+    category: ["Clothing", "Men's Fashion", "Casual Wear"],
+    size: ['S', 'M', 'L', 'XL'],
     description:
-        "Elegant printed kurta with vibrant colors, perfect for traditional and festive occasions.",
-    id: uuid.v4(),
-    quantity: 4,
-  ),
-  Product(
-    title: "Marwa Platform Moccasin - Green",
-    price: 799,
-    imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/classic%20shoes.jpg?alt=media&token=7de8cdda-4635-4e88-83e7-9bcece3a43bb"
-    ],
-    category: "Footwear",
-    size: ['40-41', '42-43', '44-45'],
-    description:
-        "Stylish platform moccasins with a classic design, adding elegance and comfort to your steps.",
+        "Comfortable and stylish long-sleeve Henley shirt in army green, perfect for casual and everyday wear.",
     id: uuid.v4(),
     quantity: 6,
   ),
   Product(
-    title: "Men's Casual Shirt",
+    title: "Olive Green Henley Long-Sleeve Shirt",
+    price: 799,
+    imageUrl: [
+      "https://i.pinimg.com/236x/d8/a2/cf/d8a2cf9de711089909fd806d734fe82c.jpg"
+    ],
+    category: ["Men's Fashion", "Casual Wear", "Shirts"],
+    size: ['S', 'M', 'L', 'XL'],
+    description:
+        "A stylish olive green Henley long-sleeve shirt with a buttoned neckline. Made from soft, breathable fabric for all-day comfort.",
+    id: uuid.v4(),
+    quantity: 6,
+  ),
+  Product(
+    title: "Men's Olive Green Corduroy Shirt",
     price: 249,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/T-shert.png?alt=media&token=691bb8ac-cc7f-4df2-b312-e1995dfcf198"
+      "https://i.pinimg.com/474x/78/c2/22/78c222b9fd9402e7ee651cf4955512f1.jpg"
     ],
-    category: "Clothing",
-    size: ['S', 'M', 'L'],
+    category: ["Men's Fashion", "Casual Wear", "Shirts"],
+    size: ['S', 'M', 'L', 'XL'],
     description:
-        "Casual shirt for men, crafted with breathable fabric for everyday comfort and style.",
+        "A stylish olive green corduroy shirt with a relaxed fit. Features button-up front, two chest pockets, and rolled-up sleeves for a casual look.",
     id: uuid.v4(),
     quantity: 2,
   ),
   Product(
-    title: "Running Shoes - Blue",
-    price: 140,
-    imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/shoes.png.jpg?alt=media&token=26188e93-ac61-4911-b1fe-77da33cbdcdd"
-    ],
-    category: "Footwear",
-    size: ['40-41', '42-43', '44-45'],
+    title: "Luxury Leather Handbag - Brown",
+    price: 899,
+    imageUrl: ["https://your-image-url-here.com"],
+    category: ["Accessories", "Bags", "Women's Fashion"],
+    size: ["One Size"],
     description:
-        "Lightweight running shoes designed for optimal performance, with a stylish blue finish.",
+        "Elegant brown leather handbag with gold-tone hardware. Perfect for both casual and formal occasions, offering a blend of style and functionality.",
     id: uuid.v4(),
-    quantity: 5,
+    quantity: 3,
   ),
   Product(
-    title: "Leather Handbag - Brown",
+    title: "Elegant Leather Handbag - Olive Green",
     price: 499,
     imageUrl: [
-      "https://getdore.com/cdn/shop/files/DDohVrouwen-Zachte-Pu-Lederen-Schoudertas-Toevallige-Vintage-Grote-Handtassen-Mode-Nieuwe-Eenvoudige-Onderarm-Tassen-Luxe-Designer.jpg?v=1726060840&width=713"
+      "https://i.pinimg.com/236x/ee/19/22/ee192286042fa1c9d6b4e4f13a6e1ffb.jpg"
     ],
-    category: "Accessories",
+    category: ["Accessories", "Bags", "Women's Fashion"],
     description:
-        "Elegant brown leather handbag with ample storage, perfect for both formal and casual settings.",
+        "Stylish olive green leather handbag with a sleek design and ample storage. Ideal for both casual outings and formal occasions.",
     size: null,
     id: uuid.v4(),
     quantity: 14,
   ),
   Product(
-    category: "Clothing",
+    title: "Men's Henley Shirt - Olive",
+    price: 349,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/jacket.png?alt=media&token=6171661b-b828-42ae-b6dd-730b696a4e15"
+      "https://i.pinimg.com/236x/6e/e9/bc/6ee9bc73e894b2218fc8b223202d6d84.jpg"
     ],
-    title: "Men's Jacket - Black",
-    size: ['S', 'M', 'L'],
-    price: 499,
+    category: ["Clothing", "Men's Fashion"],
+    size: ['S', 'M', 'L', 'XL'],
     description:
-        "Classic black jacket for men, designed to provide warmth and style during colder days.",
+        "Stylish olive-colored Henley shirt for men, featuring a buttoned neckline and a comfortable fit, perfect for casual wear.",
     id: uuid.v4(),
-    quantity: 9,
+    quantity: 12,
   ),
   Product(
-    title: "Men's Classic Watch",
-    price: 999,
+    title: "Men's Luxury Chronograph Watch - Silver & Blue",
+    price: 1299,
     imageUrl: [
-      "https://ng.jumia.is/unsafe/fit-in/680x680/filters:fill(white)/product/91/4377262/1.jpg?3687"
+      "https://i.pinimg.com/236x/3a/1e/aa/3a1eaa36b1c7303905bb4dca57141009.jpg"
     ],
-    category: "Accessories",
+    category: ["Accessories", "Watches", "Men's Fashion"],
     description:
-        "Sophisticated classic watch, ideal for formal wear and everyday elegance.",
+        "Elegant men's chronograph watch featuring a stainless steel band, deep blue dial, and precise timekeeping. Perfect for formal and casual wear.",
     size: null,
     id: uuid.v4(),
-    quantity: 2,
+    quantity: 5,
   ),
   Product(
-    title: "Shirt - Black",
+    title: "Men's Classic Black Polo Shirt",
     price: 699,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/pexels-gustavo-11576960.jpg?alt=media&token=07c57d92-e30d-4acc-88df-974a8c6e17af"
+      "https://i.pinimg.com/236x/20/e5/5e/20e55e578dde7ceea39c49e06c64327c.jpg"
     ],
-    category: "Accessories",
+    category: ["Clothing", "Men's Fashion", "Casual Wear"],
     description:
-        "Versatile black shirt that pairs well with any outfit for a sleek, modern look.",
-    size: null,
+    "A stylish and comfortable black polo shirt, perfect for casual outings or semi-formal occasions. Made from high-quality breathable fabric.",
+    size: ['S', 'M', 'L', 'XL'],
     id: uuid.v4(),
-    quantity: 2,
+    quantity: 10,
   ),
+
   Product(
-    title: "Women High Heels - Red",
+    title: "L'Oréal Paris PRO XXL Extension Mascara",
     price: 399,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Women%20High%20Heels.png?alt=media&token=1affb620-bc58-45eb-a32e-f7b4f84294b6"
+      "https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/83/400483/1.jpg?3697"
     ],
-    category: "Footwear",
-    size: ['38-39', '40-41', '42-43'],
+    category: ["Personal Care", "Makeup", "Mascara"],
     description:
-        "Elegant high heels in a striking red color, designed to make a statement.",
+    "L'Oréal Paris PRO XXL Extension Mascara offers buildable volume and a lengthening effect for dramatic, extended lashes. The dual-ended brush enhances lash definition for a bold look.",
+    size: ['6.9ml'],
     id: uuid.v4(),
     quantity: 6,
   ),
+
   Product(
-    title: "Bluetooth Headphone",
-    price: 699,
+    title: "Anker P25i Wireless Earbuds",
+    price: 1050,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/Headphones.png?alt=media&token=9faa4534-6962-4876-afb2-f7a455533d13"
+      "https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/56/4263611/1.jpg?6439"
     ],
-    category: "Electronics",
+    category: ["Audio & Wearables", "Electronics", "Accessories"],
     description:
-        "Wireless Bluetooth headphones with high-quality sound and comfortable design for long wear.",
+    "Anker P25i True Wireless Earbuds with IPX5 water resistance and up to 30 hours of battery life. Perfect for music and calls with immersive sound quality.",
     size: null,
     id: uuid.v4(),
-    quantity: 3,
+    quantity: 8,
   ),
+
+
   Product(
-    title: "Men's Formal Trousers",
+    title: "Dove Nourishing Secrets Strengthening Shampoo",
     price: 399,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/img.png?alt=media&token=de4073b5-5571-4af2-a88e-bc11da1efe3b"
+      "https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/11/932722/1.jpg?2138"
     ],
-    category: "Clothing",
-    size: ['40-41', '42-43', '44-45'],
+    category: ["Personal Care", "Hair Care", "Shampoo"],
     description:
-        "Smart formal trousers for men, offering a tailored fit suitable for business and formal events.",
+    "Dove Nourishing Secrets Strengthening Shampoo with avocado and calendula extracts. Helps strengthen and nourish hair while providing a soft, smooth feel.",
+    size: ['400ml'],
     id: uuid.v4(),
-    quantity: 4,
+    quantity: 10,
   ),
+
   Product(
-    title: "Men's Watch - Classic",
+    title: "L'Oréal Elvive Extraordinary Oil Nourishing Shampoo",
     price: 599,
     imageUrl: [
-      "https://firebasestorage.googleapis.com/v0/b/e-commerce-app-669f8.appspot.com/o/watch.png?alt=media&token=a2a0fe2e-79af-43b7-9767-1a4ca9d23628"
+      "https://eg.jumia.is/unsafe/fit-in/500x500/filters:fill(white)/product/49/994032/1.jpg?9299"
     ],
-    category: "Accessories",
+    category: ["Personal Care", "Hair Care", "Shampoo"],
     description:
-        "Elegant men's watch with classic styling, perfect for daily wear or special occasions.",
-    size: null,
+    "L'Oréal Elvive Extraordinary Oil Shampoo nourishes dry hair with its rich formula infused with precious oils. Leaves hair soft, shiny, and smooth without weighing it down.",
+    size: ['400ml'],
     id: uuid.v4(),
     quantity: 7,
   ),
+
 ];

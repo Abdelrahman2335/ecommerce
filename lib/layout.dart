@@ -3,7 +3,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:ecommerce/screens/place_order/cart_screen.dart';
 import 'package:ecommerce/screens/items/home_screen.dart';
 import 'package:ecommerce/screens/items/wishlist.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LayOut extends StatefulWidget {
@@ -18,7 +17,7 @@ class _LayOutState extends State<LayOut> {
 
 
   int currentIndex = 0;
-  final double iconSize = 30;
+  final double iconSize = 24;
   final List items = [
     const TabItem(icon: Icons.home_outlined, title: 'Home'),
     const TabItem(icon: Icons.favorite_border, title: 'Wishlist'),
@@ -49,6 +48,7 @@ class _LayOutState extends State<LayOut> {
     return Scaffold(
         body: selectedPage[currentIndex],
         bottomNavigationBar: CurvedNavigationBar(
+
           animationDuration: const Duration(milliseconds: 300),
             onTap: (value) {
               setState(() {
