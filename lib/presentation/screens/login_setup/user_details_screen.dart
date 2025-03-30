@@ -3,16 +3,16 @@ import 'dart:developer';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/methods/optional_info.dart';
 import 'package:ecommerce/methods/setup_address.dart';
-import 'package:ecommerce/provider/location_provider.dart';
-import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../methods/setup_user_data.dart';
+import '../../../methods/setup_user_data.dart';
 import '../../provider/auth_provider.dart';
+import '../../provider/location_provider.dart';
+import '../../provider/signup_provider.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({super.key});

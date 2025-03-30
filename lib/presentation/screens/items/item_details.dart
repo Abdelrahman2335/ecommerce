@@ -1,9 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce/models/product_model.dart';
-import 'package:ecommerce/provider/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+
+import '../../../data/models/product_model.dart';
+import '../../provider/cart_provider.dart';
 
 class ItemDetails extends StatefulWidget {
   final Product? itemData;

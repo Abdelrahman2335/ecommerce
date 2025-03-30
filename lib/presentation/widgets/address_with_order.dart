@@ -1,6 +1,6 @@
-import 'package:ecommerce/models/address_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/models/address_model.dart';
 import 'new_address.dart';
 
 class AddressWithOrder extends StatefulWidget {

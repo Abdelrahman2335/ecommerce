@@ -3,27 +3,28 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/layout.dart';
-import 'package:ecommerce/provider/cart_provider.dart';
-import 'package:ecommerce/provider/location_provider.dart';
-import 'package:ecommerce/provider/payment_provider.dart';
-import 'package:ecommerce/screens/login_setup/forgot_password.dart';
-import 'package:ecommerce/screens/login_setup/login_screen.dart';
-import 'package:ecommerce/screens/login_setup/profile_screen.dart';
-import 'package:ecommerce/screens/login_setup/signup.dart';
-import 'package:ecommerce/screens/login_setup/user_details_screen.dart';
-import 'package:ecommerce/screens/payment/payment_configuration.dart';
-import 'package:ecommerce/screens/place_order/cart_screen.dart';
-import 'package:ecommerce/screens/place_order/check_out.dart';
+import 'package:ecommerce/presentation/provider/signup_provider.dart';
 import 'package:ecommerce/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'provider/auth_provider.dart';
-import 'provider/e_provider.dart';
-import 'provider/signup_provider.dart';
-import 'provider/wishList_provider.dart';
+import 'presentation/provider/auth_provider.dart';
+import 'presentation/provider/cart_provider.dart';
+import 'presentation/provider/e_provider.dart';
+import 'presentation/provider/location_provider.dart';
+import 'presentation/provider/payment_provider.dart';
+import 'presentation/provider/wishList_provider.dart';
+import 'presentation/screens/login_setup/forgot_password.dart';
+import 'presentation/screens/login_setup/login_screen.dart';
+import 'presentation/screens/login_setup/profile_screen.dart';
+import 'presentation/screens/login_setup/signup.dart';
+import 'presentation/screens/login_setup/user_details_screen.dart';
+import 'presentation/screens/payment/payment_configuration.dart';
+import 'presentation/screens/place_order/cart_screen.dart';
+import 'presentation/screens/place_order/check_out.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

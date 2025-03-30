@@ -1,7 +1,8 @@
 import 'package:ecommerce/data/cities.dart';
-import 'package:ecommerce/models/address_model.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+
+import '../../data/models/address_model.dart';
 
 class NewAddress extends StatefulWidget {
   const NewAddress({super.key, required this.addAddress});

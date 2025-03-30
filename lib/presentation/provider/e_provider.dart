@@ -4,7 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../models/product_model.dart';
+import '../../data/models/product_model.dart';
+
 
 /// This class is responsible for getting the, add to cart & add to the wishlist.
 class ItemProvider extends ChangeNotifier {

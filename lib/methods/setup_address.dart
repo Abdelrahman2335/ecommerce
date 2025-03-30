@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:ecommerce/provider/signup_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -9,8 +8,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../data/cities.dart';
-import '../models/address_model.dart';
-import '../provider/location_provider.dart';
+import '../data/models/address_model.dart';
+import '../presentation/provider/location_provider.dart';
+import '../presentation/provider/signup_provider.dart';
 
 String selectedCity = egyptCities[0];
 

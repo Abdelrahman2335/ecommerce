@@ -2,10 +2,11 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/main.dart';
-import 'package:ecommerce/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../data/models/user_model.dart';
 
 /// This class is responsible for login & logout
 class LoginProvider extends ChangeNotifier {

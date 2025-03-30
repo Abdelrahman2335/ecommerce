@@ -1,5 +1,4 @@
 import 'package:ecommerce/data/category_data.dart';
-import 'package:ecommerce/provider/auth_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../provider/auth_provider.dart';
 import '../../provider/e_provider.dart';
 import '../../widgets/home_content.dart';
 

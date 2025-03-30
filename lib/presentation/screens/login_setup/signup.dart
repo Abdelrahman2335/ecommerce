@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/main.dart';
-import 'package:ecommerce/screens/login_setup/login_screen.dart';
-import 'package:ecommerce/widgets/custom_button.dart';
-import 'package:ecommerce/widgets/custom_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -10,8 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/user_model.dart';
+import '../../../data/models/user_model.dart';
 import '../../provider/signup_provider.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/custom_field.dart';
+import 'login_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});

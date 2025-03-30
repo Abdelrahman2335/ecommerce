@@ -1,12 +1,12 @@
-import 'package:ecommerce/widgets/new_address.dart';
-import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
-import '../../models/address_model.dart';
+import '../../../data/models/address_model.dart';
 import '../../provider/auth_provider.dart';
+import '../../widgets/custom_button.dart';
+import '../../widgets/new_address.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

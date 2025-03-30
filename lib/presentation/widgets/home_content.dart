@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce/models/product_model.dart';
-import 'package:ecommerce/provider/cart_provider.dart';
-import 'package:ecommerce/provider/e_provider.dart';
-import 'package:ecommerce/screens/items/item_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/models/product_model.dart';
+import '../provider/cart_provider.dart';
+import '../provider/e_provider.dart';
 import '../provider/wishList_provider.dart';
+import '../screens/items/item_details.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({

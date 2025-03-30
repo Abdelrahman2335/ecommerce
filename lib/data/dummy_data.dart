@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-import '../models/product_model.dart';
+import 'models/product_model.dart';
 
 Uuid uuid = Uuid();
 

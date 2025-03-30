@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce/models/cart_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../models/product_model.dart';
+import '../../data/models/cart_model.dart';
+import '../../data/models/product_model.dart';
+
 
 class CartProvider extends ChangeNotifier {
   bool itemExist = false;

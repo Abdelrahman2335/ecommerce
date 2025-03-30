@@ -1,4 +1,5 @@
-import 'package:ecommerce/models/category_model.dart';
+
+import 'models/category_model.dart';
 
 List<Category> categoryData = [
   Category(image: "assets/category_image/Beauty.png",  name: "Beauty"),

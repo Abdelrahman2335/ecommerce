@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:ecommerce/screens/payment/payment_web_view.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 
-import '../../main.dart';
+import '../../../main.dart';
+import 'payment_web_view.dart';
+
 
 class PaymentConfiguration extends ChangeNotifier {
   static String apiKey = FirebaseRemoteConfig.instance.getString("api_key");

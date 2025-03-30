@@ -1,7 +1,9 @@
-import 'package:ecommerce/provider/payment_provider.dart';
-import 'package:ecommerce/screens/payment/payment_bottomSheet.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../provider/payment_provider.dart';
+import 'payment_bottomSheet.dart';
 
 class PaymentMethod extends StatefulWidget {
   const PaymentMethod({

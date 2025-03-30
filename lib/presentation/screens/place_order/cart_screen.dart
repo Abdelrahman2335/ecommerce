@@ -1,15 +1,14 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce/models/cart_model.dart';
-import 'package:ecommerce/provider/cart_provider.dart';
-import 'package:ecommerce/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../../models/product_model.dart';
+import '../../../data/models/cart_model.dart';
+import '../../../data/models/product_model.dart';
+import '../../provider/cart_provider.dart';
+import '../../widgets/custom_button.dart';
 import '../items/item_details.dart';
 
 class CartScreen extends StatefulWidget {

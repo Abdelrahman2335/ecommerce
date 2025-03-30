@@ -4,8 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
-
-import '../models/product_model.dart';
+import '../../data/models/product_model.dart';
 import '../provider/cart_provider.dart';
 import '../provider/wishList_provider.dart';
 import '../screens/items/item_details.dart';
