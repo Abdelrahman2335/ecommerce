@@ -8,7 +8,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/models/user_model.dart';
-import '../../provider/signup_provider.dart';
+import '../../provider/signup_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 import 'login_screen.dart';

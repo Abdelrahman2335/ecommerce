@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
-import '../../provider/auth_provider.dart';
+import '../../provider/auth_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 

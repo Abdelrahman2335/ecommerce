@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/models/product_model.dart';
-import '../provider/cart_provider.dart';
-import '../provider/e_provider.dart';
-import '../provider/wishList_provider.dart';
+import '../provider/cart_viewmodel.dart';
+import '../provider/item_viewmodel.dart';
+import '../provider/wishList_viewmodel.dart';
 import '../screens/items/item_details.dart';
 
 class HomeContent extends StatefulWidget {
@@ -27,17 +29,19 @@ class _HomeContentState extends State<HomeContent> {
   Widget build(BuildContext context) {
     ItemProvider providerData =
         Provider.of<ItemProvider>(context, listen: false);
+    // List? url = Provider.of<UnsplashViewModel>(context, listen: true).getUrl;
     WishListProvider wishedItems =
         Provider.of<WishListProvider>(context, listen: true);
     CartProvider inCartProvider =
         Provider.of<CartProvider>(context, listen: true);
+
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         crossAxisSpacing: 4,
         mainAxisSpacing: 3,
-        mainAxisExtent: MediaQuery.of(context).size.height * 0.43,
+        mainAxisExtent: MediaQuery.of(context).size.height * 0.39,
       ),
 
       /// [delegate] is the best choice here because we don't know the length of the list, and how many items to build
@@ -76,7 +80,8 @@ class _HomeContentState extends State<HomeContent> {
                 ),
               ],
               child: Container(
-                margin: const EdgeInsets.all(9),
+                margin: const EdgeInsets.only(
+                    left: 14, right: 9, top: 9, bottom: 9),
                 decoration: BoxDecoration(
                     boxShadow: [
                       BoxShadow(
@@ -105,25 +110,35 @@ class _HomeContentState extends State<HomeContent> {
                     children: [
                       ConstrainedBox(
                         constraints: BoxConstraints(
-                          // maxHeight: MediaQuery.of(context).size.height * 0.24,
-                          // maxWidth: MediaQuery.of(context).size.width * 0.6,
-                          // minHeight: MediaQuery.of(context).size.height * 0.24,
-                          // minWidth: MediaQuery.of(context).size.width * 0.6,
-                        ),
+                            // maxHeight: MediaQuery.of(context).size.height * 0.24,
+                            // maxWidth: MediaQuery.of(context).size.width * 0.6,
+                            // minHeight: MediaQuery.of(context).size.height * 0.24,
+                            // minWidth: MediaQuery.of(context).size.width * 0.6,
+                            ),
                         child: CachedNetworkImage(
+                          placeholder: (context, url) => Container(
+                              height: MediaQuery.of(context).size.height * 0.24,
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              color: Colors.grey[300],
+                              // Placeholder background color
+                              child: Center(
+                                child: LoadingAnimationWidget.inkDrop(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    size: 26), // Loading indicator
+                              )),
                           placeholderFadeInDuration:
-                              Duration(milliseconds: 150),
-                          height: MediaQuery.of(context).size.height * 0.28,
+                              Duration(seconds: 10),
+                          height: MediaQuery.of(context).size.height * 0.24,
                           width: MediaQuery.of(context).size.width * 0.6,
                           fit: BoxFit.cover,
                           // placeholder: MemoryImage(kTransparentImage),
                           memCacheWidth:
-                              (MediaQuery.of(context).size.width * 0.8).round(),
+                              (MediaQuery.of(context).size.width * 0.9).round(),
                           memCacheHeight:
-                              (MediaQuery.of(context).size.height * 0.4)
+                              (MediaQuery.of(context).size.height * 0.6)
                                   .round(),
-
-                          imageUrl: data.imageUrl[0],
+                          imageUrl: "${data.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
                           errorWidget: (context, url, error) => const Icon(
                             Icons.error,
                             color: Colors.red,
@@ -167,7 +182,7 @@ class _HomeContentState extends State<HomeContent> {
                                               data, false);
                                         },
                                         icon: Icon(
-                                          Icons.remove_circle_outline,
+                                            PhosphorIcons.minusCircle(),
                                           color: Theme.of(context)
                                               .colorScheme
                                               .secondary,
@@ -177,8 +192,8 @@ class _HomeContentState extends State<HomeContent> {
                                           await wishedItems.addWish(data);
                                         },
                                         icon: isWished
-                                            ? Icon(Icons.favorite)
-                                            : Icon(Icons.favorite_border),
+                                            ? Icon(PhosphorIcons.heart(PhosphorIconsStyle.fill))
+                                            : Icon(PhosphorIcons.heart()),
                                         color: isWished
                                             ? Theme.of(context).primaryColor
                                             : Theme.of(context)
@@ -199,13 +214,13 @@ class _HomeContentState extends State<HomeContent> {
                                     },
                                     icon: isInCart
                                         ? Icon(
-                                            Icons.add_circle_outline,
+                                            PhosphorIcons.plusCircle(),
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary,
                                           )
                                         : Icon(
-                                            Icons.shopping_cart_outlined,
+                                            PhosphorIcons.shoppingBag(),
                                             color: Theme.of(context)
                                                 .colorScheme
                                                 .secondary,

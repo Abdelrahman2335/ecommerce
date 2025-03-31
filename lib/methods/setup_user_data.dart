@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../presentation/provider/signup_provider.dart';
+import '../presentation/provider/signup_viewmodel.dart';
 
 Widget setupUserData(BuildContext context, nameCon, phoneCon, User? user,
     GlobalKey<FormState> formKey) {

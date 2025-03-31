@@ -10,9 +10,9 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../../methods/setup_user_data.dart';
-import '../../provider/auth_provider.dart';
-import '../../provider/location_provider.dart';
-import '../../provider/signup_provider.dart';
+import '../../provider/auth_viewmodel.dart';
+import '../../provider/location_viewmodel.dart';
+import '../../provider/signup_viewmodel.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({super.key});

@@ -9,8 +9,8 @@ import 'package:provider/provider.dart';
 
 import '../data/cities.dart';
 import '../data/models/address_model.dart';
-import '../presentation/provider/location_provider.dart';
-import '../presentation/provider/signup_provider.dart';
+import '../presentation/provider/location_viewmodel.dart';
+import '../presentation/provider/signup_viewmodel.dart';
 
 String selectedCity = egyptCities[0];
 

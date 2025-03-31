@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../provider/wishList_provider.dart';
+import '../../provider/wishList_viewmodel.dart';
 import '../../widgets/wishlist_content.dart';
 
 class Wishlist extends StatefulWidget {

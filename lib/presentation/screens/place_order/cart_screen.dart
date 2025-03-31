@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../data/models/cart_model.dart';
 import '../../../data/models/product_model.dart';
-import '../../provider/cart_provider.dart';
+import '../../provider/cart_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../items/item_details.dart';
 

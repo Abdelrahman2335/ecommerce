@@ -1,30 +1,31 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/layout.dart';
-import 'package:ecommerce/presentation/provider/signup_provider.dart';
+import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
+import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
+import 'package:ecommerce/presentation/provider/signup_viewmodel.dart';
 import 'package:ecommerce/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'presentation/provider/auth_provider.dart';
-import 'presentation/provider/cart_provider.dart';
-import 'presentation/provider/e_provider.dart';
-import 'presentation/provider/location_provider.dart';
+import 'data/repositories/paymob_repository_impl.dart';
 import 'presentation/provider/payment_provider.dart';
-import 'presentation/provider/wishList_provider.dart';
+import 'presentation/provider/auth_viewmodel.dart';
+import 'presentation/provider/cart_viewmodel.dart';
+import 'presentation/provider/location_viewmodel.dart';
+import 'presentation/provider/wishList_viewmodel.dart';
 import 'presentation/screens/login_setup/forgot_password.dart';
 import 'presentation/screens/login_setup/login_screen.dart';
 import 'presentation/screens/login_setup/profile_screen.dart';
 import 'presentation/screens/login_setup/signup.dart';
 import 'presentation/screens/login_setup/user_details_screen.dart';
-import 'presentation/screens/payment/payment_configuration.dart';
 import 'presentation/screens/place_order/cart_screen.dart';
 import 'presentation/screens/place_order/check_out.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +42,7 @@ void main() async {
         MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => SignUpProvider()),
       ChangeNotifierProvider(
-        create: (_) => ItemProvider(),
+        create: (_) => ItemProvider(ItemRepositoryImpl()),
       ),
       ChangeNotifierProvider(
         create: (_) => LoginProvider(),
@@ -49,13 +50,12 @@ void main() async {
       ChangeNotifierProvider(create: (_) => WishListProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
+      // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
-        create: (_) => PaymentConfiguration(),
+        create: (_) => PaymentViewModel(PaymentRepositoryImpl()),
       ),
       ChangeNotifierProvider(
         create: (_) => LocationProvider(),
-
-
       ),
     ], child: const MyApp()));
   } catch (error) {

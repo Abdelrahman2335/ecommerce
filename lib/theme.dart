@@ -28,7 +28,7 @@ class ThemeDataConfig {
         labelMedium: GoogleFonts.playfairDisplay(
             fontWeight: FontWeight.w600,
             color: const Color(0xFF4392F9),
-            fontSize: 18),
+            fontSize: 16),
         labelLarge: GoogleFonts.roboto(
             fontWeight: FontWeight.normal, color: Colors.white, fontSize: 14),
         bodySmall: GoogleFonts.roboto(

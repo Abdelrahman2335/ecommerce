@@ -1,13 +1,13 @@
 import 'dart:developer';
 
+import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/cart_provider.dart';
 import '../../provider/payment_provider.dart';
+import '../../provider/cart_viewmodel.dart';
 import '../../widgets/address_with_order.dart';
-import '../payment/payment_configuration.dart';
 import '../payment/payment_method.dart';
 
 class CheckOutScreen extends StatefulWidget {
@@ -68,8 +68,6 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
     PaymentProvider paymentProvider =
         Provider.of<PaymentProvider>(context, listen: true);
-    PaymentConfiguration paymentConfiguration =
-        Provider.of<PaymentConfiguration>(context, listen: true);
 
     /// Here we can use two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
     /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
@@ -97,7 +95,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         ),
         centerTitle: true,
       ),
-      body: paymentConfiguration.isLoading
+      body: context.watch<PaymentViewModel>().isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               child: Padding(
@@ -224,11 +222,9 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                           log("Cash on Delivery");
                         } else {
                           log("Online Payment");
-                          if (paymentConfiguration.isLoading) {
-                          } else {
-                            paymentConfiguration
-                                .makePayment(shippingFee + itemsPrice - promo);
-                          }
+
+                          context.read<PaymentViewModel>().makePayment(
+                           (itemsPrice + shippingFee) - promo);
                         }
                       },
                       style: ElevatedButton.styleFrom(

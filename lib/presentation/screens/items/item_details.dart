@@ -4,7 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/models/product_model.dart';
-import '../../provider/cart_provider.dart';
+import '../../provider/cart_viewmodel.dart';
 
 class ItemDetails extends StatefulWidget {
   final Product? itemData;
@@ -86,7 +86,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                   memCacheHeight:
                       (MediaQuery.of(context).size.height * 0.7).round(),
 
-                  imageUrl: "${widget.itemData!.imageUrl[0]}",
+                  imageUrl:
+                      "${widget.itemData!.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
                 ),
                 const SizedBox(
                   height: 13,
@@ -160,7 +161,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                           }
 
                           cartList.addToCart(widget.itemData!).then((value) =>
-                              Navigator.pushReplacementNamed(context, "/checkout"));
+                              Navigator.pushReplacementNamed(
+                                  context, "/checkout"));
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).primaryColor,
@@ -195,18 +197,19 @@ class _ItemDetailsState extends State<ItemDetails> {
                                       size: 29,
                                     )),
                                 cartList.isLoading
-                                    ?  SizedBox(
+                                    ? SizedBox(
                                         height: 16,
                                         width: 16,
-                                        child: CircularProgressIndicator(strokeWidth: 3,))
-                                    :
-                                Text(
-                                  itemCount.toString(),
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                ),
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 3,
+                                        ))
+                                    : Text(
+                                        itemCount.toString(),
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary),
+                                      ),
                                 IconButton(
                                     onPressed: cartList.isLoading
                                         ? null
@@ -216,11 +219,11 @@ class _ItemDetailsState extends State<ItemDetails> {
                                           },
                                     icon: Icon(
                                       Icons.add_circle_outline,
-                                      color:cartList.isLoading
+                                      color: cartList.isLoading
                                           ? Colors.blueGrey
-                                          :  Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
                                       size: 29,
                                     )),
                               ],
