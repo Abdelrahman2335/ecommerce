@@ -1,9 +1,11 @@
-import 'package:flutter/cupertino.dart';
+import 'package:ecommerce/presentation/provider/wishlist_viewmodel.dart';
+import 'package:ecommerce/presentation/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../provider/wishList_viewmodel.dart';
 import '../../widgets/wishlist_content.dart';
 
 class Wishlist extends StatefulWidget {
@@ -16,47 +18,55 @@ class Wishlist extends StatefulWidget {
 class _WishlistState extends State<Wishlist> {
   @override
   Widget build(BuildContext context) {
-    WishListProvider wishedItems = Provider.of<WishListProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        leading:IconButton(
-          onPressed: () {
-            Navigator.pushNamed(context, "/profile");
-          },
-          icon: Icon(Icons.person_outlined),
-        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Image(
-                alignment: Alignment(5, 4),
-                image: AssetImage(
-                  "assets/logo.png",
-                )),
-            const SizedBox(
-              width: 12,
+              alignment: Alignment(5, 4),
+              image: AssetImage("assets/logo.png"),
+              filterQuality: FilterQuality.high,
+              width: 36,
+              height: 29,
             ),
+            const Gap(12),
             Text("OutfitOrbit", style: Theme.of(context).textTheme.labelMedium),
           ],
         ),
         actions: [
+          // TODO : Add search functionality
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.search),
+            icon: Icon(
+              PhosphorIcons.magnifyingGlass(),
+            ),
           ),
         ],
+        leading: Builder(
+          builder: (context) => IconButton(
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+            icon: Icon(
+              PhosphorIcons.userList(),
+              size: 26,
+            ),
+          ),
+        ),
       ),
-      body:wishedItems.noItemsInWishList? Center(
-        child:
-        Text("No items in the cart",
-            style: Theme.of(context).textTheme.labelMedium),
 
-      ):
-      Skeletonizer(
+      drawer: CustomDrawer(),
+      body: context.read<WishListViewModel>().noItemsInWishList
+          ? Center(
+              child: Text("No items in the cart",
+                  style: Theme.of(context).textTheme.labelMedium),
+            )
+          : Skeletonizer(
               switchAnimationConfig: SwitchAnimationConfig(
                 duration: const Duration(milliseconds: 500),
               ),
-              enabled: wishedItems.isLoading,
+              enabled: context.watch<WishListViewModel>().isLoading,
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
                 child: Column(
@@ -64,52 +74,7 @@ class _WishlistState extends State<Wishlist> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Row(
-                        children: [
-                          const Spacer(),
-                          ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                padding: const EdgeInsets.all(9),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () {},
-                              label: Text(
-                                "Sort",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              icon: const Icon(
-                                CupertinoIcons.arrow_up_arrow_down,
-                                size: 18,
-                              )),
-                          const SizedBox(
-                            width: 9,
-                          ),
-                          ElevatedButton.icon(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                padding: const EdgeInsets.all(9),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              onPressed: () {},
-                              label: Text(
-                                "Filter",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              icon: const Icon(
-                                Icons.filter_alt_outlined,
-                                size: 21,
-                              )),
-                        ],
-                      ),
-                    ),
-                    WishListContent(),
+                    const WishListContent(),
                   ],
                 ),
               ),

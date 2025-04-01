@@ -13,17 +13,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
+import 'data/repositories/wishlist_repository_impl.dart';
+import 'presentation/provider/cart_viewmodel.dart';
+import 'presentation/provider/home_viewModel.dart';
 import 'presentation/provider/payment_provider.dart';
 import 'presentation/provider/auth_viewmodel.dart';
-import 'presentation/provider/cart_viewmodel.dart';
 import 'presentation/provider/location_viewmodel.dart';
-import 'presentation/provider/wishList_viewmodel.dart';
-import 'presentation/screens/login_setup/forgot_password.dart';
-import 'presentation/screens/login_setup/login_screen.dart';
-import 'presentation/screens/login_setup/profile_screen.dart';
-import 'presentation/screens/login_setup/signup.dart';
-import 'presentation/screens/login_setup/user_details_screen.dart';
+import 'presentation/provider/wishlist_viewmodel.dart';
+import 'presentation/screens/auth/forgot_password.dart';
+import 'presentation/screens/auth/login_screen.dart';
+import 'presentation/screens/auth/profile_screen.dart';
+import 'presentation/screens/auth/signup.dart';
+import 'presentation/screens/auth/user_details_screen.dart';
 import 'presentation/screens/place_order/cart_screen.dart';
 import 'presentation/screens/place_order/check_out.dart';
 
@@ -47,9 +50,10 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => LoginProvider(),
       ),
-      ChangeNotifierProvider(create: (_) => WishListProvider()),
-      ChangeNotifierProvider(create: (_) => CartProvider()),
+      ChangeNotifierProvider(create: (_) => CartViewModel(CartRepositoryImpl())),
+      ChangeNotifierProvider(create: (_) =>WishListViewModel(WishListRepositoryImpl())),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
+      ChangeNotifierProvider(create: (_) => HomeViewModel()),
       // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => PaymentViewModel(PaymentRepositoryImpl()),

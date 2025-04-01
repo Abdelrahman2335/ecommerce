@@ -1,38 +1,48 @@
 import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:ecommerce/domain/repositories/wishlist_repository.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/product_model.dart';
 import '../../main.dart';
+import '../models/product_model.dart';
 
-class WishListProvider extends ChangeNotifier {
-  bool itemExist = false;
-  String userId = FirebaseAuth.instance.currentUser!.uid;
-  final mainListRef = FirebaseFirestore.instance.collection("mainData");
-  final wishListRef = FirebaseFirestore.instance.collection("wishList");
+class WishListRepositoryImpl implements WishListRepository {
+  static final WishListRepositoryImpl _instance = WishListRepositoryImpl._internal();
+
+  /// Singleton
+  factory WishListRepositoryImpl() => _instance;
+
+  /// Named constructor
+  WishListRepositoryImpl._internal();
+
+
+  FirebaseService firebaseService = FirebaseService();
+
+  String? _userId;
+  static CollectionReference<Map<String, dynamic>>? mainListRef;
+  static CollectionReference<Map<String, dynamic>>? wishListRef;
   Map<String, dynamic>? wishData;
   final List<Product> items = [];
-   List productIds = [];
-  bool isLoading = false;
+  List productIds = [];
+  bool itemExist = false;
   bool noItemsInWishList = true;
 
   /// We are calling [fetchData] inside the Constructor of the class to initialize it as soon as we call the class
-  WishListProvider() {
-    fetchData();
-  }
 
   /// This function is used to get the data from the database,
   /// also it's used to filter the data to get only the wished items
+  @override
   fetchData() async {
-    isLoading = true;
-    notifyListeners();
-    items.clear();
+    _userId = firebaseService.auth.currentUser?.uid;
+    mainListRef = firebaseService.firestore.collection("mainData");
+    wishListRef = firebaseService.firestore.collection("wishList");
 
     /// Don't take [docSnapshot] out of the try block, when we are creating the doc for the first time it's null
     try {
       wishData =
-          await wishListRef.doc(userId).get().then((value) => value.data());
+          await wishListRef?.doc(_userId).get().then((value) => value.data());
 
       productIds = wishData?["productId"] ?? [];
 
@@ -42,28 +52,24 @@ class WishListProvider extends ChangeNotifier {
         /// this variable is used to get the data from the database
         /// [where] and [whereIn] go inside the document. Note: doc id is the same as the product id
         QuerySnapshot<Map<String, dynamic>> docSnapshot =
-            await mainListRef.where("id", whereIn: productIds).get();
+            await mainListRef!.where("id", whereIn: productIds).get();
 
         if (docSnapshot.docs.isNotEmpty) {
           items.addAll(docSnapshot.docs
               .map((element) => Product.fromJson(element.data())));
           noItemsInWishList = false;
-          notifyListeners();
         }
       } else {
         return;
       }
     } catch (error) {
       log("Error fetchData: $error");
-    } finally {
-      isLoading = false;
-      notifyListeners();
     }
   }
 
-  addWish(Product product) async {
-    isLoading = true;
-    notifyListeners();
+  @override
+  Future addAndRemoveWish(Product product) async {
+
     itemExist = productIds.contains(product.id);
 
     try {
@@ -71,7 +77,7 @@ class WishListProvider extends ChangeNotifier {
       log("productId: ${product.id}");
       if (wishData != null && wishData!.isNotEmpty) {
         if (itemExist) {
-          await wishListRef.doc(userId).update({
+          await wishListRef?.doc(_userId).update({
             "productId": FieldValue.arrayRemove([product.id])
           });
 
@@ -84,7 +90,7 @@ class WishListProvider extends ChangeNotifier {
             content: Text("Item removed"),
           ));
         } else {
-          await wishListRef.doc(userId).update({
+          await wishListRef?.doc(_userId).update({
             "productId": FieldValue.arrayUnion([product.id])
           });
           productIds.add(product.id);
@@ -98,7 +104,7 @@ class WishListProvider extends ChangeNotifier {
           );
         }
       } else {
-        await wishListRef.doc(userId).set(
+        await wishListRef?.doc(_userId).set(
           {
             "productId": [product.id]
           },
@@ -113,7 +119,6 @@ class WishListProvider extends ChangeNotifier {
 
         productIds.add(product.id);
         items.add(product);
-        items.add(product);
         noItemsInWishList = false;
       }
       // log("After the function is called: ${productIds.toString()}");
@@ -127,10 +132,7 @@ class WishListProvider extends ChangeNotifier {
         ),
       );
       log("addWish error: ${error.toString()}");
-    } finally {
-      isLoading = false;
     }
-    notifyListeners();
   }
 
 //
@@ -147,7 +149,6 @@ class WishListProvider extends ChangeNotifier {
 //   }
 //   // allItems.mainData.firstWhere((element) => element.id == productIds[0]);
 //
-//   notifyListeners();
 // }
 
   get receivedWish => productIds;

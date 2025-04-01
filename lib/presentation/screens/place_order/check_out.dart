@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/payment_provider.dart';
 import '../../provider/cart_viewmodel.dart';
+import '../../provider/payment_provider.dart';
 import '../../widgets/address_with_order.dart';
 import '../payment/payment_method.dart';
 
@@ -63,8 +63,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CartProvider cartProvider =
-        Provider.of<CartProvider>(context, listen: false);
+    CartViewModel cartProvider =
+        Provider.of<CartViewModel>(context, listen: false);
 
     PaymentProvider paymentProvider =
         Provider.of<PaymentProvider>(context, listen: true);

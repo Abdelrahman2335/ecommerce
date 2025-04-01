@@ -12,9 +12,12 @@ class ThemeDataConfig {
 
   static ThemeData get themeData {
     return ThemeData(
+
+      fontFamily: GoogleFonts.poppins().fontFamily,
+
       colorScheme: _colorScheme,
       scaffoldBackgroundColor: _colorScheme.surface,
-      textTheme: GoogleFonts.robotoTextTheme().copyWith(
+      textTheme: GoogleFonts.poppinsTextTheme().copyWith(
         titleSmall: GoogleFonts.roboto(fontWeight: FontWeight.w600),
         titleMedium: GoogleFonts.roboto(
           fontWeight: FontWeight.normal,

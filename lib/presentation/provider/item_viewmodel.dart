@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../../data/models/product_model.dart';
 
-/// This class is responsible for getting the data from the database
 class ItemProvider extends ChangeNotifier {
   final ItemRepository _itemRepository;
   List<Product> _mainData = [];

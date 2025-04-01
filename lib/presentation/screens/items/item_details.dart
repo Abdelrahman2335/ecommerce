@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/models/product_model.dart';
-import '../../provider/cart_viewmodel.dart';
 
 class ItemDetails extends StatefulWidget {
   final Product? itemData;
@@ -21,9 +23,10 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   @override
   Widget build(BuildContext context) {
-    CartProvider cartList = Provider.of<CartProvider>(context, listen: true);
+    CartViewModel cartList = Provider.of<CartViewModel>(context, listen: true);
     bool isInCart = cartList.productIds.contains((widget.itemData!.id));
-
+    ColorScheme theme = Theme.of(context).colorScheme;
+    /// TODO: Move this later to modelView
     if (isInCart) {
       itemCount = cartList.fetchedItems
           .where((element) => element.itemId == widget.itemData!.id)
@@ -31,20 +34,24 @@ class _ItemDetailsState extends State<ItemDetails> {
           .quantity;
     }
 
+    String imageUrl =
+        "${widget.itemData!.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}";
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back),
+          icon: Icon(PhosphorIcons.arrowLeft()),
         ),
         actions: [
           Badge(
             largeSize: 10,
             label: Text(cartList.totalQuantity.toString()),
-            backgroundColor: Theme.of(context).colorScheme.primary,
+            backgroundColor: theme.primary,
             alignment: Alignment.lerp(Alignment(0, -0.7), Alignment(0, 0), 0),
+            isLabelVisible: cartList.totalQuantity > 0,
             child: Padding(
               padding: const EdgeInsets.only(right: 10.0, bottom: 5),
               child: IconButton(
@@ -52,8 +59,8 @@ class _ItemDetailsState extends State<ItemDetails> {
                     Navigator.pushNamed(context, "/cart");
                   },
                   icon: (Icon(
-                    Icons.shopping_cart_outlined,
-                    color: Theme.of(context).colorScheme.secondary,
+                    PhosphorIcons.shoppingBag(),
+                    color: theme.secondary,
                     size: 26,
                   ))),
             ),
@@ -72,25 +79,56 @@ class _ItemDetailsState extends State<ItemDetails> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CachedNetworkImage(
-                  height: MediaQuery.sizeOf(context).height *
-                      MediaQuery.devicePixelRatioOf(context) /
-                      6,
-                  width: MediaQuery.sizeOf(context).width *
-                      MediaQuery.devicePixelRatioOf(context),
-                  filterQuality: FilterQuality.high,
-                  fit: BoxFit.cover,
-                  // placeholder: MemoryImage(kTransparentImage),
-                  memCacheWidth:
-                      (MediaQuery.of(context).size.width * 0.8).round(),
-                  memCacheHeight:
-                      (MediaQuery.of(context).size.height * 0.7).round(),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      top: 16.0, bottom: 39, left: 26, right: 26),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(19),
+                    child: GestureDetector(
+                      onTap: () {
+                        final imageProvider =
+                            CachedNetworkImageProvider(imageUrl);
+                        precacheImage(imageProvider, context).then(
+                          (onValue) => showDialog(
+                              barrierColor: Colors.black,
+                              context: context,
+                              builder: (context) => Dialog(
+                                    elevation: 19,
+                                    backgroundColor: Colors.black,
+                                    insetPadding: EdgeInsets.zero,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(19),
+                                      child: CachedNetworkImage(
+                                        imageUrl: imageUrl,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  )),
+                        );
+                      },
+                      child: CachedNetworkImage(
+                        placeholder: (ctx, url) => Center(
+                          child: LoadingAnimationWidget.inkDrop(
+                              color: theme.primary, size: 26),
+                        ),
+                        placeholderFadeInDuration: Duration(milliseconds: 500),
+                        height: MediaQuery.of(context).size.height * 0.29,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        fit: BoxFit.cover,
+                        // placeholder: MemoryImage(kTransparentImage),
+                        memCacheWidth:
+                            (MediaQuery.of(context).size.width * 0.9).round(),
+                        memCacheHeight:
+                            (MediaQuery.of(context).size.height * 0.6).round(),
 
-                  imageUrl:
-                      "${widget.itemData!.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
-                ),
-                const SizedBox(
-                  height: 13,
+                        imageUrl: imageUrl,
+                        errorWidget: (context, url, error) => const Icon(
+                          Icons.error,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
                 if (widget.itemData!.size != null)
                   Row(
@@ -106,21 +144,18 @@ class _ItemDetailsState extends State<ItemDetails> {
                             },
                             style: OutlinedButton.styleFrom(
                                 backgroundColor: selectedSize == i
-                                    ? Theme.of(context)
-                                        .primaryColor
-                                        .withValues(alpha: 0.5)
-                                    : Theme.of(context).colorScheme.surface,
+                                    ? theme.primary.withValues(alpha: 0.5)
+                                    : theme.surface,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(9),
                                 ),
-                                side: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
+                                side: BorderSide(color: theme.primary)),
                             child: Text(
                               i,
                               style: TextStyle(
                                 color: selectedSize == i
-                                    ? Theme.of(context).colorScheme.surface
-                                    : Theme.of(context).primaryColor,
+                                    ? theme.surface
+                                    : theme.primary,
                               ),
                             ),
                           ),
@@ -131,7 +166,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
                     widget.itemData!.title,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -146,7 +181,10 @@ class _ItemDetailsState extends State<ItemDetails> {
                 ),
                 ListTile(
                   title: const Text("Description:"),
-                  subtitle: Text(widget.itemData!.description),
+                  subtitle: Text(
+                    widget.itemData!.description,
+                    style: TextStyle(),
+                  ),
                 ),
                 Row(
                   children: [
@@ -165,12 +203,14 @@ class _ItemDetailsState extends State<ItemDetails> {
                                   context, "/checkout"));
                         },
                         style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
+                            backgroundColor: theme.primary,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(9))),
-                        child: const Text(
+                                borderRadius: BorderRadius.circular(19))),
+                        child: Text(
                           "BUY NOW",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -188,58 +228,50 @@ class _ItemDetailsState extends State<ItemDetails> {
                                                 widget.itemData!, false);
                                           },
                                     icon: Icon(
-                                      Icons.remove_circle_outline,
+                                      PhosphorIcons.minusCircle(),
                                       color: cartList.isLoading
                                           ? Colors.blueGrey
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                      size: 29,
+                                          : theme.secondary,
+                                      size: 26,
                                     )),
-                                cartList.isLoading
-                                    ? SizedBox(
-                                        height: 16,
-                                        width: 16,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 3,
-                                        ))
-                                    : Text(
-                                        itemCount.toString(),
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                      ),
+                                Text(
+                                  itemCount.toString(),
+                                  style: TextStyle(
+                                    color: theme.primary,
+                                  ),
+                                ),
                                 IconButton(
                                     onPressed: cartList.isLoading
                                         ? null
-                                        : () {
-                                            cartList
+                                        : () async {
+                                            await cartList
                                                 .addToCart(widget.itemData!);
                                           },
                                     icon: Icon(
-                                      Icons.add_circle_outline,
+                                      PhosphorIcons.plusCircle(),
                                       color: cartList.isLoading
                                           ? Colors.blueGrey
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                      size: 29,
+                                          : theme.secondary,
+                                      size: 26,
                                     )),
                               ],
                             )
                           : ElevatedButton(
-                              onPressed: () {
-                                cartList.addToCart(widget.itemData!);
-                              },
+                              onPressed: cartList.isLoading
+                                  ? null
+                                  : () async {
+                                      await cartList
+                                          .addToCart(widget.itemData!);
+                                    },
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Theme.of(context).colorScheme.secondary,
+                                  backgroundColor: theme.secondary,
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(9))),
-                              child: const Text(
+                                      borderRadius: BorderRadius.circular(19))),
+                              child: Text(
                                 "Add To Cart",
-                                style: TextStyle(color: Colors.white),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
                     )
