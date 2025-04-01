@@ -2,14 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/data/models/address_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-
-import '../../data/models/user_model.dart';
 
 class LocationProvider extends ChangeNotifier {
   bool isGettingLocation = false;
@@ -23,6 +22,7 @@ class LocationProvider extends ChangeNotifier {
   double _sliderValue = 0.50;
 
   get nextPageValue => _nextPage;
+
   get newSliderValue => _sliderValue;
 
   void updateNextPageValue(bool newValue) {
@@ -44,10 +44,12 @@ class LocationProvider extends ChangeNotifier {
         notifyListeners();
 
         /// Update the user location in the database
-        await firestore.collection("users").doc(user!.uid).update(UserModel(
+        await firestore.collection("users").doc(user!.uid).update({
+          "address": AddressModel(
               latitude: locationData!.latitude,
-              longitude: locationData!.longitude,
-            ).toJson());
+                  longitude: locationData!.longitude)
+              .toJson()
+        });
       }
     } catch (error) {
       log("Error getting location: $error");
@@ -111,13 +113,17 @@ class LocationProvider extends ChangeNotifier {
       log(response.statusCode.toString());
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        await firestore.collection("users").doc(user!.uid).update(UserModel(
-              fullAddress: data['display_name'] ?? 'Not Found',
-              country: data['address']['country'] ?? place.country,
-              city: data['address']['state'] ?? place.administrativeArea,
-              area: data['address']['city'] ?? place.locality,
-              street: data['address']['road'] ?? 'Not Found',
-            ).toJson());
+        await firestore.collection("users").doc(user!.uid).update({
+          "address": AddressModel(
+            fullAddress: data['display_name'] ?? 'Not Found',
+            country: data['address']['country'] ?? place.country,
+            city: data['address']['state'] ?? place.administrativeArea,
+            area: data['address']['city'] ?? place.locality,
+            street: data['address']['road'] ?? 'Not Found',
+            latitude: locationData?.latitude,
+            longitude: locationData?.longitude
+          ).toJson()
+        });
 
         /// for debugging
         // log(place.country.toString());

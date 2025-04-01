@@ -132,13 +132,13 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
             onPressed: () {
+              final valid = formKey.currentState!.validate();
+              if (valid) {
               AddressModel address = AddressModel(
                 area: firstCon.text,
                 city: selectedCity,
                 street: secondCon.text,
               );
-              final valid = formKey.currentState!.validate();
-              if (valid) {
                 ///  Here we are going to update the address information
                 context.read<SignUpProvider>().addressInfo(address, user);
                 firstCon.clear();

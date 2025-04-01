@@ -9,7 +9,6 @@ import '../../data/models/address_model.dart';
 import '../../data/models/user_model.dart';
 import '../../main.dart';
 
-
 class SignUpProvider extends ChangeNotifier {
   final GoogleSignIn googleSignIn = GoogleSignIn();
   final firebase = FirebaseAuth.instance;
@@ -137,15 +136,13 @@ class SignUpProvider extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
     UserModel newUser = UserModel(
-      city: address.city,
-      area: address.area,
-      street: address.street,
+      address: address,
     );
     try {
       await firebaseStore
           .collection("users")
           .doc(user.uid)
-          .update(newUser.toJson());
+          .update(newUser.addressToJson());
 
       sliderValue = 0.75;
     } on FirebaseAuthException catch (error) {
