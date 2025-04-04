@@ -1,60 +1,49 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce/main.dart';
+import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:ecommerce/domain/repositories/login_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../data/models/user_model.dart';
+import '../../main.dart';
+import '../models/user_model.dart';
 
-/// This class is responsible for login & logout
-class LoginProvider extends ChangeNotifier {
-  final firebase = FirebaseAuth.instance;
-  GoogleSignIn google = GoogleSignIn();
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+class LoginRepositoryImpl implements LoginRepository {
+  final FirebaseService _firebaseService = FirebaseService();
 
-  bool isLoading = false;
+  static User? _user;
+  static String? _name;
 
-  /// will be used to update the UI
+  User? get user => _user;
 
-  bool isGoogleAccount =
-      FirebaseAuth.instance.currentUser?.providerData[0].providerId ==
-          'google.com';
+  String? get name => _name;
 
-  /// Will check if the user sign in with google
-
-  /// To use [Selector] you have to create getter.
-
-  get loading => isLoading;
-
-  void signIn(
+  @override
+  Future<void> signIn(
       GlobalKey<FormState> formKey, String passCon, String userCon) async {
     final valid = formKey.currentState!.validate();
-    isLoading = true;
-    notifyListeners();
     try {
       if (!valid) {
-        isLoading = false;
-
         return;
       } else {
-         await firebase
-                .signInWithEmailAndPassword(email: userCon, password: passCon);
+        await _firebaseService.auth
+            .signInWithEmailAndPassword(email: userCon, password: passCon);
 
-                  final userDataCheck = await FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(firebase.currentUser!.uid)
-                    .get();
+        final userDataCheck = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(_firebaseService.auth.currentUser!.uid)
+            .get();
 
-                /// we will check if the user have any info or not
-                userDataCheck.data()?["city"] == null
-                    ? navigatorKey.currentState?.pushReplacementNamed('/user_setup')
-                    : navigatorKey.currentState?.pushReplacementNamed('/layout');
-
+        /// we will check if the user have any info or not
+        userDataCheck.data()?["city"] == null
+            ? navigatorKey.currentState?.pushReplacementNamed('/user_setup')
+            : navigatorKey.currentState?.pushReplacementNamed('/layout');
       }
     } catch (error) {
       log(error.toString());
+
       /// Important to know that we are using Scaffold global Key from the main.dart
       /// This allow us to don't use context + make the work more easy and effectuation.
       scaffoldMessengerKey.currentState?.clearSnackBars();
@@ -63,36 +52,23 @@ class LoginProvider extends ChangeNotifier {
           content: Text("Authentication Error!"),
         ),
       );
-    } finally {
-      isLoading = false;
     }
 
     formKey.currentState!.save();
-    notifyListeners();
   }
 
-  Future loginWithGoogle() async {
-    isLoading = true;
-    notifyListeners();
+  @override
+  Future<void> loginWithGoogle() async {
     log("we are in");
-
-    /// to update the UI you have to use [notifyListeners()] even if you are using in many times in the function.
-    /// (this is may lead to unnecessary rebuild)
 
     GoogleSignInAccount? googleSignInAccount;
     try {
-      /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
-      googleSignInAccount = await googleSignIn.signIn();
+      googleSignInAccount = await _firebaseService.google.signIn();
     } catch (error) {
       log("loginWithGoogle: $error");
     }
     if (googleSignInAccount == null) {
-      isLoading = false;
-      notifyListeners();
       return;
-
-      /// to update the UI you have to use [notifyListeners()] even if you are using in many times in the function.
-      /// (this is may lead to unnecessary rebuild)
     } else {
       try {
         GoogleSignInAuthentication googleAuth =
@@ -102,7 +78,7 @@ class LoginProvider extends ChangeNotifier {
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
 
         final userCredential =
-            await firebase.signInWithCredential(authCredential);
+            await _firebaseService.auth.signInWithCredential(authCredential);
         if (userCredential.user != null) {
           final data = await FirebaseFirestore.instance
               .collection("users")
@@ -130,29 +106,30 @@ class LoginProvider extends ChangeNotifier {
             content: Text(error.message ?? "Authentication Error!"),
           ),
         );
-      } finally {
-        isLoading = false;
       }
     }
-    notifyListeners();
   }
 
-  void signOut() async {
-    isLoading = true;
+  @override
+  Future<void> signOut() async {
     try {
+      bool isGoogleAccount =
+          _firebaseService.auth.currentUser?.providerData[0].providerId ==
+              'google.com';
+
       if (isGoogleAccount) {
         log("Google Account");
-        await google.signOut();
-        await firebase.signOut();
+        await _firebaseService.google.signOut();
+        await _firebaseService.auth.signOut();
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
-            "log: Null");
+            "Logged out successfully with google Null");
       } else {
-        await firebase.signOut();
+        await _firebaseService.auth.signOut();
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
-            "log: Null");
+            "Logged out successfully with Null");
       }
 
-      if (firebase.currentUser == null) {
+      if (_firebaseService.auth.currentUser == null) {
         navigatorKey.currentState?.pushReplacementNamed('/login');
       } else {
         scaffoldMessengerKey.currentState?.clearSnackBars();
@@ -166,9 +143,23 @@ class LoginProvider extends ChangeNotifier {
           content: Text("Couldn't sign out please try again. $error"),
         ),
       );
-    } finally {
-      isLoading = false;
     }
-    notifyListeners();
+  }
+
+  userData() async {
+    try {
+      _user = _firebaseService.auth.currentUser;
+
+      if (_user == null) return;
+      final firestore = await _firebaseService.firestore
+          .collection("users")
+          .doc(_user?.uid)
+          .get();
+
+      _name = firestore.data()?["name"];
+    } catch (error) {
+      log("Error when fetching data: $error");
+      rethrow;
+    }
   }
 }

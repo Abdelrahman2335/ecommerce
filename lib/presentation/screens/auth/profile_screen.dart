@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../data/models/address_model.dart';
-import '../../provider/auth_viewmodel.dart';
+import '../../provider/login_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/new_address.dart';
 
@@ -58,7 +58,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<LoginProvider>(context, listen: false).signOut();
+              Provider.of<LoginViewModel>(context, listen: false).signOut();
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),

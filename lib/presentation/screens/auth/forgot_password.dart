@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
@@ -50,8 +51,8 @@ class ForgotPassword extends StatelessWidget {
                   height: 30,
                 ),
                 CustomField(
-                  label: "Username or Email",
-                  icon: const FaIcon(Icons.mail_rounded),
+                  label: "Email address",
+                  icon:  Icon(PhosphorIcons.envelopeSimple()),
                   controller: emailCon,
                   isSecure: false,
                   isValid: (String? value) {
@@ -72,6 +73,7 @@ class ForgotPassword extends StatelessWidget {
                   height: 24,
                 ),
                 CustomButton(
+
                     pressed: () {
                       forgetPass(emailCon.text);
                     },

@@ -1,12 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:gap/gap.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../main.dart';
-import '../../provider/auth_viewmodel.dart';
+import '../../provider/login_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 
@@ -63,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     CustomField(
                       label: "Email Address",
-                      icon: const FaIcon(Icons.person),
+                      icon:  Icon(PhosphorIcons.user()),
                       controller: userCon,
                       isSecure: false,
                       isValid: (String? value) {
@@ -78,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     CustomField(
                       label: "Password",
-                      icon: const FaIcon(Icons.lock),
+                      icon:  Icon(PhosphorIcons.lock()),
                       controller: passCon,
                       isSecure: true,
                       isValid: (String? value) {
@@ -106,13 +107,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(fontSize: 13),
                           )),
                     ),
-                    Selector<LoginProvider, bool>(
+                    Selector<LoginViewModel, bool>(
                         selector: (_, selectedValue) => selectedValue.loading,
                         builder: (context, isLoading, child) {
                           return !isLoading
                               ? CustomButton(
                                   pressed: () {
-                                    Provider.of<LoginProvider>(context,
+                                    Provider.of<LoginViewModel>(context,
                                             listen: false)
                                         .signIn(formKey, passCon.text,
                                             userCon.text);
@@ -147,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             side: BorderSide(color: theme.primaryColor),
                           ),
                           onPressed: () async {
-                           await context.read<LoginProvider>().loginWithGoogle();
+                           await context.read<LoginViewModel>().loginWithGoogle();
                           },
                           child: const Image(
                             image: AssetImage(

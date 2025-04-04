@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CustomField extends StatefulWidget {
   final bool isSecure;
   final String label;
-  final FaIcon icon;
+  final Icon icon;
   final TextEditingController controller;
+  final TextStyle? labelStyle;
 
   ///Will use it later
   final String? Function(String?) isValid;
@@ -17,7 +19,7 @@ class CustomField extends StatefulWidget {
     required this.controller,
     required this.isSecure,
     required this.isValid,
-
+    this.labelStyle,
   });
 
   @override
@@ -38,12 +40,13 @@ class _CustomfieldState extends State<CustomField> {
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(20),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(21),
             borderSide: BorderSide(color: Theme.of(context).primaryColor)),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(21),
         ),
         labelText: widget.label,
+        labelStyle: widget.labelStyle,
         prefixIcon: Padding(
           padding: const EdgeInsets.all(15),
           child: widget.icon,
@@ -58,8 +61,8 @@ class _CustomfieldState extends State<CustomField> {
                       });
                     },
                     icon: hidePass
-                        ? const FaIcon(Icons.remove_red_eye_outlined)
-                        : const FaIcon(Icons.remove_red_eye_sharp),
+                        ? Icon(PhosphorIcons.eyeSlash())
+                        : Icon(PhosphorIcons.eye()),
                   )
                 : null),
       ),

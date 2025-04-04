@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/data/repositories/login_repository_impl.dart';
 import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
+import 'package:ecommerce/data/repositories/singup_repository_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
@@ -17,10 +19,9 @@ import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
 import 'presentation/provider/cart_viewmodel.dart';
-import 'presentation/provider/home_viewModel.dart';
-import 'presentation/provider/payment_provider.dart';
-import 'presentation/provider/auth_viewmodel.dart';
 import 'presentation/provider/location_viewmodel.dart';
+import 'presentation/provider/login_viewmodel.dart';
+import 'presentation/provider/payment_provider.dart';
 import 'presentation/provider/wishlist_viewmodel.dart';
 import 'presentation/screens/auth/forgot_password.dart';
 import 'presentation/screens/auth/login_screen.dart';
@@ -43,17 +44,18 @@ void main() async {
 
         /// This widget is the root of your application.
         MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => SignUpProvider()),
+      ChangeNotifierProvider(create: (_) => SignupViewmodel(SignupRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => ItemProvider(ItemRepositoryImpl()),
       ),
       ChangeNotifierProvider(
-        create: (_) => LoginProvider(),
+        create: (_) => LoginViewModel(LoginRepositoryImpl()),
       ),
-      ChangeNotifierProvider(create: (_) => CartViewModel(CartRepositoryImpl())),
-      ChangeNotifierProvider(create: (_) =>WishListViewModel(WishListRepositoryImpl())),
+      ChangeNotifierProvider(
+          create: (_) => CartViewModel(CartRepositoryImpl())),
+      ChangeNotifierProvider(
+          create: (_) => WishListViewModel(WishListRepositoryImpl())),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),
-      ChangeNotifierProvider(create: (_) => HomeViewModel()),
       // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => PaymentViewModel(PaymentRepositoryImpl()),

@@ -18,23 +18,23 @@ class ThemeDataConfig {
       colorScheme: _colorScheme,
       scaffoldBackgroundColor: _colorScheme.surface,
       textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-        titleSmall: GoogleFonts.roboto(fontWeight: FontWeight.w600),
-        titleMedium: GoogleFonts.roboto(
+        titleSmall: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        titleMedium: GoogleFonts.poppins(
           fontWeight: FontWeight.normal,
         ),
         titleLarge:
-        GoogleFonts.roboto(fontWeight: FontWeight.bold, fontSize: 34),
-        labelSmall: GoogleFonts.roboto(
+        GoogleFonts.poppins( fontSize: 29),
+        labelSmall: GoogleFonts.poppins(
           fontWeight: FontWeight.normal,
           color: const Color(-11053225),
         ),
-        labelMedium: GoogleFonts.playfairDisplay(
+        labelMedium: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             color: const Color(0xFF4392F9),
             fontSize: 16),
-        labelLarge: GoogleFonts.roboto(
+        labelLarge: GoogleFonts.poppins(
             fontWeight: FontWeight.normal, color: Colors.white, fontSize: 14),
-        bodySmall: GoogleFonts.roboto(
+        bodySmall: GoogleFonts.poppins(
             fontWeight: FontWeight.w400,
             fontStyle: FontStyle.italic,
             color: Colors.white),

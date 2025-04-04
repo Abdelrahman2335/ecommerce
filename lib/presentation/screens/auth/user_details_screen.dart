@@ -10,7 +10,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../../methods/setup_user_data.dart';
-import '../../provider/auth_viewmodel.dart';
+import '../../provider/login_viewmodel.dart';
 import '../../provider/location_viewmodel.dart';
 import '../../provider/signup_viewmodel.dart';
 
@@ -55,7 +55,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
 
-    int counter = context.watch<SignUpProvider>().hasInfo ? 2 : 1;
+    int counter = context.watch<SignupViewmodel>().hasInfo ? 2 : 1;
     bool nextPage = context.watch<LocationProvider>().nextPageValue;
     counter = nextPage ? 3 : counter;
 
@@ -89,7 +89,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           actions: [
             IconButton(
               onPressed: () {
-                Provider.of<LoginProvider>(context, listen: false).signOut();
+                Provider.of<LoginViewModel>(context, listen: false).signOut();
               },
               icon: const Icon(Icons.exit_to_app_outlined),
             ),

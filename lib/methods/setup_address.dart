@@ -140,7 +140,7 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
                 street: secondCon.text,
               );
                 ///  Here we are going to update the address information
-                context.read<SignUpProvider>().addressInfo(address, user);
+                context.read<SignupViewmodel>().addressInfo(address, user);
                 firstCon.clear();
                 secondCon.clear();
                 context.read<LocationProvider>().updateNextPageValue(true);

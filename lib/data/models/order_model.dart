@@ -39,7 +39,8 @@ class Order {
     required this.status,
     required this.shippingAddress,
   }): id = generateOrderId();
-  // Generate a 9-digit numeric order ID
+
+// TODO Make sure the order id is unique
   static String generateOrderId() {
     var rng = Random();
     return (100000000 + rng.nextInt(900000000)).toString();

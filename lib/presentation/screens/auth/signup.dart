@@ -3,8 +3,8 @@ import 'package:ecommerce/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/models/user_model.dart';
@@ -38,7 +38,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final signUpProvider = Provider.of<SignUpProvider>(context);
+    final signUpProvider = Provider.of<SignupViewmodel>(context);
 
     return Scaffold(
       body: Animate(
@@ -62,8 +62,9 @@ class _SignUpState extends State<SignUp> {
                   ),
                   const Gap(34),
                   CustomField(
-                    label: "Enter email",
-                    icon: const FaIcon(Icons.person),
+                    label: "Email address",
+                    labelStyle: TextStyle(fontSize: 14),
+                    icon: Icon(PhosphorIcons.user()),
                     controller: emailCon,
                     isSecure: false,
                     isValid: (String? value) {
@@ -76,7 +77,8 @@ class _SignUpState extends State<SignUp> {
                   const Gap(16),
                   CustomField(
                     label: "Password",
-                    icon: const FaIcon(Icons.lock),
+                    labelStyle: TextStyle(fontSize: 14),
+                    icon: Icon(PhosphorIcons.lock()),
                     controller: passCon,
                     isSecure: true,
                     isValid: (String? value) {
@@ -88,8 +90,9 @@ class _SignUpState extends State<SignUp> {
                   ),
                   const Gap(16),
                   CustomField(
-                    label: "Confirm Password",
-                    icon: const FaIcon(Icons.lock),
+                    label: "Confirm password",
+                    labelStyle: TextStyle(fontSize: 14),
+                    icon: Icon(PhosphorIcons.lock()),
                     controller: rePassCon,
                     isSecure: true,
                     isValid: (String? value) {
@@ -105,12 +108,14 @@ class _SignUpState extends State<SignUp> {
                     },
                   ),
                   const Gap(40),
-                  Selector<SignUpProvider, bool>(
-                      selector: (_, selectedValue) => selectedValue.loading,
+                  Selector<SignupViewmodel, bool>(
+                      selector: (_, selectedValue) => selectedValue.isLoading,
                       builder: (context, isLoading, child) {
                         /// This isLoading not working properly
                         return !isLoading
                             ? CustomButton(
+
+                          bottomWidth: 0.5,
                                 pressed: () async {
                                   final valid =
                                       formKey.currentState?.validate();
@@ -168,10 +173,12 @@ class _SignUpState extends State<SignUp> {
                           side: BorderSide(color: theme.primaryColor),
                         ),
                         onPressed: () {
+                          Provider.of<SignupViewmodel>(
+                                  navigatorKey.currentContext!,
 
-                          Provider.of<SignUpProvider>(
-                              navigatorKey.currentContext!, /// instead of context
-                              listen: false).signInWithGoogle();
+                                  /// instead of context
+                                  listen: false)
+                              .signInWithGoogle();
 
                           if (firebase.currentUser == null) return;
                           navigatorKey.currentState

@@ -1,122 +1,86 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../core/services/firebase_service.dart';
 import '../../data/models/address_model.dart';
 import '../../data/models/user_model.dart';
+import '../../domain/repositories/signup_repository.dart';
 import '../../main.dart';
 
-class SignUpProvider extends ChangeNotifier {
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-  final firebase = FirebaseAuth.instance;
-  final firebaseStore = FirebaseFirestore.instance;
-  bool hasInfo = false;
+class SignupViewmodel extends ChangeNotifier {
+  final SignupRepository _signupRepository;
 
-  /// used when creating account
+  SignupViewmodel(this._signupRepository);
+  final FirebaseService _firebaseService = FirebaseService();
 
-  /// you can't assign non static value to variable in initializer like [firebaseStore] or [firebase]
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+ bool hasInfo = true;
   double sliderValue = 0.0;
 
-  bool isLoading = false;
-
-  get loading => isLoading;
-
-  /// used when login and creating account to check if we have any info about the user or not
-  Future<bool> checkUserExistence() async {
-    if (firebase.currentUser == null) return false;
-
-    /// Don't forget that this is the constructor so this function will always run when the provider is created,
-    /// so we have to check if the user is null or not to prevent any errors
+  checkUserExistence() async {
     try {
-      Map<String, dynamic>? doc = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(firebase.currentUser!.uid)
-          .get()
-          .then((value) => value.data());
-
-      hasInfo = doc?["phone"] == null ? false : true;
-      log("hasInfo: $hasInfo");
-      return hasInfo;
+      _isLoading = true;
+      notifyListeners();
+      await _signupRepository.checkUserExistence();
     } catch (error) {
-      log("Error in the signUpProvider constructor: $error");
-      return false;
+      log("an error occur when checking user existence: $error");
+      rethrow;
+    } finally {
+      _isLoading = false;
     }
-  }
-
-  SignUpProvider() {
-    checkUserExistence();
+    notifyListeners();
   }
 
   signInWithGoogle() async {
-    isLoading = true;
-    notifyListeners();
-
-    /// We could use this code only to signIn with google, but we wanted to use another way so we have to get the authCredential
-    GoogleSignInAccount? googleSignInAccount;
-
     try {
-      googleSignInAccount = await googleSignIn.signIn();
-    } catch (error) {
-      log("error: $error");
-    }
-    if (googleSignInAccount == null) {
-      isLoading = false;
+      _isLoading = true;
       notifyListeners();
-
-      return;
-    } else {
-      try {
-        log("signInWithGoogle: GoogleSignInAccount is not null");
-        GoogleSignInAuthentication googleAuth =
-            await googleSignInAccount.authentication;
-
-        AuthCredential authCredential = GoogleAuthProvider.credential(
-            idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-        firebase.signInWithCredential(authCredential);
-
-        /// if the user doesn't have any info we have to create it
-        if (!hasInfo) {
-          await firebaseStore
-              .collection("users")
-              .doc(firebase.currentUser!.uid)
-              .set(UserModel(
-                createdAt: DateTime.now(),
-                role: "user",
-              ).toJson());
-        }
-      } catch (error) {
-        scaffoldMessengerKey.currentState?.clearSnackBars();
-        scaffoldMessengerKey.currentState?.showSnackBar(
-          const SnackBar(
-            content: Text("Authentication Error!"),
-          ),
-        );
-      } finally {
-        isLoading = false;
-      }
+      await _signupRepository.signInWithGoogle();
+    } catch (error) {
+      log("an error occur when sign-in with google: $error");
+      rethrow;
+    } finally {
+      _isLoading = false;
     }
     notifyListeners();
   }
 
-  personalInfo(String name, String phone, User user) async {
-    isLoading = true;
+  Future<void> createUser(
+    GlobalKey<FormState> formKey,
+    String passCon,
+    String userCon,
+  ) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await _signupRepository.createUser(formKey, passCon, userCon);
+    } catch (error) {
+      log("an error occur when creating user: $error");
+      rethrow;
+    } finally {
+      _isLoading = false;
+    }
     notifyListeners();
+  }
+
+  // TODO you have to create another file for these functions.
+  personalInfo(String name, String phone, User user) async {
+    _isLoading = true;
     UserModel newUser = UserModel(
       name: name,
       phone: phone,
       role: "user",
     );
     try {
-      await firebaseStore
+      await _firebaseService.firestore
           .collection("users")
           .doc(user.uid)
           .update(newUser.toJson());
 
-      /// update method does not return anything indicate success or fail,
-      /// so we have to use try catch, if you want to do something after is ends successfully just write it here
       hasInfo = true;
       sliderValue = 0.50;
     } on FirebaseAuthException catch (error) {
@@ -127,19 +91,17 @@ class SignUpProvider extends ChangeNotifier {
         ),
       );
     } finally {
-      isLoading = false;
+      _isLoading = false;
     }
-    notifyListeners();
   }
 
   Future addressInfo(AddressModel address, User user) async {
-    isLoading = true;
-    notifyListeners();
+    _isLoading = true;
     UserModel newUser = UserModel(
       address: address,
     );
     try {
-      await firebaseStore
+      await _firebaseService.firestore
           .collection("users")
           .doc(user.uid)
           .update(newUser.addressToJson());
@@ -153,53 +115,8 @@ class SignUpProvider extends ChangeNotifier {
         ),
       );
     } finally {
-      isLoading = false;
+      _isLoading = false;
     }
-    notifyListeners();
   }
 
-  Future createUser(
-    GlobalKey<FormState> formKey,
-    String passCon,
-    String userCon,
-  ) async {
-    isLoading = true;
-    notifyListeners();
-    final valid = formKey.currentState!.validate();
-
-    try {
-      if (valid) {
-        final UserCredential userCredential = await firebase
-            .createUserWithEmailAndPassword(email: userCon, password: passCon);
-
-        UserModel newUser = UserModel(
-          createdAt: DateTime.now(),
-        );
-        if (userCredential.user != null) {
-          String uid = userCredential.user!.uid;
-          await firebaseStore
-              .collection("users")
-              .doc(uid)
-              .set(newUser.toJson());
-
-          /// add user date of join to firestore
-          hasInfo = false;
-        }
-      } else {
-        log("createUser not working, We are going back");
-        return;
-      }
-    } on FirebaseAuthException catch (error) {
-      scaffoldMessengerKey.currentState?.clearSnackBars();
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        SnackBar(
-          content: Text(error.message ?? "Authentication Error!"),
-        ),
-      );
-    } finally {
-      isLoading = false;
-    }
-    formKey.currentState!.save();
-    notifyListeners();
-  }
 }

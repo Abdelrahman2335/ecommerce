@@ -87,7 +87,7 @@ Widget setupUserData(BuildContext context, nameCon, phoneCon, User? user,
             onPressed: () {
               final valid = formKey.currentState!.validate();
               if (valid) {
-                context.read<SignUpProvider>().personalInfo(nameCon.text, phoneCon.text, user!);
+                context.read<SignupViewmodel>().personalInfo(nameCon.text, phoneCon.text, user!);
                 nameCon.clear();
                 phoneCon.clear();
               }

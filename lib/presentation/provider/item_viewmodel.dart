@@ -8,8 +8,8 @@ import '../../data/models/product_model.dart';
 class ItemProvider extends ChangeNotifier {
   final ItemRepository _itemRepository;
   List<Product> _mainData = [];
-
   List<Product> get receivedData => _mainData;
+
 
 
   ItemProvider(this._itemRepository) {
