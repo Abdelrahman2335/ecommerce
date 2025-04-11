@@ -12,22 +12,19 @@ class UserViewModel extends ChangeNotifier {
   UserViewModel(this._userDataRepository);
 
   bool _isLoading = false;
-  bool _hasInfo = true;
   double _sliderValue = 0.0;
 
   bool get isLoading => _isLoading;
 
-  bool get hasInfo => _hasInfo;
 
   double get sliderValue => _sliderValue;
 
-  Future<void> personalInfo(String name, String phone, User user) async {
+  Future<void> personalInfo(String name, String phone, String? selectedGender, String age) async {
     try {
       _isLoading = true;
       notifyListeners();
-      await _userDataRepository.personalInfo(name, phone, user);
+      await _userDataRepository.personalInfo(name, phone, selectedGender, age);
 
-      _hasInfo = true;
       _sliderValue = 0.50;
       _isLoading = false;
       notifyListeners();
@@ -44,25 +41,10 @@ class UserViewModel extends ChangeNotifier {
       await _userDataRepository.addressInfo(address, user);
 
       _isLoading = false;
-      _sliderValue = 0.75;
-      notifyListeners();
-    } catch (error) {
-      log("Error in addressInfo: $error");
-      rethrow;
-    }
-  }
-
-  Future<void> optionalInfo(
-      User? user, String? selectedGender, String age) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      await _userDataRepository.optionalInfo(user, selectedGender, age);
-      _isLoading = false;
       _sliderValue = 1.0;
       notifyListeners();
     } catch (error) {
-      log("Error in optionalInfo: $error");
+      log("Error in addressInfo: $error");
       rethrow;
     }
   }

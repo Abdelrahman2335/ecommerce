@@ -11,20 +11,22 @@ import '../../main.dart';
 import '../models/user_model.dart';
 
 class UserDataRepositoryImpl implements UserDataRepository {
-
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
-  Future<void> personalInfo(String name, String phone, User user) async {
+  Future<void> personalInfo(String name, String phone, String? selectedGender, String age) async {
     UserModel newUser = UserModel(
       name: name,
       phone: phone,
       role: "user",
+      
+        age: age,
+        gender: selectedGender,
     );
     try {
       await _firebaseService.firestore
           .collection("users")
-          .doc(user.uid)
+          .doc(_firebaseService.auth.currentUser!.uid)
           .update(newUser.toJson());
 
       // hasInfo = true;
@@ -40,7 +42,6 @@ class UserDataRepositoryImpl implements UserDataRepository {
   }
 
   @override
-
   Future addressInfo(AddressModel address, User user) async {
     UserModel newUser = UserModel(
       address: address,
@@ -61,23 +62,5 @@ class UserDataRepositoryImpl implements UserDataRepository {
       );
     }
   }
-
-  @override
-  Future<void> optionalInfo(User? user, String? selectedGender, String age) async{
-
-    try{
-    await _firebaseService.firestore
-        .collection("users")
-        .doc(_firebaseService.auth.currentUser!.uid)
-        .update({
-      "age": age,
-      "gender": selectedGender,
-    } );}catch(error){
-      log("Error in optionalInfo: $error");
-      rethrow;
-    }
-  }
-
-
 
 }
