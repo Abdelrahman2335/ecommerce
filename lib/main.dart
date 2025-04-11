@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/data/repositories/login_repository_impl.dart';
 import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/singup_repository_impl.dart';
+import 'package:ecommerce/data/repositories/user_data_repository_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
@@ -22,6 +23,7 @@ import 'presentation/provider/cart_viewmodel.dart';
 import 'presentation/provider/location_viewmodel.dart';
 import 'presentation/provider/login_viewmodel.dart';
 import 'presentation/provider/payment_provider.dart';
+import 'presentation/provider/user_data_viewmodel.dart';
 import 'presentation/provider/wishlist_viewmodel.dart';
 import 'presentation/screens/auth/forgot_password.dart';
 import 'presentation/screens/auth/login_screen.dart';
@@ -45,8 +47,9 @@ void main() async {
         /// This widget is the root of your application.
         MultiProvider(providers: [
       ChangeNotifierProvider(create: (_) => SignupViewmodel(SignupRepositoryImpl())),
+      ChangeNotifierProvider(create: (_)=> UserViewModel(UserDataRepositoryImpl())),
       ChangeNotifierProvider(
-        create: (_) => ItemProvider(ItemRepositoryImpl()),
+        create: (_) => ItemViewModel(ItemRepositoryImpl()),
       ),
       ChangeNotifierProvider(
         create: (_) => LoginViewModel(LoginRepositoryImpl()),

@@ -1,6 +1,6 @@
 
 import 'package:ecommerce/data/category_data.dart';
-import 'package:ecommerce/presentation/provider/home_viewModel.dart';
+import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: CustomDrawer(),
       /// [Skeletonizer] is a place holder while the data is loading.
-      body: Consumer<HomeViewModel>(
+      body: Consumer<ItemViewModel>(
         builder: (BuildContext context, value, Widget? child) {
           return Skeletonizer(
             switchAnimationConfig: SwitchAnimationConfig(

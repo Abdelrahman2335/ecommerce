@@ -1,15 +1,16 @@
 import 'dart:developer';
 
 import 'package:ecommerce/main.dart';
-import 'package:ecommerce/methods/optional_info.dart';
-import 'package:ecommerce/methods/setup_address.dart';
+import 'package:ecommerce/presentation/widgets/optional_info.dart';
+import 'package:ecommerce/presentation/widgets/setup_address.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../../methods/setup_user_data.dart';
+import '../../provider/user_data_viewmodel.dart';
+import '../../widgets/setup_user_data.dart';
 import '../../provider/login_viewmodel.dart';
 import '../../provider/location_viewmodel.dart';
 import '../../provider/signup_viewmodel.dart';
@@ -55,7 +56,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
 
-    int counter = context.watch<SignupViewmodel>().hasInfo ? 2 : 1;
+    int counter = context.watch<UserViewModel>().hasInfo ? 2 : 1;
     bool nextPage = context.watch<LocationProvider>().nextPageValue;
     counter = nextPage ? 3 : counter;
 

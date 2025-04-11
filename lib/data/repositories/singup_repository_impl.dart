@@ -12,12 +12,8 @@ import '../../main.dart';
 
 class SignupRepositoryImpl implements SignupRepository {
   final FirebaseService _firebaseService = FirebaseService();
+
   bool hasInfo = false;
-
-  double sliderValue = 0.0;
-  bool isLoading = false;
-
-  get loading => isLoading;
 
   @override
   Future<bool> checkUserExistence() async {
@@ -40,7 +36,6 @@ class SignupRepositoryImpl implements SignupRepository {
 
   @override
   signInWithGoogle() async {
-    isLoading = true;
     GoogleSignInAccount? googleSignInAccount;
 
     try {
@@ -49,7 +44,6 @@ class SignupRepositoryImpl implements SignupRepository {
       log("error: $error");
     }
     if (googleSignInAccount == null) {
-      isLoading = false;
       return;
     } else {
       try {
@@ -69,6 +63,14 @@ class SignupRepositoryImpl implements SignupRepository {
                 createdAt: DateTime.now(),
                 role: "user",
               ).toJson());
+        }else{
+          scaffoldMessengerKey.currentState?.clearSnackBars();
+          scaffoldMessengerKey.currentState?.showSnackBar(
+            const SnackBar(
+              content: Text("User already exist!"),
+            ),
+          );
+          return;
         }
       } catch (error) {
         scaffoldMessengerKey.currentState?.clearSnackBars();
@@ -77,8 +79,6 @@ class SignupRepositoryImpl implements SignupRepository {
             content: Text("Authentication Error!"),
           ),
         );
-      } finally {
-        isLoading = false;
       }
     }
   }
@@ -89,7 +89,6 @@ class SignupRepositoryImpl implements SignupRepository {
     String passCon,
     String userCon,
   ) async {
-    isLoading = true;
     final valid = formKey.currentState!.validate();
 
     try {
@@ -120,10 +119,7 @@ class SignupRepositoryImpl implements SignupRepository {
           content: Text(error.message ?? "Authentication Error!"),
         ),
       );
-    } finally {
-      isLoading = false;
     }
     formKey.currentState!.save();
   }
-
 }

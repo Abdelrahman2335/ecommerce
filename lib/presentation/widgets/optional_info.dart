@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/presentation/provider/user_data_viewmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
-import '../data/models/user_model.dart';
 
 Widget optionalInfo(BuildContext context, nameCon, ageCon, User? user,
     GlobalKey<FormState> formKey) {
@@ -12,16 +12,7 @@ Widget optionalInfo(BuildContext context, nameCon, ageCon, User? user,
   /// Allows only digits (0-9) and "+"
   List genders = ["male","female"];
   String selectedGender = genders[0];
-  Future updateUser(User? user, String? selectedGender, String age) async {
-    if (user == null) return;
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(user.uid)
-        .update(UserModel(
-          age: ageCon.text,
-          gender: selectedGender,
-        ).toJson());
-  }
+
 
   /// Both are the same
   //  SignUpProvider signUpProvider = context.watch<SignUpProvider>();
@@ -129,8 +120,7 @@ Widget optionalInfo(BuildContext context, nameCon, ageCon, User? user,
               onPressed: () async {
                 final valid = formKey.currentState?.validate();
                 if (valid == null || valid == false) return;
-                await updateUser(user, selectedGender, ageCon.text);
-
+              await  context.read<UserViewModel>().optionalInfo(user, selectedGender, ageCon.text);
                 Navigator.pushReplacementNamed(context, "/layout");
               },
               child: const Text(

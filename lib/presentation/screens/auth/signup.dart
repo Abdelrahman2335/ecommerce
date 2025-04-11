@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/models/user_model.dart';
 import '../../provider/signup_viewmodel.dart';
+import '../../provider/user_data_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 import 'login_screen.dart';
@@ -139,7 +140,6 @@ class _SignUpState extends State<SignUp> {
                                         .set(newUser.toJson());
 
                                     /// add user date of join to firestore
-                                    signUpProvider.hasInfo = false;
 
                                     navigatorKey.currentState
                                         ?.pushReplacementNamed(

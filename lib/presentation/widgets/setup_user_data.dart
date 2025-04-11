@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../presentation/provider/signup_viewmodel.dart';
+import '../provider/signup_viewmodel.dart';
+import '../provider/user_data_viewmodel.dart';
 
 Widget setupUserData(BuildContext context, nameCon, phoneCon, User? user,
     GlobalKey<FormState> formKey) {
@@ -87,7 +88,7 @@ Widget setupUserData(BuildContext context, nameCon, phoneCon, User? user,
             onPressed: () {
               final valid = formKey.currentState!.validate();
               if (valid) {
-                context.read<SignupViewmodel>().personalInfo(nameCon.text, phoneCon.text, user!);
+                context.read<UserViewModel>().personalInfo(nameCon.text, phoneCon.text, user!);
                 nameCon.clear();
                 phoneCon.clear();
               }

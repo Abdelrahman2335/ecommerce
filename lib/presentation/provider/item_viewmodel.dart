@@ -1,31 +1,63 @@
 import 'dart:developer';
 
 import 'package:ecommerce/domain/repositories/main_data_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../data/models/product_model.dart';
+import '../../data/repositories/login_repository_impl.dart';
 
-class ItemProvider extends ChangeNotifier {
+class ItemViewModel extends ChangeNotifier {
   final ItemRepository _itemRepository;
+  LoginRepositoryImpl loginRepositoryImpl = LoginRepositoryImpl();
   List<Product> _mainData = [];
+
   List<Product> get receivedData => _mainData;
+  bool _isLoading = false;
+  bool _removeAdd = false;
+  User? _user;
+  String? _name;
 
+  bool get removeAdd => _removeAdd;
 
+  bool get isLoading => _isLoading;
 
-  ItemProvider(this._itemRepository) {
-    Future.microtask(() => fetchData()); /// Ensure data is fetched after the constructor is completed
+  User? get user => _user;
+
+  String? get name => _name;
+
+  ItemViewModel(this._itemRepository) {
+    Future.microtask(() => fetchData());
+
+    /// Ensure data is fetched after the constructor is completed
   }
 
   Future<void> fetchData() async {
     try {
+      _isLoading = true;
+      notifyListeners();
+
+      _user = loginRepositoryImpl.user;
+      _name = loginRepositoryImpl.name;
       final fetchedData = await _itemRepository.getData();
       if (fetchedData != null && fetchedData != _mainData) {
         _mainData = fetchedData;
+
+        _isLoading = false;
         notifyListeners();
       }
     } catch (e) {
       log("Error fetching data: $e");
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
+  }
+
+  void toggleRemoveAdd() {
+    _removeAdd = true;
+    notifyListeners();
   }
 }
 

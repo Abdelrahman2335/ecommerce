@@ -35,13 +35,14 @@ class _NewAddressState extends State<NewAddress> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
+
                 child: TextFormField(
                   maxLines: 1,
                   maxLength: 50,
                   controller: areaCon,
                   decoration: const InputDecoration(
                     hintText: "Area",
-                    contentPadding: EdgeInsets.all(9),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 9),
                   ),
                 ),
               ),
@@ -50,15 +51,17 @@ class _NewAddressState extends State<NewAddress> {
               ),
               Expanded(
                 child: DropdownButtonFormField(
+                  isDense: true, // Make the dropdown more compact
+                  isExpanded: true, // Force the dropdown to fill its container
                   items: [
                     for (String city in egyptCities)
                       DropdownMenuItem(
+
                         value: city,
-                        child: FittedBox(
-                            child: Text(
+                        child: Text(
                           city,
                           overflow: TextOverflow.ellipsis,
-                        )),
+                        )
                       ),
                   ],
                   value: selectedCity,

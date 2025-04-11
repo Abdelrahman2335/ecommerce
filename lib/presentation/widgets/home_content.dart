@@ -29,7 +29,7 @@ class _HomeContentState extends State<HomeContent> {
   Widget build(BuildContext context) {
     CartViewModel inCartProvider =
         Provider.of<CartViewModel>(context, listen: true);
-    int listLength = context.watch<ItemProvider>().receivedData.length;
+    int listLength = context.watch<ItemViewModel>().receivedData.length;
 
     return SliverGrid(
             /// We are using [SliverGridDelegateWithMaxCrossAxisExtent] instead of [SliverGridDelegateWithFixedCrossAxisCount]
@@ -48,7 +48,7 @@ class _HomeContentState extends State<HomeContent> {
               if (index >= listLength) {
                 return null;
               }
-              final Product data = context.read<ItemProvider>().receivedData[index];
+              final Product data = context.read<ItemViewModel>().receivedData[index];
 
               /// this boolean is used to check if the item is in the wishlist
 

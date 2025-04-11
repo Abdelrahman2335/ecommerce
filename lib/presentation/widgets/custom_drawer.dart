@@ -1,8 +1,8 @@
+import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/home_viewModel.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -12,7 +12,7 @@ class CustomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme.secondary;
-    return Consumer<HomeViewModel>(
+    return Consumer<ItemViewModel>(
         builder: (BuildContext context, provider, Widget? child) {
       return Drawer(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),

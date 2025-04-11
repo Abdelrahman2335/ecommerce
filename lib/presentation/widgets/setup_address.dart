@@ -7,10 +7,11 @@ import 'package:gap/gap.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../data/cities.dart';
-import '../data/models/address_model.dart';
-import '../presentation/provider/location_viewmodel.dart';
-import '../presentation/provider/signup_viewmodel.dart';
+import '../../data/cities.dart';
+import '../../data/models/address_model.dart';
+import '../provider/location_viewmodel.dart';
+import '../provider/signup_viewmodel.dart';
+import '../provider/user_data_viewmodel.dart';
 
 String selectedCity = egyptCities[0];
 
@@ -140,7 +141,7 @@ Widget setupAddress(BuildContext context, firstCon, secondCon, user,
                 street: secondCon.text,
               );
                 ///  Here we are going to update the address information
-                context.read<SignupViewmodel>().addressInfo(address, user);
+                context.read<UserViewModel>().addressInfo(address, user);
                 firstCon.clear();
                 secondCon.clear();
                 context.read<LocationProvider>().updateNextPageValue(true);
