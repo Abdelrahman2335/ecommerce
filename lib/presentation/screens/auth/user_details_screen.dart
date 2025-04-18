@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/constants/global_keys.dart';
 import 'package:ecommerce/main.dart';
-import 'package:ecommerce/presentation/widgets/optional_info.dart';
 import 'package:ecommerce/presentation/widgets/setup_address.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/user_data_viewmodel.dart';
-import '../../widgets/setup_user_data.dart';
 import '../../provider/login_viewmodel.dart';
 import '../../provider/location_viewmodel.dart';
 
@@ -50,32 +48,9 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     ///But we are using the value of the [signUpProvider] many times in the widget tree.
     ///If we use the [Consumer] or [Selector] widget, the code will be hard to read.
 
-    Widget personalContent = setupUserData(
-        context, firstController, secondController, user, formKey);
-
     Widget addressContent =
         setupAddress(context, firstController, secondController, user, formKey);
 
-    int counter = context.watch<UserViewModel>().hasInfo ? 2 : 1;
-    bool nextPage = context.watch<LocationProvider>().nextPageValue;
-    counter = nextPage ? 3 : counter;
-
-    /// If we have info (phone number) about the user we will show the address form
-    /// if the nextPageValue is true (which will not happen, unless the user went to the address screen) we will show the optional info
-    double sliderValue = 0;
-
-    if(counter == 2) sliderValue = 0.50;
-    if(counter == 3) sliderValue = 0.75;
-    Widget content = counter == 1 ? personalContent : addressContent;
-
-    content = counter == 3
-        ? optionalInfo(
-            context, firstController, secondController, user, formKey)
-        : content;
-    log("nextPage: $nextPage");
-    log("hasInfo 2 = true: $counter");
-
-    /// counter for the steps
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool canPop, dynamic result) {
@@ -123,31 +98,26 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
-              height: counter == 1 || nextPage
-                  ? MediaQuery.of(context).size.height * 0.44
-                  : MediaQuery.of(context).size.height * 0.54,
+              height: MediaQuery.of(context).size.height * 0.54,
               width: MediaQuery.of(context).size.width * 0.90,
               child: Padding(
                 padding: const EdgeInsets.all(19.0),
                 child: Column(children: [
                   Text(
-                    counter == 2
-                        ? "Address Information"
-                        : "Personal Information",
+                    "Personal Information",
                     style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "Step $counter of 3",
+                    "Step 1 of 3",
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                   Gap(7),
-                  content,
                   Expanded(
                       flex: 2,
 
                       /// we are using TweenAnimationBuilder to make some animation to the slider.
                       child: TweenAnimationBuilder(
-                        tween: Tween(begin: 0, end: sliderValue),
+                        tween: Tween(begin: 0, end: 0.5),
                         duration: Duration(milliseconds: 1000),
                         builder: (ctx, value, child) => Slider(
                           value: value.toDouble(),

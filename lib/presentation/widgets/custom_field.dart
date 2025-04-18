@@ -8,6 +8,9 @@ class CustomField extends StatefulWidget {
   final Icon icon;
   final TextEditingController controller;
   final TextStyle? labelStyle;
+  final TextCapitalization textCapitalization;
+  final TextInputType keyboardType;
+  final InputCounterWidgetBuilder? buildCounter;
 
   ///Will use it later
   final String? Function(String?) isValid;
@@ -20,18 +23,24 @@ class CustomField extends StatefulWidget {
     required this.isSecure,
     required this.isValid,
     this.labelStyle,
+    this.buildCounter,
+    this.textCapitalization = TextCapitalization.none,
+    this.keyboardType = TextInputType.text,
   });
 
   @override
-  State<CustomField> createState() => _CustomfieldState();
+  State<CustomField> createState() => _CustomFieldState();
 }
 
-class _CustomfieldState extends State<CustomField> {
+class _CustomFieldState extends State<CustomField> {
   bool hidePass = true;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      buildCounter: widget.buildCounter,
+      keyboardType: widget.keyboardType,
+      textCapitalization: widget.textCapitalization,
       obscureText: widget.isSecure ? hidePass : false,
       maxLines: 1,
       controller: widget.controller,
