@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/constants/global_keys.dart';
 import '../../../main.dart';
 import '../../provider/login_viewmodel.dart';
 import '../../widgets/custom_button.dart';
@@ -21,7 +22,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = AppKeys.loginFormKey;
   final firebase = FirebaseAuth.instance;
   bool isLoading = false;
 

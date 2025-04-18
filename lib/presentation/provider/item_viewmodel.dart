@@ -1,28 +1,27 @@
 import 'dart:developer';
 
 import 'package:ecommerce/domain/repositories/main_data_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../core/services/firebase_service.dart';
 import '../../data/models/product_model.dart';
-import '../../data/repositories/login_repository_impl.dart';
 
 class ItemViewModel extends ChangeNotifier {
   final ItemRepository _itemRepository;
-  LoginRepositoryImpl loginRepositoryImpl = LoginRepositoryImpl();
+  final FirebaseService _firebaseService = FirebaseService();
   List<Product> _mainData = [];
 
   List<Product> get receivedData => _mainData;
   bool _isLoading = false;
   bool _removeAdd = false;
-  User? _user;
+  String? _user;
   String? _name;
 
   bool get removeAdd => _removeAdd;
 
   bool get isLoading => _isLoading;
 
-  User? get user => _user;
+  String? get email => _user;
 
   String? get name => _name;
 
@@ -37,12 +36,13 @@ class ItemViewModel extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
 
-      _user = loginRepositoryImpl.user;
-      _name = loginRepositoryImpl.name;
       final fetchedData = await _itemRepository.getData();
       if (fetchedData != null && fetchedData != _mainData) {
         _mainData = fetchedData;
 
+
+        _user = _firebaseService.auth.currentUser!.email;
+        _name = _firebaseService.auth.currentUser!.displayName;
         _isLoading = false;
         notifyListeners();
       }

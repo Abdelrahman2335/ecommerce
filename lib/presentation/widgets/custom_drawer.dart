@@ -25,7 +25,7 @@ class CustomDrawer extends StatelessWidget {
                   style: TextStyle(fontSize: 19),
                 ),
                 accountEmail: Text(
-                  provider.user?.email.toString() ?? "No Email",
+                  provider.email ?? "No Email",
                   style: TextStyle(fontSize: 12),
                 ),
                 currentAccountPicture: CircleAvatar(

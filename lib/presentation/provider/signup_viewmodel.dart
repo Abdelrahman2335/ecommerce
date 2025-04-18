@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../../domain/repositories/signup_repository.dart';
@@ -11,14 +12,17 @@ class SignupViewmodel extends ChangeNotifier {
 
   bool _isLoading = false;
 
+  bool userExist = false;
+
   bool get isLoading => _isLoading;
+
 
 
   checkUserExistence() async {
     try {
       _isLoading = true;
       notifyListeners();
-      await _signupRepository.checkUserExistence();
+     userExist = await _signupRepository.checkUserExistence();
     } catch (error) {
       log("an error occur when checking user existence: $error");
       rethrow;
@@ -28,13 +32,17 @@ class SignupViewmodel extends ChangeNotifier {
     notifyListeners();
   }
 
-  signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     try {
       _isLoading = true;
       notifyListeners();
       await _signupRepository.signInWithGoogle();
+
+      if(!userExist) SnackBarHelper.show(message: "User already exist!");
+
     } catch (error) {
       log("an error occur when sign-in with google: $error");
+      SnackBarHelper.show(message: "Authentication Error!");
       rethrow;
     } finally {
       _isLoading = false;
@@ -53,6 +61,7 @@ class SignupViewmodel extends ChangeNotifier {
       await _signupRepository.createUser(formKey, passCon, userCon);
     } catch (error) {
       log("an error occur when creating user: $error");
+      SnackBarHelper.show(message: "Authentication Error!");
       rethrow;
     } finally {
       _isLoading = false;

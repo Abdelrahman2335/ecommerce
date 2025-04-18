@@ -3,9 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/domain/repositories/wishlist_repository.dart';
-import 'package:flutter/material.dart';
 
-import '../../main.dart';
 import '../models/product_model.dart';
 
 class WishListRepositoryImpl implements WishListRepository {
@@ -84,11 +82,7 @@ class WishListRepositoryImpl implements WishListRepository {
           productIds.remove(product.id);
           items.remove(product);
           items.isEmpty ? noItemsInWishList = true : noItemsInWishList = false;
-          scaffoldMessengerKey.currentState?.clearSnackBars();
 
-          scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
-            content: Text("Item removed"),
-          ));
         } else {
           await wishListRef?.doc(_userId).update({
             "productId": FieldValue.arrayUnion([product.id])
@@ -96,26 +90,14 @@ class WishListRepositoryImpl implements WishListRepository {
           productIds.add(product.id);
           items.add(product);
           noItemsInWishList = false;
-          scaffoldMessengerKey.currentState?.clearSnackBars();
-          scaffoldMessengerKey.currentState?.showSnackBar(
-            SnackBar(
-              content: Text("Item added!"),
-            ),
-          );
+
         }
       } else {
         await wishListRef?.doc(_userId).set(
           {
             "productId": [product.id]
           },
-        ).then((onValue) {
-          scaffoldMessengerKey.currentState?.clearSnackBars();
-          scaffoldMessengerKey.currentState?.showSnackBar(
-            SnackBar(
-              content: Text("Item added!"),
-            ),
-          );
-        });
+        );
 
         productIds.add(product.id);
         items.add(product);
@@ -126,11 +108,6 @@ class WishListRepositoryImpl implements WishListRepository {
       // log("wishData is empty?: ${wishData?["productId"].isEmpty}");
       // log("docSnapshot is null?: ${docSnapshot?["id"]}");
     } catch (error) {
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        const SnackBar(
-          content: Text("Failed to add the item."),
-        ),
-      );
       log("addWish error: ${error.toString()}");
     }
   }

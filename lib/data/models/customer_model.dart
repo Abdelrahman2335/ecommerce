@@ -1,35 +1,38 @@
 import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/domain/entities/user_model.dart';
 
-class UserModel {
-  /// Required information
+class CustomerModel extends UserEntity {
+  @override
   String? name;
+  @override
   String? role;
+  @override
   String? phone;
-  AddressModel? address;
+  @override
   DateTime? createdAt;
-
-  /// Optional
+  @override
   String? age;
+  @override
   String? gender;
+  AddressModel? address;
 
-  UserModel({
+  CustomerModel({
     this.name,
-    this.role,
+    this.role = "customer",
     this.phone,
-    this.address,
     this.createdAt,
+    this.address,
     this.age,
     this.gender,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory CustomerModel.fromJson(Map<String, dynamic> json) {
+    return CustomerModel(
       name: json['name'],
       role: json['role'],
       phone: json['phone'],
-      address: json['address'],
-
       createdAt: json['createdAt'],
+      address: json['address'],
       age: json['age'],
       gender: json['gender'],
     );
@@ -40,17 +43,10 @@ class UserModel {
       if (name != null) 'name': name!.trim(),
       if (role != null) 'role': role,
       if (phone != null) 'phone': phone!.trim(),
-      if (address != null) 'address': address,
-
       if (createdAt != null) 'createdAt': createdAt,
+      if (address != null) 'address': address!.toJson(),
       if (age != null) 'age': age!.trim(),
       if (gender != null) 'gender': gender,
     };
   }
-  Map<String, dynamic> addressToJson() {
-    return {
-      'address': address?.toJson(), // Convert the AddressModel to a Map
-    };
-  }
-
 }

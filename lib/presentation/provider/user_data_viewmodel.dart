@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/snackbar_helper.dart';
 import 'package:ecommerce/domain/repositories/user_data_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +32,9 @@ class UserViewModel extends ChangeNotifier {
       _sliderValue = 0.50;
       _isLoading = false;
       notifyListeners();
-    } catch (error) {
+    } on FirebaseAuthException catch (error) {
       log("Error in personalInfo: $error");
+      SnackBarHelper.show(message: error.message ?? "Authentication Error!");
       rethrow;
     }
   }
@@ -48,6 +50,8 @@ class UserViewModel extends ChangeNotifier {
       notifyListeners();
     } catch (error) {
       log("Error in addressInfo: $error");
+      SnackBarHelper.show(message: "Authentication Error!");
+
       rethrow;
     }
   }

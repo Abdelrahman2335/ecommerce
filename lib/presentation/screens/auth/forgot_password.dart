@@ -1,3 +1,4 @@
+import 'package:ecommerce/core/constants/global_keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +13,7 @@ class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController emailCon = TextEditingController();
-    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    GlobalKey<FormState> formKey = AppKeys.forgetPasswordFormKey;
     final firebase = FirebaseAuth.instance;
 
     void forgetPass(String email) async {

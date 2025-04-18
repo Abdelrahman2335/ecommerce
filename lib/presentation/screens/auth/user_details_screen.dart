@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/constants/global_keys.dart';
 import 'package:ecommerce/main.dart';
 import 'package:ecommerce/presentation/widgets/optional_info.dart';
 import 'package:ecommerce/presentation/widgets/setup_address.dart';
@@ -13,7 +14,6 @@ import '../../provider/user_data_viewmodel.dart';
 import '../../widgets/setup_user_data.dart';
 import '../../provider/login_viewmodel.dart';
 import '../../provider/location_viewmodel.dart';
-import '../../provider/signup_viewmodel.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   const UserDetailsScreen({super.key});
@@ -24,7 +24,7 @@ class UserDetailsScreen extends StatefulWidget {
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   /// This key manage the state of the form
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = AppKeys.userDataFormKey;
   TextEditingController firstController = TextEditingController();
   TextEditingController secondController = TextEditingController();
 

@@ -6,16 +6,17 @@ import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/singup_repository_impl.dart';
 import 'package:ecommerce/data/repositories/user_data_repository_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
-import 'package:ecommerce/layout.dart';
+import 'package:ecommerce/presentation/screens/items/layout.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/signup_viewmodel.dart';
-import 'package:ecommerce/theme.dart';
+import 'package:ecommerce/core/constants/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'core/constants/global_keys.dart';
 import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
@@ -73,8 +74,8 @@ void main() async {
 }
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+    AppKeys.scaffoldMessengerKey;
+final GlobalKey<NavigatorState> navigatorKey = AppKeys.navigatorKey;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

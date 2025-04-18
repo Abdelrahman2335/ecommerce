@@ -1,10 +1,13 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:ecommerce/core/snackbar_helper.dart';
+import 'package:ecommerce/data/repositories/login_repository_impl.dart';
 import 'package:ecommerce/domain/repositories/login_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/repositories/login_repository_impl.dart';
+import '../../main.dart';
 
 /// This class is responsible for login & logout
 class LoginViewModel extends ChangeNotifier {
@@ -12,14 +15,14 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(this._loginRepository);
 
-  final LoginRepositoryImpl _loginRepositoryImpl = LoginRepositoryImpl();
+  final LoginRepositoryImpl _impl = LoginRepositoryImpl();
+  final FirebaseService _firebaseService = FirebaseService();
   bool _isLoading = false;
 
-  User? _user;
+  String? _user;
   String? _name;
 
-
-  User? get user => _user;
+  String? get user => _user;
 
   String? get name => _name;
 
@@ -32,10 +35,17 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       await _loginRepository.signIn(formKey, passCon, userCon);
 
-      _user = _loginRepositoryImpl.user;
-      _name = _loginRepositoryImpl.name;
+      /// we will check if the user have any info or not
+      _impl.userDataCheck.data()?["address"] == null
+          ? navigatorKey.currentState?.pushReplacementNamed('/user_setup')
+          : navigatorKey.currentState?.pushReplacementNamed('/layout');
+
+      _user = _firebaseService.auth.currentUser!.email;
+      _name = _firebaseService.auth.currentUser!.displayName;
     } catch (error) {
       log("an error has occur in the login view model");
+
+      SnackBarHelper.show(message: "Authentication Error!");
       rethrow;
     } finally {
       _isLoading = false;
@@ -49,10 +59,17 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       await _loginRepository.loginWithGoogle();
 
-      _user = _loginRepositoryImpl.user;
-      _name = _loginRepositoryImpl.name;
-    } catch (error) {
+      if (_impl.hasInfo && _impl.userExist) {
+        navigatorKey.currentState?.pushReplacementNamed('/layout');
+      } else if (!_impl.hasInfo && _impl.userExist) {
+        navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+
+      } else {
+        SnackBarHelper.show(message: "You Don't have an account.");
+      }
+    } on FirebaseAuthException catch (error) {
       log("an error has occur in the login view model");
+      SnackBarHelper.show(message: error.message ?? "Authentication Error!");
       rethrow;
     } finally {
       _isLoading = false;
@@ -66,10 +83,15 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       await _loginRepository.signOut();
 
-      _user = _loginRepositoryImpl.user;
-      _name = _loginRepositoryImpl.name;
+      if(!_impl.userExist){
+        navigatorKey.currentState?.pushReplacementNamed('/login');
+      }else{
+        SnackBarHelper.show(message: "Couldn't sign out please try again.");
+
+      }
     } catch (error) {
-      log("an error has occur in the login view model");
+      log("an error has occur in the login view model error: $error");
+      SnackBarHelper.show(message: "Couldn't sign out please try again.");
       rethrow;
     } finally {
       _isLoading = false;

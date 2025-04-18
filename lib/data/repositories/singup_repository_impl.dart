@@ -7,8 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../data/models/user_model.dart';
-import '../../main.dart';
+import '../models/customer_model.dart';
 
 class SignupRepositoryImpl implements SignupRepository {
   final FirebaseService _firebaseService = FirebaseService();
@@ -25,7 +24,7 @@ class SignupRepositoryImpl implements SignupRepository {
           .get()
           .then((value) => value.data());
 
-      hasInfo = doc?["phone"] == null ? false : true;
+      hasInfo = doc?["createdAt"] == null ? false : true;
       log("hasInfo: $hasInfo");
       return hasInfo;
     } catch (error) {
@@ -58,27 +57,16 @@ class SignupRepositoryImpl implements SignupRepository {
         if (!hasInfo) {
           await _firebaseService.firestore
               .collection("users")
-              .doc(_firebaseService.auth.currentUser!.uid)
-              .set(UserModel(
+              .doc(_firebaseService.auth.currentUser?.uid)
+              .set(CustomerModel(
                 createdAt: DateTime.now(),
-                role: "user",
+                role: "customer",
               ).toJson());
         }else{
-          scaffoldMessengerKey.currentState?.clearSnackBars();
-          scaffoldMessengerKey.currentState?.showSnackBar(
-            const SnackBar(
-              content: Text("User already exist!"),
-            ),
-          );
           return;
         }
       } catch (error) {
-        scaffoldMessengerKey.currentState?.clearSnackBars();
-        scaffoldMessengerKey.currentState?.showSnackBar(
-          const SnackBar(
-            content: Text("Authentication Error!"),
-          ),
-        );
+        log("error in the signInWithGoogle: $error");
       }
     }
   }
@@ -95,14 +83,14 @@ class SignupRepositoryImpl implements SignupRepository {
       if (valid) {
         final UserCredential userCredential = await _firebaseService.auth
             .createUserWithEmailAndPassword(email: userCon, password: passCon);
-
-        UserModel newUser = UserModel(
+       await _firebaseService.auth.currentUser!.updateDisplayName(userCon);
+        CustomerModel newUser = CustomerModel(
           createdAt: DateTime.now(),
         );
         if (userCredential.user != null) {
           String uid = userCredential.user!.uid;
           await _firebaseService.firestore
-              .collection("users")
+              .collection("customers")
               .doc(uid)
               .set(newUser.toJson());
 
@@ -113,12 +101,7 @@ class SignupRepositoryImpl implements SignupRepository {
         return;
       }
     } on FirebaseAuthException catch (error) {
-      scaffoldMessengerKey.currentState?.clearSnackBars();
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        SnackBar(
-          content: Text(error.message ?? "Authentication Error!"),
-        ),
-      );
+      log("error in the createUser: $error");
     }
     formKey.currentState!.save();
   }

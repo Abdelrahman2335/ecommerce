@@ -46,7 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // GlobalKey formKey = GlobalKey();
     return Scaffold(
       appBar: AppBar(
         title: Padding(

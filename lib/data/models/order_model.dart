@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ecommerce/data/models/address_model.dart';
 import 'package:ecommerce/data/models/product_model.dart';
 
+// TODO: add this on the cart items not here
 enum OrderStatus {
   pending,
   confirmed,

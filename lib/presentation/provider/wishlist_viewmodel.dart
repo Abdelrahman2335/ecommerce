@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:ecommerce/data/repositories/wishlist_repository_impl.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -40,14 +42,18 @@ class WishListViewModel extends ChangeNotifier {
   }
 
   addAndRemoveWish(Product product) async {
-    _isLoading = true;
-    notifyListeners();
-    await _wishListRepository.addAndRemoveWish(product);
+    try {
+      _isLoading = true;
+      notifyListeners();
+      await _wishListRepository.addAndRemoveWish(product);
 
-    _noItemsInWishList = wishListRepositoryImpl.noItemsInWishList;
-    _productIds = wishListRepositoryImpl.productIds;
-    _items = wishListRepositoryImpl.items;
-    _isLoading = false;
-    notifyListeners();
+      _noItemsInWishList = wishListRepositoryImpl.noItemsInWishList;
+      _productIds = wishListRepositoryImpl.productIds;
+      _items = wishListRepositoryImpl.items;
+      _isLoading = false;
+      notifyListeners();
+    } catch (error) {
+      log("addWish error: ${error.toString()}");
+    }
   }
 }

@@ -7,18 +7,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../main.dart';
-import '../models/user_model.dart';
 
 class LoginRepositoryImpl implements LoginRepository {
   final FirebaseService _firebaseService = FirebaseService();
 
-  static User? _user;
-  static String? _name;
+  static DocumentSnapshot<Map<String, dynamic>>? _userDataCheck;
+  static bool _userExist = false;
+  static bool _hasInfo = false;
 
-  User? get user => _user;
+  get userDataCheck => _userDataCheck;
 
-  String? get name => _name;
+  get userExist => _userExist;
+
+  get hasInfo => _hasInfo;
 
   @override
   Future<void> signIn(
@@ -31,27 +32,13 @@ class LoginRepositoryImpl implements LoginRepository {
         await _firebaseService.auth
             .signInWithEmailAndPassword(email: userCon, password: passCon);
 
-        final userDataCheck = await FirebaseFirestore.instance
+        _userDataCheck = await FirebaseFirestore.instance
             .collection("users")
             .doc(_firebaseService.auth.currentUser!.uid)
             .get();
-
-        /// we will check if the user have any info or not
-        userDataCheck.data()?["city"] == null
-            ? navigatorKey.currentState?.pushReplacementNamed('/user_setup')
-            : navigatorKey.currentState?.pushReplacementNamed('/layout');
       }
     } catch (error) {
-      log(error.toString());
-
-      /// Important to know that we are using Scaffold global Key from the main.dart
-      /// This allow us to don't use context + make the work more easy and effectuation.
-      scaffoldMessengerKey.currentState?.clearSnackBars();
-      scaffoldMessengerKey.currentState?.showSnackBar(
-        SnackBar(
-          content: Text("Authentication Error!"),
-        ),
-      );
+      log("signIn error: $error");
     }
 
     formKey.currentState!.save();
@@ -80,32 +67,27 @@ class LoginRepositoryImpl implements LoginRepository {
         final userCredential =
             await _firebaseService.auth.signInWithCredential(authCredential);
         if (userCredential.user != null) {
-          final data = await FirebaseFirestore.instance
+          final data = await _firebaseService.firestore
               .collection("users")
               .doc(userCredential.user!.uid)
               .get();
 
           /// if the userId is not in the doc create it
           if (!data.exists) {
-            await FirebaseFirestore.instance
-                .collection("users")
-                .doc(userCredential.user!.uid)
-                .set(UserModel(createdAt: DateTime.now()).toJson());
-            navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+            _userExist = false;
+            _hasInfo = false;
+            return;
           } else if (data.data()?["phone"] == null ||
               data.data()?["longitude"] == null) {
-            navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+            _userExist = true;
+            _hasInfo = false;
           } else {
-            navigatorKey.currentState?.pushReplacementNamed('/layout');
+            _hasInfo = true;
+            _userExist = true;
           }
         }
       } on FirebaseAuthException catch (error) {
-        scaffoldMessengerKey.currentState?.clearSnackBars();
-        scaffoldMessengerKey.currentState?.showSnackBar(
-          SnackBar(
-            content: Text(error.message ?? "Authentication Error!"),
-          ),
-        );
+        log("loginWithGoogle: $error");
       }
     }
   }
@@ -130,36 +112,10 @@ class LoginRepositoryImpl implements LoginRepository {
       }
 
       if (_firebaseService.auth.currentUser == null) {
-        navigatorKey.currentState?.pushReplacementNamed('/login');
-      } else {
-        scaffoldMessengerKey.currentState?.clearSnackBars();
-        scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-          content: Text("Couldn't sign out please try again."),
-        ));
+        _userExist = false;
       }
     } catch (error) {
-      scaffoldMessengerKey.currentState!.showSnackBar(
-        SnackBar(
-          content: Text("Couldn't sign out please try again. $error"),
-        ),
-      );
-    }
-  }
-
-  userData() async {
-    try {
-      _user = _firebaseService.auth.currentUser;
-
-      if (_user == null) return;
-      final firestore = await _firebaseService.firestore
-          .collection("users")
-          .doc(_user?.uid)
-          .get();
-
-      _name = firestore.data()?["name"];
-    } catch (error) {
-      log("Error when fetching data: $error");
-      rethrow;
+      log("signOut error: $error");
     }
   }
 }

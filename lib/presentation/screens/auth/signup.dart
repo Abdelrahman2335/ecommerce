@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/core/constants/global_keys.dart';
 import 'package:ecommerce/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,9 +8,8 @@ import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/models/user_model.dart';
+import '../../../data/models/customer_model.dart';
 import '../../provider/signup_viewmodel.dart';
-import '../../provider/user_data_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 import 'login_screen.dart';
@@ -25,7 +25,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController emailCon = TextEditingController();
   TextEditingController passCon = TextEditingController();
   TextEditingController rePassCon = TextEditingController();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = AppKeys.signupFormKey;
   FirebaseAuth firebase = FirebaseAuth.instance;
 
   @override
@@ -130,7 +130,7 @@ class _SignUpState extends State<SignUp> {
                                     emailCon.text,
                                   );
                                   if (firebase.currentUser != null) {
-                                    UserModel newUser = UserModel(
+                                    CustomerModel newUser = CustomerModel(
                                       createdAt: DateTime.now(),
                                     );
                                     String uid = firebase.currentUser!.uid;
@@ -172,16 +172,16 @@ class _SignUpState extends State<SignUp> {
                           backgroundColor: theme.primaryColor.withAlpha(37),
                           side: BorderSide(color: theme.primaryColor),
                         ),
-                        onPressed: () {
-                          Provider.of<SignupViewmodel>(
-                                  navigatorKey.currentContext!,
+                        onPressed: () async {
+                        await  Provider.of<SignupViewmodel>(
+                                  AppKeys.navigatorKey.currentContext!,
 
                                   /// instead of context
                                   listen: false)
                               .signInWithGoogle();
 
                           if (firebase.currentUser == null) return;
-                          navigatorKey.currentState
+                          AppKeys.navigatorKey.currentState
                               ?.pushReplacementNamed('/user_setup');
                         },
                         child: const Image(
