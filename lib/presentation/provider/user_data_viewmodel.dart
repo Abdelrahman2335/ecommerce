@@ -5,6 +5,7 @@ import 'package:ecommerce/domain/repositories/user_data_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../core/constants/global_keys.dart';
 import '../../data/models/address_model.dart';
 
 class UserViewModel extends ChangeNotifier {
@@ -28,19 +29,21 @@ class UserViewModel extends ChangeNotifier {
 
       _sliderValue = 0.50;
       _isLoading = false;
+      AppKeys.navigatorKey.currentState?.pushReplacementNamed('/user_location');
       notifyListeners();
     } on FirebaseAuthException catch (error) {
       log("Error in personalInfo: $error");
       SnackBarHelper.show(message: error.message ?? "Authentication Error!");
+
       rethrow;
     }
   }
 
-  Future<void> addressInfo(AddressModel address, User user) async {
+  Future<void> addressInfo(AddressModel address) async {
     try {
       _isLoading = true;
       notifyListeners();
-      await _userDataRepository.addressInfo(address, user);
+      await _userDataRepository.addressInfo(address);
 
       _isLoading = false;
       _sliderValue = 1.0;

@@ -18,39 +18,11 @@ class LocationProvider extends ChangeNotifier {
 
   /// will be used to show the user location on the map
   LocationData? locationData;
-  double _sliderValue = 0.50;
 
 
-  get newSliderValue => _sliderValue;
 
-  void updateNextPageValue(bool newValue) {
-      /// Only update if value is different
-      _sliderValue = 1.0;
-      notifyListeners();
-    
-  }
 
-  showLocation() async {
-    try {
-      if (locationData != null) {
-        userLocation =
-            LatLng(locationData!.latitude!, locationData!.longitude!);
 
-        notifyListeners();
-
-        /// Update the user location in the database
-        await firestore.collection("users").doc(user!.uid).update({
-          "address": AddressModel(
-              latitude: locationData!.latitude,
-                  longitude: locationData!.longitude)
-              .toJson()
-        });
-      }
-    } catch (error) {
-      log("Error getting location: $error");
-    }
-    log(userLocation.toString());
-  }
 
   Future getCurrentLocation() async {
     Location location = Location();
@@ -79,7 +51,6 @@ class LocationProvider extends ChangeNotifier {
 
     /// update the locationData to use it in the showLocation method
 
-    showLocation();
     getAddressFromCoordinates();
   }
 
@@ -119,7 +90,9 @@ class LocationProvider extends ChangeNotifier {
             longitude: locationData?.longitude
           ).toJson()
         });
-
+        isGettingLocation = false;
+        userLocation = LatLng(locationData!.latitude!, locationData!.longitude!);
+        notifyListeners();
         /// for debugging
         // log(place.country.toString());
         // log(place.administrativeArea.toString());

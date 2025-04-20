@@ -1,5 +1,10 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/data/models/cart_model.dart';
+import 'package:ecommerce/data/models/order_model.dart';
+import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -219,12 +224,27 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                       onPressed: () {
                         if (paymentProvider.paymentMethod ==
                             "Cash On Delivery") {
+                          context.read<OrderViewModel>().placeOrder(
+                              order: OrderModel(
+                                  totalPrice: itemsPrice.toString(),
+                                  deliveryFee: shippingFee.toString(),
+                                  discount: promo.toString(),
+                                  paymentMethod: paymentProvider.paymentMethod,
+                                  products: cartProvider.items,
+                                  createdAt: DateTime.now(),
+                                  shippingAddress: AddressModel(),
+                                  cartItems: CartModel(
+                                      userId: FirebaseService().auth.currentUser!.uid,
+                                      itemId: "",
+                                      quantity: cartProvider.totalQuantity,
+                                      status: OrderStatus.confirmed)));
                           log("Cash on Delivery");
                         } else {
                           log("Online Payment");
 
-                          context.read<PaymentViewModel>().makePayment(
-                           (itemsPrice + shippingFee) - promo);
+                          context
+                              .read<PaymentViewModel>()
+                              .makePayment((itemsPrice + shippingFee) - promo);
                         }
                       },
                       style: ElevatedButton.styleFrom(

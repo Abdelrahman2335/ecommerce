@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CustomField extends StatefulWidget {
@@ -11,6 +10,7 @@ class CustomField extends StatefulWidget {
   final TextCapitalization textCapitalization;
   final TextInputType keyboardType;
   final InputCounterWidgetBuilder? buildCounter;
+  final int? maxLength;
 
   ///Will use it later
   final String? Function(String?) isValid;
@@ -26,6 +26,7 @@ class CustomField extends StatefulWidget {
     this.buildCounter,
     this.textCapitalization = TextCapitalization.none,
     this.keyboardType = TextInputType.text,
+    this.maxLength,
   });
 
   @override
@@ -43,6 +44,7 @@ class _CustomFieldState extends State<CustomField> {
       textCapitalization: widget.textCapitalization,
       obscureText: widget.isSecure ? hidePass : false,
       maxLines: 1,
+      maxLength: widget.maxLength,
       controller: widget.controller,
       validator: widget.isValid,
       onSaved: (value) => widget.controller.text = value!,

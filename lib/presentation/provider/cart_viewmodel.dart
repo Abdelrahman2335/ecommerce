@@ -13,7 +13,7 @@ class CartViewModel extends ChangeNotifier {
     Future.microtask(() => initializeCart());
   }
 
-  List<Product> items = [];
+  List<Product> _items = [];
   List<CartModel> fetchedItems = [];
   List productIds = [];
   int _totalQuantity = 0;
@@ -28,6 +28,8 @@ class CartViewModel extends ChangeNotifier {
 
   int get totalQuantity => _totalQuantity;
 
+  List<Product> get items => _items;
+
   // Initialize cart
   Future<void> initializeCart() async {
     _isLoading = true; // Set isLoading to true before starting the operation
@@ -35,7 +37,7 @@ class CartViewModel extends ChangeNotifier {
 
     try {
       await _cartProvider.initializeCart();
-      items = cartRepositoryImpl.items;
+      _items = cartRepositoryImpl.items;
       fetchedItems = cartRepositoryImpl.fetchedItems;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
@@ -57,7 +59,7 @@ class CartViewModel extends ChangeNotifier {
     try {
       await _cartProvider.addToCart(product);
 
-      items = cartRepositoryImpl.items;
+      _items = cartRepositoryImpl.items;
       fetchedItems = cartRepositoryImpl.fetchedItems;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
@@ -81,7 +83,7 @@ class CartViewModel extends ChangeNotifier {
       await _cartProvider.removeFromCart(product, deleteItem);
 
       /// Update fetchedItems immediately
-      items = cartRepositoryImpl.items;
+      _items = cartRepositoryImpl.items;
       fetchedItems = cartRepositoryImpl.fetchedItems;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;

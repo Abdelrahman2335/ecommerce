@@ -3,9 +3,13 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/data/repositories/login_repository_impl.dart';
 import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
+import 'package:ecommerce/data/repositories/order_repository_impl.dart';
 import 'package:ecommerce/data/repositories/singup_repository_impl.dart';
 import 'package:ecommerce/data/repositories/user_data_repository_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
+import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
+import 'package:ecommerce/presentation/screens/auth/new_user_info_screen.dart';
+import 'package:ecommerce/presentation/screens/auth/user_location.dart';
 import 'package:ecommerce/presentation/screens/items/layout.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
@@ -30,7 +34,6 @@ import 'presentation/screens/auth/forgot_password.dart';
 import 'presentation/screens/auth/login_screen.dart';
 import 'presentation/screens/auth/profile_screen.dart';
 import 'presentation/screens/auth/signup.dart';
-import 'presentation/screens/auth/user_details_screen.dart';
 import 'presentation/screens/place_order/cart_screen.dart';
 import 'presentation/screens/place_order/check_out.dart';
 
@@ -66,6 +69,8 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => LocationProvider(),
+      ),ChangeNotifierProvider(
+        create: (_) => OrderViewModel(OrderRepositoryImpl()),
       ),
     ], child: const MyApp()));
   } catch (error) {
@@ -94,7 +99,8 @@ class MyApp extends StatelessWidget {
         '/forgot': (context) => const ForgotPassword(),
         '/checkout': (context) => const CheckOutScreen(),
         '/cart': (context) => const CartScreen(),
-        '/user_setup': (context) => const UserDetailsScreen(),
+        '/user_setup': (context) => const NewUserInfoScreen(),
+        '/user_location': (context) => const UserLocation(),
       },
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,
@@ -132,9 +138,9 @@ class MyApp extends StatelessWidget {
               final userData =
                   userSnapshot.data!.data() as Map<String, dynamic>;
 
-              /// don't user .isEmpty or you will get Class 'double' has no instance getter 'isEmpty'.
-              if (userData["city"] == null) {
-                return UserDetailsScreen(); // Redirect user to complete details
+              /// don't use .isEmpty or you will get Class 'double' has no instance getter 'isEmpty'.
+              if (userData["address"] == null) {
+                return UserLocation(); // Redirect user to complete details
               } else {
                 return LayOut(); // Navigate to home if all details exist
               }

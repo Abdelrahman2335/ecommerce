@@ -37,7 +37,7 @@ class LoginViewModel extends ChangeNotifier {
 
       /// we will check if the user have any info or not
       _impl.userDataCheck.data()?["address"] == null
-          ? navigatorKey.currentState?.pushReplacementNamed('/user_setup')
+          ? navigatorKey.currentState?.pushReplacementNamed('/user_location')
           : navigatorKey.currentState?.pushReplacementNamed('/layout');
 
       _user = _firebaseService.auth.currentUser!.email;

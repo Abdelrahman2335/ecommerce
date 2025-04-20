@@ -17,10 +17,10 @@ class CartRepositoryImpl implements CartRepository {
   bool itemExist = false;
   FirebaseService firebaseService = FirebaseService();
   static String _userId = "";
- static CollectionReference<Map<String, dynamic>>?  cartListRef;
- static QuerySnapshot<Map<String, dynamic>>? cartData;
+  static CollectionReference<Map<String, dynamic>>? cartListRef;
+  static QuerySnapshot<Map<String, dynamic>>? cartData;
 
-   List<Product> items = [];
+  List<Product> items = [];
   List<CartModel> fetchedItems = [];
   List productIds = [];
   bool noItemsInCart = true;
@@ -36,6 +36,7 @@ class CartRepositoryImpl implements CartRepository {
     try {
       _userId = firebaseService.auth.currentUser!.uid;
       cartListRef = FirebaseFirestore.instance.collection("cartData");
+
       /// Get the data from the database where the userId is equal to the current userId
       /// each doc contains 3 fields: userId, productId, quantity
       cartData = await cartListRef?.where("userId", isEqualTo: _userId).get();
@@ -126,8 +127,11 @@ class CartRepositoryImpl implements CartRepository {
           "quantity": 1,
         });
 
-        fetchedItems
-            .add(CartModel(userId: _userId, itemId: product.id, quantity: 1));
+        fetchedItems.add(CartModel(
+            userId: _userId,
+            itemId: product.id,
+            status: OrderStatus.notConfirmed,
+            quantity: 1));
         items.add(product);
         productIds.add(product.id);
       }
