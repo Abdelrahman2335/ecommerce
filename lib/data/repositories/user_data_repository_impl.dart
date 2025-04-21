@@ -16,13 +16,13 @@ class UserDataRepositoryImpl implements UserDataRepository {
     CustomerModel newUser = CustomerModel(
       name: name,
       phone: phone,
-      role: "user",
+      role: "customer",
       age: age,
       gender: selectedGender,
     );
     try {
       await _firebaseService.firestore
-          .collection("users")
+          .collection("customers")
           .doc(_firebaseService.auth.currentUser!.uid)
           .update(newUser.toJson());
     } catch (error) {

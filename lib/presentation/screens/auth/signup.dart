@@ -135,7 +135,7 @@ class _SignUpState extends State<SignUp> {
                                     );
                                     String uid = firebase.currentUser!.uid;
                                     await FirebaseFirestore.instance
-                                        .collection("users")
+                                        .collection("customers")
                                         .doc(uid)
                                         .set(newUser.toJson());
 

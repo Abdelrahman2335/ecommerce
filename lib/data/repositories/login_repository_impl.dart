@@ -33,7 +33,7 @@ class LoginRepositoryImpl implements LoginRepository {
             .signInWithEmailAndPassword(email: userCon, password: passCon);
 
         _userDataCheck = await FirebaseFirestore.instance
-            .collection("users")
+            .collection("customers")
             .doc(_firebaseService.auth.currentUser!.uid)
             .get();
       }
@@ -68,7 +68,7 @@ class LoginRepositoryImpl implements LoginRepository {
             await _firebaseService.auth.signInWithCredential(authCredential);
         if (userCredential.user != null) {
           final data = await _firebaseService.firestore
-              .collection("users")
+              .collection("customers")
               .doc(userCredential.user!.uid)
               .get();
 

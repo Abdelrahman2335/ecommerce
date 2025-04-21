@@ -20,6 +20,7 @@ class OrderViewModel extends ChangeNotifier {
       notifyListeners();
       await _orderRepository.placeOrder(order);
 
+      log("order placed!");
       _isLoading = false;
       notifyListeners();
     } catch (error) {

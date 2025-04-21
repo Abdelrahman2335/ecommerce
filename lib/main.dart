@@ -119,7 +119,7 @@ class MyApp extends StatelessWidget {
 
           return FutureBuilder<DocumentSnapshot>(
             future: FirebaseFirestore.instance
-                .collection("users")
+                .collection("customers")
                 .doc(user.uid)
                 .get(),
             builder: (context, userSnapshot) {

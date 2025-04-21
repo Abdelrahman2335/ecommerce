@@ -130,7 +130,6 @@ class CartRepositoryImpl implements CartRepository {
         fetchedItems.add(CartModel(
             userId: _userId,
             itemId: product.id,
-            status: OrderStatus.notConfirmed,
             quantity: 1));
         items.add(product);
         productIds.add(product.id);

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/data/models/cart_model.dart';
+import 'package:ecommerce/data/models/order_product_model.dart';
 
 import '../../domain/repositories/order_repository.dart';
 import '../models/order_model.dart';
@@ -12,13 +12,13 @@ class OrderRepositoryImpl implements OrderRepository {
   @override
   Future<void> placeOrder(OrderModel order) async {
     try {
-      if (order.cartItems.itemId.isEmpty) return;
+      if (_firebaseService.auth.currentUser == null) return;
       await _firebaseService.firestore
-          .collection("orders")
-          .doc(order.cartItems.userId)
-          .set(order.toJson());
+          .collection("customers")
+          .doc(_firebaseService.auth.currentUser!.uid)
+          .collection("orders").doc(order.id).set(order.toJson());
     } catch (error) {
-      log("error in the placeOrder: $error");
+      log("error in the placeOrder impl: $error");
     }
   }
 
@@ -26,12 +26,12 @@ class OrderRepositoryImpl implements OrderRepository {
   Future<void> cancelOrder(OrderModel order) async {
     try {
       final data = await _firebaseService.firestore
-          .collection("orders")
-          .doc(order.cartItems.userId)
+          .collection("customers")
+          .doc(_firebaseService.auth.currentUser!.uid).collection("orders").doc(order.id)
           .get();
 
       if (data.exists) {
-        CartModel item = data.data()!["cartItems"] as CartModel;
+        OrderProductModel item = data.data()!["cartItems"] as OrderProductModel;
         item.status = OrderStatus.cancelled;
       }
     } catch (error) {

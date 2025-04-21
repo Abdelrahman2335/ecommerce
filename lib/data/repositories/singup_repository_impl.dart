@@ -19,7 +19,7 @@ class SignupRepositoryImpl implements SignupRepository {
     if (_firebaseService.auth.currentUser == null) return false;
     try {
       Map<String, dynamic>? doc = await FirebaseFirestore.instance
-          .collection("users")
+          .collection("customers")
           .doc(_firebaseService.auth.currentUser!.uid)
           .get()
           .then((value) => value.data());
@@ -56,7 +56,7 @@ class SignupRepositoryImpl implements SignupRepository {
 
         if (!hasInfo) {
           await _firebaseService.firestore
-              .collection("users")
+              .collection("customers")
               .doc(_firebaseService.auth.currentUser?.uid)
               .set(CustomerModel(
                 createdAt: DateTime.now(),

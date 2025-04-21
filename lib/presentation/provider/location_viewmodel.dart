@@ -79,7 +79,7 @@ class LocationProvider extends ChangeNotifier {
       log(response.statusCode.toString());
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        await firestore.collection("users").doc(user!.uid).update({
+        await firestore.collection("customers").doc(user!.uid).update({
           "address": AddressModel(
             fullAddress: data['display_name'] ?? 'Not Found',
             country: data['address']['country'] ?? place.country,

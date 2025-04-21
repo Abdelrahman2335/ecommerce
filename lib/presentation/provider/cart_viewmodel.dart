@@ -14,7 +14,7 @@ class CartViewModel extends ChangeNotifier {
   }
 
   List<Product> _items = [];
-  List<CartModel> fetchedItems = [];
+  List<CartModel> _fetchedItems = [];
   List productIds = [];
   int _totalQuantity = 0;
 
@@ -30,6 +30,8 @@ class CartViewModel extends ChangeNotifier {
 
   List<Product> get items => _items;
 
+  List<CartModel> get fetchedItems => _fetchedItems;
+
   // Initialize cart
   Future<void> initializeCart() async {
     _isLoading = true; // Set isLoading to true before starting the operation
@@ -38,7 +40,7 @@ class CartViewModel extends ChangeNotifier {
     try {
       await _cartProvider.initializeCart();
       _items = cartRepositoryImpl.items;
-      fetchedItems = cartRepositoryImpl.fetchedItems;
+      _fetchedItems = cartRepositoryImpl.fetchedItems;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
       _noItemsInCart = items.isEmpty;
@@ -60,7 +62,7 @@ class CartViewModel extends ChangeNotifier {
       await _cartProvider.addToCart(product);
 
       _items = cartRepositoryImpl.items;
-      fetchedItems = cartRepositoryImpl.fetchedItems;
+      _fetchedItems = cartRepositoryImpl.fetchedItems;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
 
@@ -84,7 +86,7 @@ class CartViewModel extends ChangeNotifier {
 
       /// Update fetchedItems immediately
       _items = cartRepositoryImpl.items;
-      fetchedItems = cartRepositoryImpl.fetchedItems;
+      _fetchedItems = cartRepositoryImpl.fetchedItems;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
 

@@ -1,9 +1,8 @@
 import 'dart:developer';
 
-import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/data/models/address_model.dart';
-import 'package:ecommerce/data/models/cart_model.dart';
 import 'package:ecommerce/data/models/order_model.dart';
+import 'package:ecommerce/data/models/order_product_model.dart';
 import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -225,19 +224,28 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                         if (paymentProvider.paymentMethod ==
                             "Cash On Delivery") {
                           context.read<OrderViewModel>().placeOrder(
-                              order: OrderModel(
-                                  totalPrice: itemsPrice.toString(),
-                                  deliveryFee: shippingFee.toString(),
-                                  discount: promo.toString(),
-                                  paymentMethod: paymentProvider.paymentMethod,
-                                  products: cartProvider.items,
-                                  createdAt: DateTime.now(),
-                                  shippingAddress: AddressModel(),
-                                  cartItems: CartModel(
-                                      userId: FirebaseService().auth.currentUser!.uid,
-                                      itemId: "",
-                                      quantity: cartProvider.totalQuantity,
-                                      status: OrderStatus.confirmed)));
+                                  order: OrderModel(
+                                totalPrice: itemsPrice.toString(),
+                                deliveryFee: shippingFee.toString(),
+                                discount: promo.toString(),
+                                paymentMethod: paymentProvider.paymentMethod,
+                                products: List.generate(
+                                  cartProvider.items.length,
+                                  (index) => OrderProductModel(
+                                      id: cartProvider.fetchedItems[index].itemId,
+                                      category: cartProvider.items[index].category,
+                                      imageUrl: cartProvider.items[index].imageUrl,
+                                      description: cartProvider.items[index].description,
+                                      title: cartProvider.items[index].title,
+                                      price: cartProvider.items[index].price,
+                                      size: cartProvider.items[index].size,
+                                      quantity: cartProvider.fetchedItems[index].quantity,
+                                    status: OrderStatus.pending
+                                  ),
+                                ),
+                                createdAt: DateTime.now(),
+                                shippingAddress: AddressModel(),
+                              ));
                           log("Cash on Delivery");
                         } else {
                           log("Online Payment");

@@ -14,7 +14,7 @@ class CustomerModel extends UserEntity {
   String? age;
   @override
   String? gender;
-  AddressModel? address;
+  List<AddressModel>? address;
 
   CustomerModel({
     this.name,
@@ -44,7 +44,7 @@ class CustomerModel extends UserEntity {
       if (role != null) 'role': role,
       if (phone != null) 'phone': phone!.trim(),
       if (createdAt != null) 'createdAt': createdAt,
-      if (address != null) 'address': address!.toJson(),
+      if (address != null) 'address': address!.map((a)=> a.toJson()).toList(),
       if (age != null) 'age': age!.trim(),
       if (gender != null) 'gender': gender,
     };

@@ -1,14 +1,12 @@
 import 'dart:math';
 
 import 'package:ecommerce/data/models/address_model.dart';
-import 'package:ecommerce/data/models/cart_model.dart';
-import 'package:ecommerce/data/models/product_model.dart';
+import 'order_product_model.dart';
 
 class OrderModel {
   final String id;
-  final List<Product> products;
+  final List<OrderProductModel> products;
   final AddressModel shippingAddress;
-  final CartModel cartItems; // TODO: You have to make this cart list
   final DateTime createdAt;
   final String totalPrice;
   final String? deliveryFee;
@@ -23,7 +21,6 @@ class OrderModel {
     required this.products,
     required this.createdAt,
     required this.shippingAddress,
-    required this.cartItems,
   }) : id = generateOrderId();
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
@@ -35,7 +32,7 @@ class OrderModel {
       products: json['products'],
       createdAt: DateTime.parse(json['createdAt']),
       shippingAddress: AddressModel.fromJson(json['shippingAddress']),
-      cartItems: CartModel.fromJson(json['cartItems']),
+
     );
   }
 
@@ -44,10 +41,9 @@ class OrderModel {
         'deliveryFee': deliveryFee,
         'discount': discount,
         'paymentMethod': paymentMethod,
-        'products': products,
+        'products': products.map((p)=> p.toJson()).toList(),
         'createdAt': createdAt.toIso8601String(),
         'shippingAddress': shippingAddress.toJson(),
-        'cartItems': cartItems.toJson(),
       };
 
 // TODO Make sure the order id is unique
