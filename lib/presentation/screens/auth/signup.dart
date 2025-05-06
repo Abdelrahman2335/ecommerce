@@ -9,7 +9,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/models/customer_model.dart';
-import '../../provider/signup_viewmodel.dart';
+import '../../provider/auth/signup_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 import 'login_screen.dart';
@@ -141,10 +141,7 @@ class _SignUpState extends State<SignUp> {
 
                                     /// add user date of join to firestore
 
-                                    navigatorKey.currentState
-                                        ?.pushReplacementNamed(
-                                      "/user_setup",
-                                    );
+
                                   }
                                 },
                                 text: "Create Account",

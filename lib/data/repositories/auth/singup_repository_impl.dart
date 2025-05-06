@@ -1,60 +1,54 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/domain/repositories/signup_repository.dart';
+import 'package:ecommerce/presentation/provider/auth/check_user_existence.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../models/customer_model.dart';
+import '../../models/customer_model.dart';
 
 class SignupRepositoryImpl implements SignupRepository {
   final FirebaseService _firebaseService = FirebaseService();
+  final _userExistence = CheckUserExistence();
 
-  bool hasInfo = false;
-
-  @override
-  Future<bool> checkUserExistence() async {
-    if (_firebaseService.auth.currentUser == null) return false;
-    try {
-      Map<String, dynamic>? doc = await FirebaseFirestore.instance
-          .collection("customers")
-          .doc(_firebaseService.auth.currentUser!.uid)
-          .get()
-          .then((value) => value.data());
-
-      hasInfo = doc?["createdAt"] == null ? false : true;
-      log("hasInfo: $hasInfo");
-      return hasInfo;
-    } catch (error) {
-      log("Error in the signUpProvider constructor: $error");
-      return false;
-    }
-  }
+  bool? userExist;
 
   @override
   signInWithGoogle() async {
+    if(_firebaseService.google.currentUser != null) {
+      await _firebaseService.google.disconnect();
+    }
     GoogleSignInAccount? googleSignInAccount;
 
     try {
       googleSignInAccount = await _firebaseService.google.signIn();
+
+      await _userExistence.checkUserExistence();
+      userExist = _userExistence.isUserExist;
+
     } catch (error) {
       log("error: $error");
     }
-    if (googleSignInAccount == null) {
+    if (googleSignInAccount == null || userExist == null) {
       return;
-    } else {
+    }
+    else if(userExist == true){
+     log("User already exist");
+      return;
+    }
+    else {
       try {
         log("signInWithGoogle: GoogleSignInAccount is not null");
-        GoogleSignInAuthentication googleAuth =
-            await googleSignInAccount.authentication;
 
-        AuthCredential authCredential = GoogleAuthProvider.credential(
-            idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-        _firebaseService.auth.signInWithCredential(authCredential);
+        if (!userExist!) {
+          GoogleSignInAuthentication googleAuth =
+              await googleSignInAccount.authentication;
 
-        if (!hasInfo) {
+          AuthCredential authCredential = GoogleAuthProvider.credential(
+              idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+          _firebaseService.auth.signInWithCredential(authCredential);
           await _firebaseService.firestore
               .collection("customers")
               .doc(_firebaseService.auth.currentUser?.uid)
@@ -62,7 +56,7 @@ class SignupRepositoryImpl implements SignupRepository {
                 createdAt: DateTime.now(),
                 role: "customer",
               ).toJson());
-        }else{
+        } else {
           return;
         }
       } catch (error) {
@@ -83,7 +77,7 @@ class SignupRepositoryImpl implements SignupRepository {
       if (valid) {
         final UserCredential userCredential = await _firebaseService.auth
             .createUserWithEmailAndPassword(email: userCon, password: passCon);
-       await _firebaseService.auth.currentUser!.updateDisplayName(userCon);
+        await _firebaseService.auth.currentUser!.updateDisplayName(userCon);
         CustomerModel newUser = CustomerModel(
           createdAt: DateTime.now(),
         );
@@ -94,7 +88,7 @@ class SignupRepositoryImpl implements SignupRepository {
               .doc(uid)
               .set(newUser.toJson());
 
-          hasInfo = false;
+          userExist = false;
         }
       } else {
         log("createUser not working, We are going back");

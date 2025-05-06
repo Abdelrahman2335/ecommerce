@@ -5,8 +5,8 @@ import 'package:ecommerce/domain/repositories/user_data_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/constants/global_keys.dart';
-import '../../data/models/address_model.dart';
+import '../../../core/constants/global_keys.dart';
+import '../../../data/models/address_model.dart';
 
 class UserViewModel extends ChangeNotifier {
   final UserDataRepository _userDataRepository;

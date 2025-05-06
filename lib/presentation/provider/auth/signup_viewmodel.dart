@@ -3,26 +3,28 @@ import 'dart:developer';
 import 'package:ecommerce/core/snackbar_helper.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/repositories/signup_repository.dart';
+import '../../../domain/repositories/signup_repository.dart';
+import '../../../main.dart';
+import 'check_user_existence.dart';
 
 class SignupViewmodel extends ChangeNotifier {
   final SignupRepository _signupRepository;
 
   SignupViewmodel(this._signupRepository);
 
+  final _userExistence = CheckUserExistence();
+
   bool _isLoading = false;
 
-  bool userExist = false;
+  String? userExist = "";
 
   bool get isLoading => _isLoading;
-
-
 
   checkUserExistence() async {
     try {
       _isLoading = true;
       notifyListeners();
-     userExist = await _signupRepository.checkUserExistence();
+      userExist = await _userExistence.checkUserExistence();
     } catch (error) {
       log("an error occur when checking user existence: $error");
       rethrow;
@@ -38,16 +40,21 @@ class SignupViewmodel extends ChangeNotifier {
       notifyListeners();
       await _signupRepository.signInWithGoogle();
 
-      if(!userExist) SnackBarHelper.show(message: "User already exist!");
-
+      if (userExist != null && userExist != "User doesn't exist") {
+        SnackBarHelper.show(message: "User already exist");
+        return;
+      }
+      navigatorKey.currentState?.pushReplacementNamed(
+        "/user_setup",
+      );
     } catch (error) {
       log("an error occur when sign-in with google: $error");
       SnackBarHelper.show(message: "Authentication Error!");
       rethrow;
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   Future<void> createUser(
@@ -68,6 +75,4 @@ class SignupViewmodel extends ChangeNotifier {
     }
     notifyListeners();
   }
-
-
 }

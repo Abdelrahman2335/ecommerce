@@ -3,23 +3,14 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/domain/repositories/login_repository.dart';
+import 'package:ecommerce/presentation/provider/auth/check_user_existence.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class LoginRepositoryImpl implements LoginRepository {
   final FirebaseService _firebaseService = FirebaseService();
-
-  static DocumentSnapshot<Map<String, dynamic>>? _userDataCheck;
-  static bool _userExist = false;
-  static bool _hasInfo = false;
-
-  get userDataCheck => _userDataCheck;
-
-  get userExist => _userExist;
-
-  get hasInfo => _hasInfo;
+  final CheckUserExistence _userExistence = CheckUserExistence();
 
   @override
   Future<void> signIn(
@@ -32,7 +23,7 @@ class LoginRepositoryImpl implements LoginRepository {
         await _firebaseService.auth
             .signInWithEmailAndPassword(email: userCon, password: passCon);
 
-        _userDataCheck = await FirebaseFirestore.instance
+        await FirebaseFirestore.instance
             .collection("customers")
             .doc(_firebaseService.auth.currentUser!.uid)
             .get();
@@ -47,6 +38,9 @@ class LoginRepositoryImpl implements LoginRepository {
   @override
   Future<void> loginWithGoogle() async {
     log("we are in");
+    if (_firebaseService.google.currentUser != null) {
+      await _firebaseService.google.disconnect();
+    }
 
     GoogleSignInAccount? googleSignInAccount;
     try {
@@ -58,34 +52,16 @@ class LoginRepositoryImpl implements LoginRepository {
       return;
     } else {
       try {
+        await _userExistence.checkUserExistence();
+        if (_userExistence.isUserExist == false) return;
+
         GoogleSignInAuthentication googleAuth =
             await googleSignInAccount.authentication;
 
         AuthCredential authCredential = GoogleAuthProvider.credential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
 
-        final userCredential =
-            await _firebaseService.auth.signInWithCredential(authCredential);
-        if (userCredential.user != null) {
-          final data = await _firebaseService.firestore
-              .collection("customers")
-              .doc(userCredential.user!.uid)
-              .get();
-
-          /// if the userId is not in the doc create it
-          if (!data.exists) {
-            _userExist = false;
-            _hasInfo = false;
-            return;
-          } else if (data.data()?["phone"] == null ||
-              data.data()?["longitude"] == null) {
-            _userExist = true;
-            _hasInfo = false;
-          } else {
-            _hasInfo = true;
-            _userExist = true;
-          }
-        }
+        await _firebaseService.auth.signInWithCredential(authCredential);
       } on FirebaseAuthException catch (error) {
         log("loginWithGoogle: $error");
       }
@@ -102,18 +78,22 @@ class LoginRepositoryImpl implements LoginRepository {
       if (isGoogleAccount) {
         log("Google Account");
         await _firebaseService.google.signOut();
-        await _firebaseService.auth.signOut();
+        _userExistence.isUserExist = null;
+
+        if (_firebaseService.google.currentUser != null) {
+          await _firebaseService.google.disconnect();
+        }
+
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
             "Logged out successfully with google Null");
       } else {
         await _firebaseService.auth.signOut();
+        _userExistence.isUserExist = false;
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
             "Logged out successfully with Null");
       }
 
-      if (_firebaseService.auth.currentUser == null) {
-        _userExist = false;
-      }
+      if (_firebaseService.auth.currentUser == null) {}
     } catch (error) {
       log("signOut error: $error");
     }

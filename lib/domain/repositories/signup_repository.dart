@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 abstract class SignupRepository {
-  Future<bool> checkUserExistence();
 
   Future<void> signInWithGoogle();
 

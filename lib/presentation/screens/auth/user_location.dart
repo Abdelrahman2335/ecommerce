@@ -4,7 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/global_keys.dart';
-import '../../provider/login_viewmodel.dart';
+import '../../provider/auth/login_viewmodel.dart';
 
 class UserLocation extends StatefulWidget {
   const UserLocation({super.key});
@@ -30,8 +30,8 @@ class _UserLocationState extends State<UserLocation> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () {
-              Provider.of<LoginViewModel>(context, listen: false).signOut();
+            onPressed: () async{
+            await  Provider.of<LoginViewModel>(context, listen: false).signOut();
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),

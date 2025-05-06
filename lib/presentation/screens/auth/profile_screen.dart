@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../data/models/address_model.dart';
-import '../../provider/login_viewmodel.dart';
+import '../../provider/auth/login_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/new_address.dart';
 

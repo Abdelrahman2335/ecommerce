@@ -2,12 +2,12 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/core/snackbar_helper.dart';
-import 'package:ecommerce/data/repositories/login_repository_impl.dart';
 import 'package:ecommerce/domain/repositories/login_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../main.dart';
+import '../../../main.dart';
+import 'check_user_existence.dart';
 
 /// This class is responsible for login & logout
 class LoginViewModel extends ChangeNotifier {
@@ -15,8 +15,9 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(this._loginRepository);
 
-  final LoginRepositoryImpl _impl = LoginRepositoryImpl();
   final FirebaseService _firebaseService = FirebaseService();
+  final _userExistence = CheckUserExistence();
+
   bool _isLoading = false;
 
   String? _user;
@@ -36,9 +37,10 @@ class LoginViewModel extends ChangeNotifier {
       await _loginRepository.signIn(formKey, passCon, userCon);
 
       /// we will check if the user have any info or not
-      _impl.userDataCheck.data()?["address"] == null
-          ? navigatorKey.currentState?.pushReplacementNamed('/user_location')
-          : navigatorKey.currentState?.pushReplacementNamed('/layout');
+
+      _userExistence.hasInfo
+          ? navigatorKey.currentState?.pushReplacementNamed('/layout')
+          : navigatorKey.currentState?.pushReplacementNamed('/user_location');
 
       _user = _firebaseService.auth.currentUser!.email;
       _name = _firebaseService.auth.currentUser!.displayName;
@@ -59,12 +61,17 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       await _loginRepository.loginWithGoogle();
 
-      if (_impl.hasInfo && _impl.userExist) {
+      if (_userExistence.hasInfo == null && _userExistence.isUserExist == null) {
+        log(" hasInfo is null and userExist is null");
+        return;
+      } else if (_userExistence.hasInfo && _userExistence.isUserExist) {
+        log("hasInfo is true and userExist is true");
         navigatorKey.currentState?.pushReplacementNamed('/layout');
-      } else if (!_impl.hasInfo && _impl.userExist) {
+      } else if (!_userExistence.hasInfo && _userExistence.isUserExist) {
+        log("hasInfo is false and userExist is true");
         navigatorKey.currentState?.pushReplacementNamed('/user_setup');
-
       } else {
+
         SnackBarHelper.show(message: "You Don't have an account.");
       }
     } on FirebaseAuthException catch (error) {
@@ -73,8 +80,8 @@ class LoginViewModel extends ChangeNotifier {
       rethrow;
     } finally {
       _isLoading = false;
-    }
     notifyListeners();
+    }
   }
 
   Future<void> signOut() async {
@@ -83,11 +90,10 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       await _loginRepository.signOut();
 
-      if(!_impl.userExist){
+      if (_userExistence.isUserExist == null || false) {
         navigatorKey.currentState?.pushReplacementNamed('/login');
-      }else{
+      } else {
         SnackBarHelper.show(message: "Couldn't sign out please try again.");
-
       }
     } catch (error) {
       log("an error has occur in the login view model error: $error");

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/constants/global_keys.dart';
 import '../../../main.dart';
-import '../../provider/login_viewmodel.dart';
+import '../../provider/auth/login_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 
@@ -113,11 +113,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         builder: (context, isLoading, child) {
                           return !isLoading
                               ? CustomButton(
-                                  pressed: () {
-                                    Provider.of<LoginViewModel>(context,
+
+                                  pressed: () async{
+                                    final valid = formKey.currentState!.validate();
+                                    valid?
+                                   await Provider.of<LoginViewModel>(context,
                                             listen: false)
                                         .signIn(formKey, passCon.text,
-                                            userCon.text);
+                                            userCon.text): null;
                                   },
                                   text: "Login",
                                 )

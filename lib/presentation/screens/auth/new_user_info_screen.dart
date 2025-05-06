@@ -5,8 +5,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/global_keys.dart';
-import '../../provider/login_viewmodel.dart';
-import '../../provider/user_data_viewmodel.dart';
+import '../../provider/auth/login_viewmodel.dart';
+import '../../provider/auth/user_data_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 
@@ -49,8 +49,8 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () {
-              Provider.of<LoginViewModel>(context, listen: false).signOut();
+            onPressed: () async {
+            await  Provider.of<LoginViewModel>(context, listen: false).signOut();
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),

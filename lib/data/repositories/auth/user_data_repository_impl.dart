@@ -3,9 +3,9 @@ import 'dart:developer';
 import 'package:ecommerce/data/models/address_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../../core/services/firebase_service.dart';
-import '../../domain/repositories/user_data_repository.dart';
-import '../models/customer_model.dart';
+import '../../../core/services/firebase_service.dart';
+import '../../../domain/repositories/user_data_repository.dart';
+import '../../models/customer_model.dart';
 
 class UserDataRepositoryImpl implements UserDataRepository {
   final FirebaseService _firebaseService = FirebaseService();
@@ -34,7 +34,7 @@ class UserDataRepositoryImpl implements UserDataRepository {
   Future addressInfo(AddressModel address) async {
     // TODO: We don't have the address yet
     try {
-      // sliderValue = 0.75;
+
     } on FirebaseAuthException catch (error) {
       log("Error in addressInfo: $error");
     }
