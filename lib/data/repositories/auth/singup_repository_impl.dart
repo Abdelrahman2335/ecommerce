@@ -51,11 +51,12 @@ class SignupRepositoryImpl implements SignupRepository {
           _firebaseService.auth.signInWithCredential(authCredential);
           await _firebaseService.firestore
               .collection("customers")
-              .doc(_firebaseService.auth.currentUser?.uid)
+              .doc(_firebaseService.auth.currentUser!.uid)
               .set(CustomerModel(
                 createdAt: DateTime.now(),
                 role: "customer",
               ).toJson());
+          log("uid for the created user is: ${_firebaseService.auth.currentUser!.uid}");
         } else {
           return;
         }

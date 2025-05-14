@@ -39,11 +39,13 @@ class LoginRepositoryImpl implements LoginRepository {
   Future<void> loginWithGoogle() async {
     log("we are in");
     if (_firebaseService.google.currentUser != null) {
-      await _firebaseService.google.disconnect();
+      await _firebaseService.google.signOut();
     }
 
     GoogleSignInAccount? googleSignInAccount;
     try {
+      log("Before calling checkUserExistence  ${_userExistence.hasInfo} and ${_userExistence.isUserExist}");
+
       googleSignInAccount = await _firebaseService.google.signIn();
     } catch (error) {
       log("loginWithGoogle: $error");
@@ -52,16 +54,21 @@ class LoginRepositoryImpl implements LoginRepository {
       return;
     } else {
       try {
-        await _userExistence.checkUserExistence();
-        if (_userExistence.isUserExist == false) return;
-
+        log("we are in else ");
         GoogleSignInAuthentication googleAuth =
             await googleSignInAccount.authentication;
 
-        AuthCredential authCredential = GoogleAuthProvider.credential(
+        AuthCredential authCredential =GoogleAuthProvider.credential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-
         await _firebaseService.auth.signInWithCredential(authCredential);
+        await _userExistence.checkUserExistence();
+        log("After calling checkUserExistence ${_userExistence.hasInfo} and ${_userExistence.isUserExist}");
+
+
+        if (_userExistence.isUserExist == false) {
+          await _firebaseService.auth.signOut();
+          return;
+        }
       } on FirebaseAuthException catch (error) {
         log("loginWithGoogle: $error");
       }
@@ -78,11 +85,12 @@ class LoginRepositoryImpl implements LoginRepository {
       if (isGoogleAccount) {
         log("Google Account");
         await _firebaseService.google.signOut();
-        _userExistence.isUserExist = null;
 
         if (_firebaseService.google.currentUser != null) {
           await _firebaseService.google.disconnect();
         }
+        /// You have to use auth when logout from any account
+        await _firebaseService.auth.signOut();
 
         log(FirebaseAuth.instance.currentUser?.providerData[0].providerId ??
             "Logged out successfully with google Null");
@@ -93,7 +101,10 @@ class LoginRepositoryImpl implements LoginRepository {
             "Logged out successfully with Null");
       }
 
-      if (_firebaseService.auth.currentUser == null) {}
+      if (_firebaseService.auth.currentUser == null) {
+        _userExistence.isUserExist = null;
+      }
+      log("After logout ${_firebaseService.auth.currentUser?.uid??"null"}");
     } catch (error) {
       log("signOut error: $error");
     }

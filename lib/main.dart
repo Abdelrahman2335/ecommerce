@@ -133,6 +133,7 @@ class MyApp extends StatelessWidget {
 
               if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
                 return LoginScreen(); // If user data doesn't exist, go to login
+
               }
 
               final userData =
@@ -140,6 +141,7 @@ class MyApp extends StatelessWidget {
 
               /// don't use .isEmpty or you will get Class 'double' has no instance getter 'isEmpty'.
               if (userData["address"] == null) {
+                log("address is null & ${userSnapshot.data!.id}");
                 return UserLocation(); // Redirect user to complete details
               } else {
                 return LayOut(); // Navigate to home if all details exist

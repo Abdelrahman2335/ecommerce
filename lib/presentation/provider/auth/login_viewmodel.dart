@@ -57,10 +57,12 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<void> loginWithGoogle() async {
     try {
+      log("Before calling loginWithGoogle  ${_userExistence.hasInfo} and ${ _userExistence.isUserExist}");
+
       _isLoading = true;
       notifyListeners();
       await _loginRepository.loginWithGoogle();
-
+      log("After calling loginWithGoogle ${_userExistence.hasInfo} and ${ _userExistence.isUserExist}");
       if (_userExistence.hasInfo == null && _userExistence.isUserExist == null) {
         log(" hasInfo is null and userExist is null");
         return;
@@ -70,9 +72,19 @@ class LoginViewModel extends ChangeNotifier {
       } else if (!_userExistence.hasInfo && _userExistence.isUserExist) {
         log("hasInfo is false and userExist is true");
         navigatorKey.currentState?.pushReplacementNamed('/user_setup');
-      } else {
+      }else if(_userExistence.hasInfo && !_userExistence.hasLocation) {
+        log("hasInfo is true and userExist is false");
+        navigatorKey.currentState?.pushReplacementNamed('/user_location');
+      }
+
+      else {
 
         SnackBarHelper.show(message: "You Don't have an account.");
+       if(_firebaseService.google.currentUser != null) {
+         _firebaseService.google.disconnect();
+       }else if(_firebaseService.auth.currentUser != null) {
+         _firebaseService.auth.signOut();
+       }
       }
     } on FirebaseAuthException catch (error) {
       log("an error has occur in the login view model");

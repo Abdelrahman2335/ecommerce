@@ -40,7 +40,7 @@ class SignupViewmodel extends ChangeNotifier {
       notifyListeners();
       await _signupRepository.signInWithGoogle();
 
-      if (userExist != null && userExist != "User doesn't exist") {
+      if (userExist == "User exist") {
         SnackBarHelper.show(message: "User already exist");
         return;
       }
