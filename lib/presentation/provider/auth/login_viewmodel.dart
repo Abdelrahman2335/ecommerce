@@ -63,7 +63,7 @@ class LoginViewModel extends ChangeNotifier {
       notifyListeners();
       await _loginRepository.loginWithGoogle();
       log("After calling loginWithGoogle ${_userExistence.hasInfo} and ${ _userExistence.isUserExist}");
-      if (_userExistence.hasInfo == null && _userExistence.isUserExist == null) {
+      if (_userExistence.isUserExist == null) {
         log(" hasInfo is null and userExist is null");
         return;
       } else if (_userExistence.hasInfo && _userExistence.isUserExist) {
@@ -81,9 +81,10 @@ class LoginViewModel extends ChangeNotifier {
 
         SnackBarHelper.show(message: "You Don't have an account.");
        if(_firebaseService.google.currentUser != null) {
-         _firebaseService.google.disconnect();
+         _firebaseService.auth.currentUser!.delete();
        }else if(_firebaseService.auth.currentUser != null) {
-         _firebaseService.auth.signOut();
+         _firebaseService.google.disconnect();
+         log("Signed out in the else");
        }
       }
     } on FirebaseAuthException catch (error) {

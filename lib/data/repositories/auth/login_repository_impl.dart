@@ -37,40 +37,44 @@ class LoginRepositoryImpl implements LoginRepository {
 
   @override
   Future<void> loginWithGoogle() async {
-    log("we are in");
+    log("Starting Google login process");
+
+    // Sign out of Google if already signed in
     if (_firebaseService.google.currentUser != null) {
       await _firebaseService.google.signOut();
     }
 
     GoogleSignInAccount? googleSignInAccount;
     try {
-      log("Before calling checkUserExistence  ${_userExistence.hasInfo} and ${_userExistence.isUserExist}");
-
       googleSignInAccount = await _firebaseService.google.signIn();
     } catch (error) {
-      log("loginWithGoogle: $error");
-    }
-    if (googleSignInAccount == null) {
+      log("Error during Google sign in: $error");
       return;
-    } else {
-      try {
-        log("we are in else ");
-        GoogleSignInAuthentication googleAuth =
-            await googleSignInAccount.authentication;
+    }
 
-        AuthCredential authCredential =GoogleAuthProvider.credential(
+    if (googleSignInAccount == null) {
+      log("Google sign-in canceled by user");
+      return;
+    }
+
+    try {
+      GoogleSignInAuthentication googleAuth =
+          await googleSignInAccount.authentication;
+
+
+
+        AuthCredential authCredential = GoogleAuthProvider.credential(
             idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
+
         await _firebaseService.auth.signInWithCredential(authCredential);
-        await _userExistence.checkUserExistence();
-        log("After calling checkUserExistence ${_userExistence.hasInfo} and ${_userExistence.isUserExist}");
+      await _userExistence.checkUserExistence();
+      log("User data check: hasInfo = ${_userExistence.hasInfo}, isUserExist = ${_userExistence.isUserExist}");
+        log("Successfully signed in with Firebase");
 
-
-        if (_userExistence.isUserExist == false) {
-          await _firebaseService.auth.signOut();
-          return;
-        }
-      } on FirebaseAuthException catch (error) {
-        log("loginWithGoogle: $error");
+    } catch (error) {
+      log("Error during login process: $error");
+      if (_firebaseService.auth.currentUser != null) {
+        await _firebaseService.auth.signOut();
       }
     }
   }
@@ -89,6 +93,7 @@ class LoginRepositoryImpl implements LoginRepository {
         if (_firebaseService.google.currentUser != null) {
           await _firebaseService.google.disconnect();
         }
+
         /// You have to use auth when logout from any account
         await _firebaseService.auth.signOut();
 
@@ -104,7 +109,7 @@ class LoginRepositoryImpl implements LoginRepository {
       if (_firebaseService.auth.currentUser == null) {
         _userExistence.isUserExist = null;
       }
-      log("After logout ${_firebaseService.auth.currentUser?.uid??"null"}");
+      log("After logout ${_firebaseService.auth.currentUser?.uid ?? "null"}");
     } catch (error) {
       log("signOut error: $error");
     }
