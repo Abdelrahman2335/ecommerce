@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/domain/repositories/login_repository.dart';
 import 'package:ecommerce/presentation/provider/auth/check_user_existence.dart';
@@ -22,11 +21,9 @@ class LoginRepositoryImpl implements LoginRepository {
       } else {
         await _firebaseService.auth
             .signInWithEmailAndPassword(email: userCon, password: passCon);
+        await _userExistence.checkUserExistence();
+        log("User data check: hasInfo = ${_userExistence.hasInfo}, isUserExist = ${_userExistence.isUserExist}");
 
-        await FirebaseFirestore.instance
-            .collection("customers")
-            .doc(_firebaseService.auth.currentUser!.uid)
-            .get();
       }
     } catch (error) {
       log("signIn error: $error");

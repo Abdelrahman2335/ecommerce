@@ -20,6 +20,7 @@ class UserDataRepositoryImpl implements UserDataRepository {
       age: age,
       gender: selectedGender,
     );
+    await _firebaseService.auth.currentUser!.updateDisplayName(name);
     try {
       await _firebaseService.firestore
           .collection("customers")
@@ -33,9 +34,7 @@ class UserDataRepositoryImpl implements UserDataRepository {
   @override
   Future addressInfo(AddressModel address) async {
     // TODO: We don't have the address yet
-    try {
-
-    } on FirebaseAuthException catch (error) {
+    try {} on FirebaseAuthException catch (error) {
       log("Error in addressInfo: $error");
     }
   }

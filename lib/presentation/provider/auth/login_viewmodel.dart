@@ -38,10 +38,34 @@ class LoginViewModel extends ChangeNotifier {
 
       /// we will check if the user have any info or not
 
-      _userExistence.hasInfo
-          ? navigatorKey.currentState?.pushReplacementNamed('/layout')
-          : navigatorKey.currentState?.pushReplacementNamed('/user_location');
+      _isLoading = true;
+      notifyListeners();
+      log("After calling loginWithGoogle ${_userExistence.hasInfo} and ${ _userExistence.isUserExist}");
+      if (_userExistence.isUserExist == null) {
+        log(" hasInfo is null and userExist is null");
+        SnackBarHelper.show(message: "You Don't have an account.");
+        return;
+      } else if (_userExistence.hasInfo && _userExistence.isUserExist) {
+        log("hasInfo is true and userExist is true");
+        navigatorKey.currentState?.pushReplacementNamed('/layout');
+      } else if (!_userExistence.hasInfo && _userExistence.isUserExist) {
+        log("hasInfo is false and userExist is true");
+        navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+      }else if(_userExistence.hasInfo && !_userExistence.hasLocation) {
+        log("hasInfo is true and userExist is false");
+        navigatorKey.currentState?.pushReplacementNamed('/user_location');
+      }
 
+      else {
+
+        SnackBarHelper.show(message: "You Don't have an account.");
+        if(_firebaseService.google.currentUser != null) {
+          // _firebaseService.auth.currentUser!.delete();
+        }else if(_firebaseService.auth.currentUser != null) {
+          _firebaseService.auth.signOut();
+          log("Signed out in the else");
+        }
+      }
       _user = _firebaseService.auth.currentUser!.email;
       _name = _firebaseService.auth.currentUser!.displayName;
     } catch (error) {

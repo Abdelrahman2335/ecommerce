@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/snackbar_helper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/services/firebase_service.dart';
 import '../../../domain/repositories/signup_repository.dart';
 import '../../../main.dart';
 import 'check_user_existence.dart';
@@ -13,40 +15,32 @@ class SignupViewmodel extends ChangeNotifier {
   SignupViewmodel(this._signupRepository);
 
   final _userExistence = CheckUserExistence();
+  final _firebaseService = FirebaseService ();
+
 
   bool _isLoading = false;
 
-  String? userExist = "";
-
   bool get isLoading => _isLoading;
-
-  checkUserExistence() async {
-    try {
-      _isLoading = true;
-      notifyListeners();
-      userExist = await _userExistence.checkUserExistence();
-    } catch (error) {
-      log("an error occur when checking user existence: $error");
-      rethrow;
-    } finally {
-      _isLoading = false;
-    }
-    notifyListeners();
-  }
 
   Future<void> signInWithGoogle() async {
     try {
       _isLoading = true;
       notifyListeners();
       await _signupRepository.signInWithGoogle();
-
-      if (userExist == "User exist") {
+      if (_userExistence.isUserExist != null && _userExistence.isUserExist) {
         SnackBarHelper.show(message: "User already exist");
+        if (_firebaseService.google.currentUser != null) {
+          _firebaseService.auth.signOut();
+        } else if (_firebaseService.auth.currentUser != null) {
+          _firebaseService.google.disconnect();
+        }
         return;
-      }
+      }else{
+
       navigatorKey.currentState?.pushReplacementNamed(
-        "/user_setup",
-      );
+          "/user_setup",
+        );
+      }
     } catch (error) {
       log("an error occur when sign-in with google: $error");
       SnackBarHelper.show(message: "Authentication Error!");
@@ -65,8 +59,24 @@ class SignupViewmodel extends ChangeNotifier {
     try {
       _isLoading = true;
       notifyListeners();
-      await _signupRepository.createUser(formKey, passCon, userCon);
-    } catch (error) {
+      await _signupRepository
+          .createUser(formKey, passCon, userCon)
+          .onError((error, stackTrace) {
+        /// Important to know that you have to rethrow the error to be able to use onError
+        if (error is FirebaseAuthException) {
+          log("Error code: ${error.code}");
+
+          if (error.code == 'email-already-in-use') {
+            SnackBarHelper.show(message: "Email already in use!");
+            return;
+          }
+        } else {
+          log("Stack trace: $stackTrace");
+          log("Unknown error: $error");
+        }
+      });
+      // navigatorKey.currentState?.pushReplacementNamed('/user_setup');
+    } on FirebaseException catch (error) {
       log("an error occur when creating user: $error");
       SnackBarHelper.show(message: "Authentication Error!");
       rethrow;

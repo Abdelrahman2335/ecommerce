@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/constants/global_keys.dart';
-import 'package:ecommerce/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -8,7 +6,6 @@ import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/models/customer_model.dart';
 import '../../provider/auth/signup_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
@@ -129,20 +126,7 @@ class _SignUpState extends State<SignUp> {
                                     passCon.text,
                                     emailCon.text,
                                   );
-                                  if (firebase.currentUser != null) {
-                                    CustomerModel newUser = CustomerModel(
-                                      createdAt: DateTime.now(),
-                                    );
-                                    String uid = firebase.currentUser!.uid;
-                                    await FirebaseFirestore.instance
-                                        .collection("customers")
-                                        .doc(uid)
-                                        .set(newUser.toJson());
 
-                                    /// add user date of join to firestore
-
-
-                                  }
                                 },
                                 text: "Create Account",
                               )
@@ -177,9 +161,6 @@ class _SignUpState extends State<SignUp> {
                                   listen: false)
                               .signInWithGoogle();
 
-                          if (firebase.currentUser == null) return;
-                          AppKeys.navigatorKey.currentState
-                              ?.pushReplacementNamed('/user_setup');
                         },
                         child: const Image(
                           image: AssetImage(

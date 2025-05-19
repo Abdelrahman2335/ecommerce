@@ -25,30 +25,31 @@ class SignupRepositoryImpl implements SignupRepository {
     try {
       googleSignInAccount = await _firebaseService.google.signIn();
 
-      await _userExistence.checkUserExistence();
-      userExist = _userExistence.isUserExist;
 
     } catch (error) {
       log("error: $error");
     }
-    if (googleSignInAccount == null || userExist == null) {
-      return;
-    }
-    else if(userExist == true){
-     log("User already exist");
+    if (googleSignInAccount == null) {
       return;
     }
     else {
       try {
         log("signInWithGoogle: GoogleSignInAccount is not null");
 
-        if (!userExist!) {
+
           GoogleSignInAuthentication googleAuth =
               await googleSignInAccount.authentication;
 
           AuthCredential authCredential = GoogleAuthProvider.credential(
               idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
-          _firebaseService.auth.signInWithCredential(authCredential);
+
+         await _firebaseService.auth.signInWithCredential(authCredential);
+
+          await _userExistence.checkUserExistence();
+          userExist = _userExistence.isUserExist;
+          if(userExist!) {
+            return;
+          }
           await _firebaseService.firestore
               .collection("customers")
               .doc(_firebaseService.auth.currentUser!.uid)
@@ -57,9 +58,7 @@ class SignupRepositoryImpl implements SignupRepository {
                 role: "customer",
               ).toJson());
           log("uid for the created user is: ${_firebaseService.auth.currentUser!.uid}");
-        } else {
-          return;
-        }
+
       } catch (error) {
         log("error in the signInWithGoogle: $error");
       }
@@ -96,7 +95,9 @@ class SignupRepositoryImpl implements SignupRepository {
         return;
       }
     } on FirebaseAuthException catch (error) {
+
       log("error in the createUser: $error");
+      rethrow;
     }
     formKey.currentState!.save();
   }
