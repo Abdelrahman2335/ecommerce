@@ -5,6 +5,7 @@ import 'package:ecommerce/core/snackbar_helper.dart';
 import 'package:ecommerce/domain/repositories/login_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../main.dart';
 import 'check_user_existence.dart';
@@ -93,6 +94,9 @@ class LoginViewModel extends ChangeNotifier {
       } else if (_userExistence.hasInfo && _userExistence.isUserExist) {
         log("hasInfo is true and userExist is true");
         navigatorKey.currentState?.pushReplacementNamed('/layout');
+        // final prefs = await SharedPreferences.getInstance();
+        // await prefs.setBool('dummyLoginFlag', true);
+
       } else if (!_userExistence.hasInfo && _userExistence.isUserExist) {
         log("hasInfo is false and userExist is true");
         navigatorKey.currentState?.pushReplacementNamed('/user_setup');

@@ -6,6 +6,11 @@ import 'package:flutter/cupertino.dart';
 import '../../data/models/product_model.dart';
 import '../../domain/repositories/wishlist_repository.dart';
 
+
+
+/// TODO:
+/// there is an issue with loved items when we create it for the first time we can't remove the loved items
+
 class WishListViewModel extends ChangeNotifier {
   final WishListRepository _wishListRepository;
   final WishListRepositoryImpl wishListRepositoryImpl =

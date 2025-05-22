@@ -1,20 +1,20 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/core/constants/theme.dart';
 import 'package:ecommerce/data/repositories/auth/login_repository_impl.dart';
-import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
-import 'package:ecommerce/data/repositories/order_repository_impl.dart';
 import 'package:ecommerce/data/repositories/auth/singup_repository_impl.dart';
 import 'package:ecommerce/data/repositories/auth/user_data_repository_impl.dart';
+import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
+import 'package:ecommerce/data/repositories/order_repository_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
+import 'package:ecommerce/presentation/provider/auth/signup_viewmodel.dart';
+import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
+import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
 import 'package:ecommerce/presentation/screens/auth/new_user_info_screen.dart';
 import 'package:ecommerce/presentation/screens/auth/user_location.dart';
 import 'package:ecommerce/presentation/screens/items/layout.dart';
-import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
-import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
-import 'package:ecommerce/presentation/provider/auth/signup_viewmodel.dart';
-import 'package:ecommerce/core/constants/theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +24,11 @@ import 'core/constants/global_keys.dart';
 import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
+import 'presentation/provider/auth/login_viewmodel.dart';
+import 'presentation/provider/auth/user_data_viewmodel.dart';
 import 'presentation/provider/cart_viewmodel.dart';
 import 'presentation/provider/location_viewmodel.dart';
-import 'presentation/provider/auth/login_viewmodel.dart';
 import 'presentation/provider/payment_provider.dart';
-import 'presentation/provider/auth/user_data_viewmodel.dart';
 import 'presentation/provider/wishlist_viewmodel.dart';
 import 'presentation/screens/auth/forgot_password.dart';
 import 'presentation/screens/auth/login_screen.dart';
@@ -50,8 +50,10 @@ void main() async {
 
         /// This widget is the root of your application.
         MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => SignupViewmodel(SignupRepositoryImpl())),
-      ChangeNotifierProvider(create: (_)=> UserViewModel(UserDataRepositoryImpl())),
+      ChangeNotifierProvider(
+          create: (_) => SignupViewmodel(SignupRepositoryImpl())),
+      ChangeNotifierProvider(
+          create: (_) => UserViewModel(UserDataRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => ItemViewModel(ItemRepositoryImpl()),
       ),
@@ -69,13 +71,19 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => LocationProvider(),
-      ),ChangeNotifierProvider(
+      ),
+      ChangeNotifierProvider(
         create: (_) => OrderViewModel(OrderRepositoryImpl()),
       ),
     ], child: const MyApp()));
   } catch (error) {
     log("Error in the main function: $error");
   }
+  /// SharedPreferences is not the best option for login with Firebase
+  // final prefs = await SharedPreferences.getInstance();
+  // final dummyLoginFlag = prefs.getBool('dummyLoginFlag') ?? false;
+  //
+  // log("SharedPreferences dummyLoginFlag: $dummyLoginFlag");
 }
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -133,7 +141,6 @@ class MyApp extends StatelessWidget {
 
               if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
                 return LoginScreen(); // If user data doesn't exist, go to login
-
               }
 
               final userData =
