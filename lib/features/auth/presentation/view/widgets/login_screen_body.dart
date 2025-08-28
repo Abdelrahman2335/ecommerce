@@ -46,7 +46,7 @@ class LoginScreenBody extends StatelessWidget {
                 children: [
                   Text(
                     "Create An Account",
-                    style: theme.textTheme.labelSmall,
+                    style: AppTextStyles.label12(context),
                   ),
                   TextButton(
                     onPressed: () {

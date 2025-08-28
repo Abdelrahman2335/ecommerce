@@ -61,6 +61,7 @@ dependencies:
   geolocator: ^13.0.2
   latlong2: ^0.9.1
   geocoding: ^3.0.0
+  go_router: ^16.2.0
   http: ^1.3.0
   phosphor_flutter: ^2.1.0
   unsplash_client: ^3.0.0

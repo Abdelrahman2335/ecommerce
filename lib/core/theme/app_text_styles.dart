@@ -37,7 +37,7 @@ class AppTextStyles {
   static TextStyle label12(BuildContext context) => GoogleFonts.poppins(
         fontSize: 12,
         fontWeight: FontWeight.normal,
-        color: AppColor.getSecondaryTextColor(context),
+        color: AppColor.getPrimaryTextColor(context),
       );
 
   // Body styles
