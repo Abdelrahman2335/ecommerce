@@ -13,7 +13,7 @@ import '../../core/utils/global_keys.dart';
 import '../../data/cities.dart';
 import '../../data/models/address_model.dart';
 import '../provider/location_viewmodel.dart';
-import '../provider/auth/user_data_viewmodel.dart';
+import '../../features/auth/presentation/manager/user_data_viewmodel.dart';
 
 String selectedCity = egyptCities[0];
 

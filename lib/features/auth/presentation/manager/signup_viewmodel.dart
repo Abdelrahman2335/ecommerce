@@ -4,18 +4,12 @@ import 'package:ecommerce/core/utils/snackbar_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/services/firebase_service.dart';
-import '../../../domain/repositories/signup_repository.dart';
-import '../../../main.dart';
-import 'check_user_existence.dart';
+import '../../../../domain/repositories/signup_repository.dart';
 
 class SignupViewmodel extends ChangeNotifier {
   final SignupRepository _signupRepository;
 
   SignupViewmodel(this._signupRepository);
-
-  final _userExistence = CheckUserExistence();
-  final _firebaseService = FirebaseService ();
 
 
   bool _isLoading = false;
@@ -27,20 +21,8 @@ class SignupViewmodel extends ChangeNotifier {
       _isLoading = true;
       notifyListeners();
       await _signupRepository.signInWithGoogle();
-      if (_userExistence.isUserExist != null && _userExistence.isUserExist) {
-        SnackBarHelper.show(message: "User already exist");
-        if (_firebaseService.google.currentUser != null) {
-          _firebaseService.auth.signOut();
-        } else if (_firebaseService.auth.currentUser != null) {
-          _firebaseService.google.disconnect();
-        }
-        return;
-      }else{
-
-      navigatorKey.currentState?.pushReplacementNamed(
-          "/user_setup",
-        );
-      }
+ 
+    
     } catch (error) {
       log("an error occur when sign-in with google: $error");
       SnackBarHelper.show(message: "Authentication Error!");

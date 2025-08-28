@@ -1,5 +1,4 @@
-
-import 'package:ecommerce/presentation/provider/auth/login_viewmodel.dart';
+import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,8 +23,8 @@ class LoginWithPlatform extends StatelessWidget {
             backgroundColor: theme.primaryColor.withAlpha(37),
             side: BorderSide(color: theme.primaryColor),
           ),
-          onPressed: () async {
-            await context.read<LoginViewModel>().loginWithGoogle();
+          onPressed: ()  {
+             context.read<AuthProvider>().loginWithGoogle();
           },
           child: const Image(
             image: AssetImage(

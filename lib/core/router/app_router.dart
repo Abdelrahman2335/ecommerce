@@ -22,7 +22,7 @@ abstract class AppRouter {
   static const kUserSetupScreen = "/user_setup";
   static const kUserLocationScreen = "/user_location";
 
-  static String get initialRoute {
+  static String get _initialRoute {
     final currentUser = _firebaseService.auth.currentUser;
     if (currentUser != null) {
       return kLayoutScreen;
@@ -32,7 +32,7 @@ abstract class AppRouter {
   }
 
   static final GoRouter router = GoRouter(
-    initialLocation: initialRoute,
+    initialLocation: _initialRoute,
     routes: [
       GoRoute(
         path: kLoginScreen,

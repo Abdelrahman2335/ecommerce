@@ -1,4 +1,5 @@
 import 'package:ecommerce/core/theme/app_text_styles.dart';
+import 'package:ecommerce/core/utils/global_keys.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/login_buttons.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/login_fields.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/login_with_platform.dart';
@@ -14,7 +15,7 @@ class LoginScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final GlobalKey<FormState> formKey = AppKeys.loginFormKey;
 
     return Animate(
       effects: [
@@ -25,39 +26,42 @@ class LoginScreenBody extends StatelessWidget {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(27),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Gap(70),
-              Text(
-                "Welcome \nBack!",
-                style: AppTextStyles.title29(context),
-              ),
-              const Gap(30),
-              const LoginFields(),
-              const LoginButtons(),
-              const Gap(40),
-              const Center(child: Text("- OR Continue with -")),
-              const Gap(24),
-              const LoginWithPlatform(),
-              const SizedBox(height: 14),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Create An Account",
-                    style: AppTextStyles.label12(context),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      navigatorKey.currentState
-                          ?.pushReplacementNamed('/signup');
-                    },
-                    child: const Text("Sign Up"),
-                  )
-                ],
-              )
-            ],
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Gap(70),
+                Text(
+                  "Welcome \nBack!",
+                  style: AppTextStyles.title29(context),
+                ),
+                const Gap(30),
+                const LoginFields(),
+                LoginButtons(formKey: formKey),
+                const Gap(40),
+                const Center(child: Text("- OR Continue with -")),
+                const Gap(24),
+                const LoginWithPlatform(),
+                const SizedBox(height: 14),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Create An Account",
+                      style: AppTextStyles.label12(context),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        navigatorKey.currentState
+                            ?.pushReplacementNamed('/signup');
+                      },
+                      child: const Text("Sign Up"),
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),

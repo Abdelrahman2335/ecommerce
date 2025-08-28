@@ -8,12 +8,14 @@ class CustomField extends StatefulWidget {
     required this.icon,
     this.controller,
     required this.isSecure,
-    required this.isValid,
+    this.isValid,
     this.labelStyle,
     this.buildCounter,
     this.textCapitalization = TextCapitalization.none,
     this.keyboardType = TextInputType.text,
     this.maxLength,
+    this.onSaved,
+    this.onChanged,
   });
 
   final bool isSecure;
@@ -25,9 +27,11 @@ class CustomField extends StatefulWidget {
   final TextInputType keyboardType;
   final InputCounterWidgetBuilder? buildCounter;
   final int? maxLength;
+  final Function(String?)? onSaved;
+  final Function(String)? onChanged;
 
   ///Will use it later
-  final String? Function(String?) isValid;
+  final String? Function(String?)? isValid;
 
   @override
   State<CustomField> createState() => _CustomFieldState();
@@ -62,8 +66,15 @@ class _CustomFieldState extends State<CustomField> {
       maxLines: 1,
       maxLength: widget.maxLength,
       controller: _controller,
-      validator: widget.isValid,
-      onSaved: (value) => _controller.text = value!,
+      validator: widget.isValid ??
+          (String? value) {
+            if (value == null || value.trim().isEmpty) {
+              return "Field is Required";
+            }
+            return null;
+          },
+      onChanged: widget.onChanged,
+      onSaved: widget.onSaved,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(20),
         focusedBorder: OutlineInputBorder(

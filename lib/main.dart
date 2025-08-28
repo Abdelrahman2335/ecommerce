@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
-import 'package:ecommerce/data/repositories/auth/login_repository_impl.dart';
 import 'package:ecommerce/data/repositories/auth/singup_repository_impl.dart';
 import 'package:ecommerce/data/repositories/auth/user_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/order_repository_impl.dart';
+import 'package:ecommerce/features/auth/data/repository/auth_repo_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
-import 'package:ecommerce/presentation/provider/auth/signup_viewmodel.dart';
+import 'package:ecommerce/features/auth/presentation/manager/signup_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
@@ -20,8 +20,8 @@ import 'core/utils/global_keys.dart';
 import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
-import 'presentation/provider/auth/login_viewmodel.dart';
-import 'presentation/provider/auth/user_data_viewmodel.dart';
+import 'features/auth/presentation/manager/auth_provider.dart';
+import 'features/auth/presentation/manager/user_data_viewmodel.dart';
 import 'presentation/provider/cart_viewmodel.dart';
 import 'presentation/provider/location_viewmodel.dart';
 import 'presentation/provider/payment_provider.dart';
@@ -44,9 +44,7 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => ItemViewModel(ItemRepositoryImpl()),
       ),
-      ChangeNotifierProvider(
-        create: (_) => LoginViewModel(LoginRepositoryImpl()),
-      ),
+
       ChangeNotifierProvider(
           create: (_) => CartViewModel(CartRepositoryImpl())),
       ChangeNotifierProvider(
@@ -80,11 +78,10 @@ class MyApp extends StatelessWidget {
     debugInvertOversizedImages = true;
 
     return MaterialApp.router(
-      routerConfig: AppRouter.router,     
+      routerConfig: AppRouter.router,
       scaffoldMessengerKey: scaffoldMessengerKey,
       theme: ThemeDataConfig.themeData,
       debugShowCheckedModeBanner: false,
-
     );
   }
 }

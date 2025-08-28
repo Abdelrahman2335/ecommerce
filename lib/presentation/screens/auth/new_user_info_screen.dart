@@ -5,8 +5,8 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/utils/global_keys.dart';
-import '../../provider/auth/login_viewmodel.dart';
-import '../../provider/auth/user_data_viewmodel.dart';
+import '../../../features/auth/presentation/manager/auth_provider.dart';
+import '../../../features/auth/presentation/manager/user_data_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 
@@ -49,8 +49,8 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: () async {
-            await  Provider.of<LoginViewModel>(context, listen: false).signOut();
+            onPressed: () {
+              Provider.of<AuthProvider>(context,).signOut();
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),
@@ -138,43 +138,41 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
                   /// The dropdown button for the cities.
                   /// using Expanded to make the dropdown button take the remaining space (Important)
 
-                    DropdownButtonFormField(
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(20),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(21),
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor)),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(21),
-                            ),
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Icon(PhosphorIcons.genderMale()),
-                            ),
-                          ),
-                          items: [
-                            for (String gender in genders)
-                              DropdownMenuItem(
-                                value: gender,
+                  DropdownButtonFormField(
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(20),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(21),
+                          borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(21),
+                      ),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Icon(PhosphorIcons.genderMale()),
+                      ),
+                    ),
+                    items: [
+                      for (String gender in genders)
+                        DropdownMenuItem(
+                          value: gender,
 
-                                /// [FittedBox] adjusts its child based on the available space while maintaining the child’s aspect ratio.
-                                child: FittedBox(
-                                    child: Text(
-                                  gender,
+                          /// [FittedBox] adjusts its child based on the available space while maintaining the child’s aspect ratio.
+                          child: FittedBox(
+                              child: Text(
+                            gender,
 
-                                  /// if the text is too long, it will be ellipsis (...)
-                                  overflow: TextOverflow.ellipsis,
-                                )),
-                              ),
-                          ],
-                          value: selectedGender,
-                          onChanged: (value) {
-                            selectedGender = value!;
-                          },
+                            /// if the text is too long, it will be ellipsis (...)
+                            overflow: TextOverflow.ellipsis,
+                          )),
                         ),
-
-
+                    ],
+                    value: selectedGender,
+                    onChanged: (value) {
+                      selectedGender = value!;
+                    },
+                  ),
 
                   const Gap(26),
                   Selector<UserViewModel, bool>(

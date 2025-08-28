@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/auth/signup_viewmodel.dart';
+import '../../../features/auth/presentation/manager/signup_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
 import '../../../features/auth/presentation/view/screens/login_screen.dart';

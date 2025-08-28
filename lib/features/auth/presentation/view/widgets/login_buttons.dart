@@ -1,12 +1,15 @@
 import 'package:ecommerce/main.dart';
-import 'package:ecommerce/presentation/provider/auth/login_viewmodel.dart';
+import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
 import 'package:ecommerce/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart' show Selector;
+import 'package:provider/provider.dart' show Selector, Provider;
 
 class LoginButtons extends StatelessWidget {
-  const LoginButtons({super.key});
-
+  const LoginButtons({
+    super.key,
+    required this.formKey,
+  });
+  final GlobalKey<FormState> formKey;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -29,18 +32,17 @@ class LoginButtons extends StatelessWidget {
                 style: TextStyle(fontSize: 13),
               )),
         ),
-        Selector<LoginViewModel, bool>(
+        Selector<AuthProvider, bool>(
             selector: (_, selectedValue) => selectedValue.loading,
             builder: (context, isLoading, child) {
               return !isLoading
                   ? CustomButton(
-                      pressed: () async {
-                        //   final valid = formKey.currentState!.validate();
-                        //   valid?
-                        //  await Provider.of<LoginViewModel>(context,
-                        //           listen: false)
-                        //       .signIn(formKey, passCon.text,
-                        //           userCon.text): null;
+                      pressed: () {
+                        final valid = formKey.currentState!.validate();
+                        valid
+                            ? Provider.of<AuthProvider>(context, listen: false)
+                                .loginUser()
+                            : null;
                       },
                       text: "Login",
                     )

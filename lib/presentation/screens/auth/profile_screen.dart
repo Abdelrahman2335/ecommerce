@@ -1,10 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../data/models/address_model.dart';
-import '../../provider/auth/login_viewmodel.dart';
+import '../../../features/auth/presentation/manager/auth_provider.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/new_address.dart';
 
@@ -16,13 +15,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final firebase = FirebaseAuth.instance;
   bool hidePass = true;
-  TextEditingController userCon = TextEditingController();
-  TextEditingController passCon = TextEditingController();
-  TextEditingController rePassCon = TextEditingController();
-  TextEditingController addressCon = TextEditingController();
-  TextEditingController landCon = TextEditingController();
   AddressModel address =
       AddressModel(city: 'City', area: 'Area', street: 'Street');
 
@@ -31,17 +24,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       address = newAddress;
     });
-  }
-
-  @override
-  void dispose() {
-    userCon.dispose();
-    passCon.dispose();
-    rePassCon.dispose();
-    addressCon.dispose();
-    landCon.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -57,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<LoginViewModel>(context, listen: false).signOut();
+              Provider.of<AuthProvider>(context, listen: false).signOut();
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),
@@ -95,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Gap(18),
               TextFormField(
-                controller: userCon,
                 decoration: const InputDecoration(
                   hintText: "Email",
                   contentPadding: EdgeInsets.all(9),
@@ -104,7 +85,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Gap(26),
               TextFormField(
                 obscureText: hidePass,
-                controller: passCon,
                 decoration: InputDecoration(
                   labelText: "Password",
                   contentPadding: const EdgeInsets.all(9),
@@ -125,7 +105,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Gap(26),
               TextFormField(
                 obscureText: hidePass,
-                controller: rePassCon,
                 decoration: InputDecoration(
                   labelText: "Confirm Password",
                   contentPadding: const EdgeInsets.all(9),
