@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ecommerce/core/constants/global_keys.dart';
+import 'package:ecommerce/core/utils/global_keys.dart';
 
 class SnackBarHelper {
   static void show({

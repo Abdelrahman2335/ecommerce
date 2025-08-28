@@ -1,4 +1,4 @@
-import 'package:ecommerce/core/constants/global_keys.dart';
+import 'package:ecommerce/core/utils/global_keys.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../provider/auth/signup_viewmodel.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_field.dart';
-import 'login_screen.dart';
+import '../../../features/auth/presentation/view/screens/login_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -19,19 +19,8 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  TextEditingController emailCon = TextEditingController();
-  TextEditingController passCon = TextEditingController();
-  TextEditingController rePassCon = TextEditingController();
   final GlobalKey<FormState> formKey = AppKeys.signupFormKey;
   FirebaseAuth firebase = FirebaseAuth.instance;
-
-  @override
-  void dispose() {
-    emailCon.dispose();
-    passCon.dispose();
-    rePassCon.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +52,6 @@ class _SignUpState extends State<SignUp> {
                     label: "Email address",
                     labelStyle: TextStyle(fontSize: 14),
                     icon: Icon(PhosphorIcons.user()),
-                    controller: emailCon,
                     isSecure: false,
                     isValid: (String? value) {
                       if (value == null || value.trim().isEmpty) {
@@ -77,7 +65,6 @@ class _SignUpState extends State<SignUp> {
                     label: "Password",
                     labelStyle: TextStyle(fontSize: 14),
                     icon: Icon(PhosphorIcons.lock()),
-                    controller: passCon,
                     isSecure: true,
                     isValid: (String? value) {
                       if (value == null || value.isEmpty || value.length <= 6) {
@@ -91,18 +78,17 @@ class _SignUpState extends State<SignUp> {
                     label: "Confirm password",
                     labelStyle: TextStyle(fontSize: 14),
                     icon: Icon(PhosphorIcons.lock()),
-                    controller: rePassCon,
                     isSecure: true,
                     isValid: (String? value) {
-                      if (value == null ||
-                          value.trim().isEmpty ||
-                          value.length <= 6) {
-                        return "Wrong Password";
-                      }
-                      if (value != passCon.text) {
-                        return "Password not matched";
-                      }
-                      return null;
+                      // if (value == null ||
+                      //     value.trim().isEmpty ||
+                      //     value.length <= 6) {
+                      //   return "Wrong Password";
+                      // }
+                      // if (value != passCon.text) {
+                      //   return "Password not matched";
+                      // }
+                      // return null;
                     },
                   ),
                   const Gap(40),
@@ -112,8 +98,7 @@ class _SignUpState extends State<SignUp> {
                         /// This isLoading not working properly
                         return !isLoading
                             ? CustomButton(
-
-                          bottomWidth: 0.5,
+                                bottomWidth: 0.5,
                                 pressed: () async {
                                   final valid =
                                       formKey.currentState?.validate();
@@ -121,12 +106,11 @@ class _SignUpState extends State<SignUp> {
 
                                   /// here we are using or operator because if (any of the condition is true) it will be true
 
-                                  await signUpProvider.createUser(
-                                    formKey,
-                                    passCon.text,
-                                    emailCon.text,
-                                  );
-
+                                  // await signUpProvider.createUser(
+                                  //   formKey,
+                                  //   passCon.text,
+                                  //   emailCon.text,
+                                  // );
                                 },
                                 text: "Create Account",
                               )
@@ -154,13 +138,12 @@ class _SignUpState extends State<SignUp> {
                           side: BorderSide(color: theme.primaryColor),
                         ),
                         onPressed: () async {
-                        await  Provider.of<SignupViewmodel>(
+                          await Provider.of<SignupViewmodel>(
                                   AppKeys.navigatorKey.currentContext!,
 
                                   /// instead of context
                                   listen: false)
                               .signInWithGoogle();
-
                         },
                         child: const Image(
                           image: AssetImage(

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecommerce/core/constants/theme.dart';
+import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/data/repositories/auth/login_repository_impl.dart';
 import 'package:ecommerce/data/repositories/auth/singup_repository_impl.dart';
 import 'package:ecommerce/data/repositories/auth/user_data_repository_impl.dart';
@@ -20,7 +20,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'core/constants/global_keys.dart';
+import 'core/utils/global_keys.dart';
 import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
@@ -31,7 +31,7 @@ import 'presentation/provider/location_viewmodel.dart';
 import 'presentation/provider/payment_provider.dart';
 import 'presentation/provider/wishlist_viewmodel.dart';
 import 'presentation/screens/auth/forgot_password.dart';
-import 'presentation/screens/auth/login_screen.dart';
+import 'features/auth/presentation/view/screens/login_screen.dart';
 import 'presentation/screens/auth/profile_screen.dart';
 import 'presentation/screens/auth/signup.dart';
 import 'presentation/screens/place_order/cart_screen.dart';
@@ -46,10 +46,7 @@ void main() async {
       name: 'e-commerce-2699c',
     );
     await Firebase.initializeApp();
-    runApp(
-
-        /// This widget is the root of your application.
-        MultiProvider(providers: [
+    runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
           create: (_) => SignupViewmodel(SignupRepositoryImpl())),
       ChangeNotifierProvider(
@@ -79,11 +76,6 @@ void main() async {
   } catch (error) {
     log("Error in the main function: $error");
   }
-  /// SharedPreferences is not the best option for login with Firebase
-  // final prefs = await SharedPreferences.getInstance();
-  // final dummyLoginFlag = prefs.getBool('dummyLoginFlag') ?? false;
-  //
-  // log("SharedPreferences dummyLoginFlag: $dummyLoginFlag");
 }
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -117,12 +109,11 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: CircularProgressIndicator()); // Loading indicator
+            return Center(child: CircularProgressIndicator());
           }
           final user = snapshot.data;
           if (user == null) {
-            return LoginScreen(); // No user signed in
+            return LoginScreen();
           }
 
           return FutureBuilder<DocumentSnapshot>(
@@ -136,22 +127,21 @@ class MyApp extends StatelessWidget {
                   body: Center(
                     child: CircularProgressIndicator(),
                   ),
-                ); // Waiting for Firestore
+                );
               }
 
               if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
-                return LoginScreen(); // If user data doesn't exist, go to login
+                return LoginScreen();
               }
 
               final userData =
                   userSnapshot.data!.data() as Map<String, dynamic>;
 
-              /// don't use .isEmpty or you will get Class 'double' has no instance getter 'isEmpty'.
               if (userData["address"] == null) {
                 log("address is null & ${userSnapshot.data!.id}");
-                return UserLocation(); // Redirect user to complete details
+                return UserLocation();
               } else {
-                return LayOut(); // Navigate to home if all details exist
+                return LayOut();
               }
             },
           );

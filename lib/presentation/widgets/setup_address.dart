@@ -9,7 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/constants/global_keys.dart';
+import '../../core/utils/global_keys.dart';
 import '../../data/cities.dart';
 import '../../data/models/address_model.dart';
 import '../provider/location_viewmodel.dart';

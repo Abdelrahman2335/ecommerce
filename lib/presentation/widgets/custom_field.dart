@@ -2,24 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class CustomField extends StatefulWidget {
-  final bool isSecure;
-  final String label;
-  final Icon icon;
-  final TextEditingController controller;
-  final TextStyle? labelStyle;
-  final TextCapitalization textCapitalization;
-  final TextInputType keyboardType;
-  final InputCounterWidgetBuilder? buildCounter;
-  final int? maxLength;
-
-  ///Will use it later
-  final String? Function(String?) isValid;
-
   const CustomField({
     super.key,
     required this.label,
     required this.icon,
-    required this.controller,
+    this.controller,
     required this.isSecure,
     required this.isValid,
     this.labelStyle,
@@ -29,12 +16,41 @@ class CustomField extends StatefulWidget {
     this.maxLength,
   });
 
+  final bool isSecure;
+  final String label;
+  final Icon icon;
+  final TextEditingController? controller;
+  final TextStyle? labelStyle;
+  final TextCapitalization textCapitalization;
+  final TextInputType keyboardType;
+  final InputCounterWidgetBuilder? buildCounter;
+  final int? maxLength;
+
+  ///Will use it later
+  final String? Function(String?) isValid;
+
   @override
   State<CustomField> createState() => _CustomFieldState();
 }
 
 class _CustomFieldState extends State<CustomField> {
+  late TextEditingController _controller;
   bool hidePass = true;
+  @override
+  void initState() {
+    if (widget.controller != null) {
+      _controller = widget.controller!;
+    } else {
+      _controller = TextEditingController();
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +61,9 @@ class _CustomFieldState extends State<CustomField> {
       obscureText: widget.isSecure ? hidePass : false,
       maxLines: 1,
       maxLength: widget.maxLength,
-      controller: widget.controller,
+      controller: _controller,
       validator: widget.isValid,
-      onSaved: (value) => widget.controller.text = value!,
+      onSaved: (value) => _controller.text = value!,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(20),
         focusedBorder: OutlineInputBorder(

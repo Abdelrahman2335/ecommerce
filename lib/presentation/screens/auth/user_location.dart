@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/constants/global_keys.dart';
+import '../../../core/utils/global_keys.dart';
 import '../../provider/auth/login_viewmodel.dart';
 
 class UserLocation extends StatefulWidget {

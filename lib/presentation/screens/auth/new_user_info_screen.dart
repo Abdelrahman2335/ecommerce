@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/constants/global_keys.dart';
+import '../../../core/utils/global_keys.dart';
 import '../../provider/auth/login_viewmodel.dart';
 import '../../provider/auth/user_data_viewmodel.dart';
 import '../../widgets/custom_button.dart';

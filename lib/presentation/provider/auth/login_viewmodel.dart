@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/core/snackbar_helper.dart';
+import 'package:ecommerce/core/utils/snackbar_helper.dart';
 import 'package:ecommerce/domain/repositories/login_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
