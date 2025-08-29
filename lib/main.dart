@@ -2,13 +2,13 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
-import 'package:ecommerce/data/repositories/auth/singup_repository_impl.dart';
+import 'package:ecommerce/features/auth/data/create_user_repo/create_user_repo_impl.dart';
 import 'package:ecommerce/data/repositories/auth/user_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/order_repository_impl.dart';
-import 'package:ecommerce/features/auth/data/repository/auth_repo_impl.dart';
+import 'package:ecommerce/features/auth/data/auth_repo/auth_repo_impl.dart';
 import 'package:ecommerce/firebase_options.dart';
-import 'package:ecommerce/features/auth/presentation/manager/signup_viewmodel.dart';
+import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
@@ -38,7 +38,9 @@ void main() async {
     await Firebase.initializeApp();
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
-          create: (_) => SignupViewmodel(SignupRepositoryImpl())),
+          create: (_) => CreateUserProvider(SignupRepositoryImpl())),
+      ChangeNotifierProvider(
+          create: (_) => AuthProvider(LoginRepositoryImpl())),
       ChangeNotifierProvider(
           create: (_) => UserViewModel(UserDataRepositoryImpl())),
       ChangeNotifierProvider(

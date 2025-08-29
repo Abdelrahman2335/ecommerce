@@ -1,4 +1,5 @@
-
+import 'package:ecommerce/core/theme/app_color.dart';
+import 'package:ecommerce/core/theme/app_text_styles.dart';
 import 'package:ecommerce/data/category_data.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:ecommerce/presentation/widgets/custom_drawer.dart';
@@ -34,7 +35,9 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 29,
             ),
             const Gap(12),
-            Text("OutfitOrbit", style: Theme.of(context).textTheme.labelMedium),
+            Text("OutfitOrbit",
+                style: AppTextStyles.label16(context)
+                    .copyWith(color: AppColor.secondary)),
           ],
         ),
         actions: [
@@ -59,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       drawer: CustomDrawer(),
+
       /// [Skeletonizer] is a place holder while the data is loading.
       body: Consumer<ItemViewModel>(
         builder: (BuildContext context, value, Widget? child) {
@@ -130,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       right: 4,
                                       child: IconButton(
                                         onPressed: () {
-                                            value.toggleRemoveAdd();
+                                          value.toggleRemoveAdd();
                                         },
                                         icon: Icon(
                                           PhosphorIcons.xCircle(),
@@ -143,9 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       left: 20,
                                       child: Text(
                                         " Now in (product) \n All colors",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall,
+                                        style: AppTextStyles.button12(context),
                                       ),
                                     ),
                                     Positioned(
@@ -163,9 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                         onPressed: () {},
                                         child: Text(
                                           "Shop Now",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .labelLarge,
+                                          style:
+                                              AppTextStyles.button12(context),
                                         ),
                                       ),
                                     ),
@@ -184,65 +185,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
 }
-
-/// Used when you want to upload data.
-// import 'package:ecommerce/data/dummy_data.dart';
-// import 'package:ecommerce/provider/e_provider.dart';
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-//
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-//
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-//
-// final data = productData;
-//
-// class _HomeScreenState extends State<HomeScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: GridView.builder(
-//         itemCount: data.length,
-//         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//           crossAxisCount: 2,
-//           mainAxisSpacing: 10,
-//           crossAxisSpacing: 10,
-//           mainAxisExtent: 300, // Already setting height here
-//         ),
-//         itemBuilder: (BuildContext context, int index) {
-//           return SizedBox( // Use SizedBox instead of Expanded
-//             width: double.infinity, // Ensures it takes full width of the grid cell
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 borderRadius: BorderRadius.circular(20),
-//                 color: Colors.white,
-//               ),
-//               clipBehavior: Clip.hardEdge,
-//               child: InkWell(
-//                 borderRadius: BorderRadius.circular(17),
-//                 onTap: () {
-//                   context.read<ItemProvider>().addProducts(
-//                     data[index].category,
-//                     data[index].imageUrl,
-//                     data[index].description,
-//                     data[index].title,
-//                     data[index].price,
-//                     data[index].size,
-//                     data[index].id,
-//                     data[index].quantity,
-//                   );
-//                 },
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//
-//   }
-// }

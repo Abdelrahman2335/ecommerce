@@ -26,8 +26,7 @@ class FirebaseFailure extends Failure {
         return FirebaseFailure(
             'Signing in with Email and Password is not enabled.');
       case 'invalid-credential':
-        return FirebaseFailure(
-            'The supplied auth credential is malformed or has expired.');
+        return FirebaseFailure('Wrong Password or Account not exist.');
       case 'account-exists-with-different-credential':
         return FirebaseFailure('Account exists with different credentials.');
       case 'requires-recent-login':

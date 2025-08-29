@@ -25,6 +25,7 @@ class _CartScreenState extends State<CartScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        
         title: Padding(
             padding: const EdgeInsets.only(top: 19.0),
             child: Text("Shopping Cart",

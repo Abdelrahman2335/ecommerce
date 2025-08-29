@@ -4,41 +4,18 @@ import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/utils/global_keys.dart';
-import '../../../features/auth/presentation/manager/auth_provider.dart';
-import '../../../features/auth/presentation/manager/user_data_viewmodel.dart';
-import '../../widgets/custom_button.dart';
-import '../../widgets/custom_field.dart';
+import '../../../../../core/utils/global_keys.dart';
+import '../../manager/auth_provider.dart';
+import '../../manager/user_data_viewmodel.dart';
+import '../../../../../presentation/widgets/custom_button.dart';
+import '../../../../../presentation/widgets/custom_field.dart';
 
-class NewUserInfoScreen extends StatefulWidget {
+class NewUserInfoScreen extends StatelessWidget {
   const NewUserInfoScreen({super.key});
 
   @override
-  State<NewUserInfoScreen> createState() => _NewUserInfoScreenState();
-}
-
-class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
-  final GlobalKey<FormState> formKey = AppKeys.userDataFormKey;
-  TextEditingController nameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    phoneController.dispose();
-    ageController.dispose();
-
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormState> formKey = AppKeys.userDataFormKey;
     RegExp regex = RegExp(r'^[0-9+]+$');
 
     List genders = const ["male", "female"];
@@ -50,7 +27,7 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<AuthProvider>(context,).signOut();
+              Provider.of<AuthProvider>(context, listen: false).signOut();
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),
@@ -76,7 +53,6 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
                     textCapitalization: TextCapitalization.words,
                     label: "Full Name",
                     icon: Icon(PhosphorIcons.user()),
-                    controller: nameController,
                     isSecure: false,
                     isValid: (String? value) {
                       if (value == null || value.trim().isEmpty) {
@@ -93,7 +69,6 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
                     label: "Phone Number",
                     maxLength: 11,
                     icon: Icon(PhosphorIcons.phone()),
-                    controller: phoneController,
                     isSecure: false,
                     buildCounter: (context,
                             {required currentLength,
@@ -117,7 +92,6 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
                     keyboardType: TextInputType.phone,
                     label: "Age",
                     icon: Icon(PhosphorIcons.cake()),
-                    controller: ageController,
                     isSecure: false,
                     buildCounter: (context,
                             {required currentLength,
@@ -168,7 +142,7 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
                           )),
                         ),
                     ],
-                    value: selectedGender,
+                    initialValue: selectedGender,
                     onChanged: (value) {
                       selectedGender = value!;
                     },
@@ -184,11 +158,7 @@ class _NewUserInfoScreenState extends State<NewUserInfoScreen> {
                                   final valid =
                                       formKey.currentState!.validate();
                                   if (valid) {
-                                    context.read<UserViewModel>().personalInfo(
-                                        nameController.text,
-                                        phoneController.text,
-                                        selectedGender,
-                                        ageController.text);
+                                    // context.read<UserViewModel>().personalInfo();
                                   }
                                 },
                                 text: "Continue",

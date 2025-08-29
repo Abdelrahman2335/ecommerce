@@ -1,5 +1,7 @@
+import 'package:ecommerce/core/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../data/models/address_model.dart';
@@ -18,7 +20,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool hidePass = true;
   AddressModel address =
       AddressModel(city: 'City', area: 'Area', street: 'Street');
-
   void getAddress(AddressModel newAddress) {
     /// Change the setState later
     setState(() {
@@ -28,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -38,8 +40,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              Provider.of<AuthProvider>(context, listen: false).signOut();
+            onPressed: () async {
+              await authProvider.signOut();
+              if (!authProvider.hasError) {
+                GoRouter.of(context).pushReplacement(AppRouter.kLoginScreen);
+              }
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),

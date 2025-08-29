@@ -1,8 +1,9 @@
+import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
@@ -39,15 +40,14 @@ class CustomDrawer extends StatelessWidget {
               ),
               ListTile(
                 textColor: theme,
-                iconColor:theme,
-                titleTextStyle: const TextStyle(
-                    fontSize: 16),
+                iconColor: theme,
+                titleTextStyle: const TextStyle(fontSize: 16),
                 contentPadding:
                     const EdgeInsets.only(left: 19, right: 30, bottom: 9),
                 title: const Text("Profile"),
                 leading: Icon(PhosphorIcons.user()),
                 onTap: () {
-                  Navigator.of(context).pushNamed("/profile");
+                  GoRouter.of(context).push(AppRouter.kProfileScreen);
                 },
                 trailing: Icon(PhosphorIcons.arrowRight()),
               ),
@@ -58,7 +58,8 @@ class CustomDrawer extends StatelessWidget {
                 textColor: theme,
                 iconColor: theme,
                 titleTextStyle: const TextStyle(
-                    fontSize: 16, ),
+                  fontSize: 16,
+                ),
                 contentPadding: const EdgeInsets.only(
                     left: 19, right: 30, top: 9, bottom: 9),
                 title: const Text("Orders"),
@@ -74,8 +75,7 @@ class CustomDrawer extends StatelessWidget {
               ListTile(
                 textColor: theme,
                 iconColor: theme,
-                titleTextStyle: const TextStyle(
-                    fontSize: 16),
+                titleTextStyle: const TextStyle(fontSize: 16),
                 contentPadding: const EdgeInsets.only(
                     left: 19, right: 30, top: 9, bottom: 9),
                 title: const Text("Settings"),

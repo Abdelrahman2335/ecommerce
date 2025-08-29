@@ -4,7 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/error/firebase_failure.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/features/auth/data/repository/auth_repo.dart';
+import 'package:ecommerce/features/auth/data/auth_repo/auth_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -30,7 +30,7 @@ class LoginRepositoryImpl implements LoginRepository {
   }
 
   @override
-  Future<Either<Failure, void>> loginWithGoogle() async {
+  Future<Either<Failure, UserCredential>> loginWithGoogle() async {
     log("Starting Google login process");
 
     GoogleSignInAccount? googleSignInAccount;
@@ -53,9 +53,10 @@ class LoginRepositoryImpl implements LoginRepository {
       AuthCredential authCredential = GoogleAuthProvider.credential(
           idToken: googleAuth.idToken, accessToken: googleAuth.accessToken);
 
-      await _firebaseService.auth.signInWithCredential(authCredential);
+      UserCredential userCredential =
+          await _firebaseService.auth.signInWithCredential(authCredential);
       log("Successfully signed in with Firebase");
-      return Right(null);
+      return Right(userCredential);
     } on FirebaseAuthException catch (error) {
       log("Firebase Auth error during Google login: $error");
       if (_firebaseService.auth.currentUser != null) {

@@ -25,13 +25,13 @@ class ItemViewModel extends ChangeNotifier {
 
   String? get name => _name;
 
-  ItemViewModel(this._itemRepository) {
+  ItemViewModel(this._itemRepository) { 
     Future.microtask(() => fetchData());
 
     /// Ensure data is fetched after the constructor is completed
   }
 
-  Future<void> fetchData() async {
+  void fetchData() async {
     try {
       _isLoading = true;
       notifyListeners();

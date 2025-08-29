@@ -1,7 +1,9 @@
-import 'package:ecommerce/main.dart';
+import 'package:ecommerce/core/router/app_router.dart';
+import 'package:ecommerce/core/utils/snackbar_helper.dart';
 import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
 import 'package:ecommerce/presentation/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart' show Selector, Provider;
 
 class LoginButtons extends StatelessWidget {
@@ -13,7 +15,7 @@ class LoginButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -24,9 +26,8 @@ class LoginButtons extends StatelessWidget {
             right: 2,
           ),
           child: TextButton(
-              onPressed: () {
-                navigatorKey.currentState!.pushNamed("/forgot");
-              },
+              onPressed: () =>
+                  GoRouter.of(context).push(AppRouter.kForgotPasswordScreen),
               child: const Text(
                 "Forgot Password?",
                 style: TextStyle(fontSize: 13),
@@ -37,12 +38,19 @@ class LoginButtons extends StatelessWidget {
             builder: (context, isLoading, child) {
               return !isLoading
                   ? CustomButton(
-                      pressed: () {
+                      pressed: () async {
                         final valid = formKey.currentState!.validate();
-                        valid
-                            ? Provider.of<AuthProvider>(context, listen: false)
-                                .loginUser()
-                            : null;
+
+                        if (valid) {
+                          await authProvider.loginUser();
+                          if (!authProvider.hasError) {
+                            GoRouter.of(context)
+                                .pushReplacement(AppRouter.kLayoutScreen);
+                          } else {
+                            SnackBarHelper.show(
+                                message: authProvider.errMessage!);
+                          }
+                        }
                       },
                       text: "Login",
                     )

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/utils/global_keys.dart';
-import '../../../features/auth/presentation/manager/auth_provider.dart';
+import '../../../../../core/utils/global_keys.dart';
+import '../../manager/auth_provider.dart';
 
 class UserLocation extends StatefulWidget {
   const UserLocation({super.key});

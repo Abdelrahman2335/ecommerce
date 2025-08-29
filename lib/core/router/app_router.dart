@@ -2,12 +2,12 @@ import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/login_screen.dart';
 import 'package:ecommerce/presentation/screens/items/layout.dart';
 import 'package:ecommerce/presentation/screens/auth/profile_screen.dart';
-import 'package:ecommerce/presentation/screens/auth/signup.dart';
-import 'package:ecommerce/presentation/screens/auth/forgot_password.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/create_user_screen.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/forgot_password.dart';
 import 'package:ecommerce/presentation/screens/place_order/check_out.dart';
 import 'package:ecommerce/presentation/screens/place_order/cart_screen.dart';
-import 'package:ecommerce/presentation/screens/auth/new_user_info_screen.dart';
-import 'package:ecommerce/presentation/screens/auth/user_location.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/new_user_info_screen.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/user_location.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {
@@ -48,7 +48,7 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kSignupScreen,
-        builder: (context, state) => const SignUp(),
+        builder: (context, state) => const CreateUser(),
       ),
       GoRoute(
         path: kForgotPasswordScreen,

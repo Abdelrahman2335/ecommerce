@@ -25,13 +25,13 @@ class AppTextStyles {
   static TextStyle label14(BuildContext context) => GoogleFonts.poppins(
         fontSize: 14,
         fontWeight: FontWeight.normal,
-        color: AppColor.getBackgroundColor(context),
+        color: AppColor.getPrimaryTextColor(context),
       );
 
   static TextStyle label16(BuildContext context) => GoogleFonts.poppins(
         fontSize: 16,
         fontWeight: FontWeight.w600,
-        color: AppColor.getBackgroundColor(context),
+        color: AppColor.getPrimaryTextColor(context),
       );
 
   static TextStyle label12(BuildContext context) => GoogleFonts.poppins(
@@ -85,9 +85,14 @@ class AppTextStyles {
         color: Colors.white,
       );
 
+  static TextStyle button12(BuildContext context) => GoogleFonts.poppins(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+      );
   static TextStyle button14(BuildContext context) => GoogleFonts.poppins(
         fontSize: 14,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: Colors.white,
       );
 
