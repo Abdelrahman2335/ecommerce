@@ -12,50 +12,53 @@ class CreateUserFields extends StatelessWidget {
     final createUserProvider = context.read<CreateUserProvider>();
     String? password;
 
-    return Column(
-      spacing: 16,
-      children: [
-        CustomField(
-          label: "Email address",
-          labelStyle: TextStyle(fontSize: 14),
-          icon: Icon(PhosphorIcons.user()),
-          isSecure: false,
-          onChanged: (value) {
-            createUserProvider.email = value;
-          },
-        ),
-        CustomField(
-          label: "Password",
-          labelStyle: TextStyle(fontSize: 14),
-          icon: Icon(PhosphorIcons.lock()),
-          isSecure: true,
-          isValid: (String? value) {
-            if (value == null || value.isEmpty || value.length <= 6) {
-              return "Wrong Password";
-            }
-            return null;
-          },
-          onChanged: (value) {
-            createUserProvider.password = value;
-            password = value;
-          },
-        ),
-        CustomField(
-          label: "Confirm password",
-          labelStyle: TextStyle(fontSize: 14),
-          icon: Icon(PhosphorIcons.lock()),
-          isSecure: true,
-          isValid: (String? value) {
-            if (value == null || value.trim().isEmpty || value.length <= 6) {
-              return "Wrong Password";
-            }
-            if (value != password) {
-              return "Password not matched";
-            }
-            return null;
-          },
-        ),
-      ],
+    return Form(
+      key: createUserProvider.formKey,
+      child: Column(
+        spacing: 16,
+        children: [
+          CustomField(
+            label: "Email address",
+            labelStyle: TextStyle(fontSize: 14),
+            icon: Icon(PhosphorIcons.user()),
+            isSecure: false,
+            onChanged: (value) {
+              createUserProvider.email = value;
+            },
+          ),
+          CustomField(
+            label: "Password",
+            labelStyle: TextStyle(fontSize: 14),
+            icon: Icon(PhosphorIcons.lock()),
+            isSecure: true,
+            isValid: (String? value) {
+              if (value == null || value.isEmpty || value.length <= 6) {
+                return "Wrong Password";
+              }
+              return null;
+            },
+            onChanged: (value) {
+              createUserProvider.password = value;
+              password = value;
+            },
+          ),
+          CustomField(
+            label: "Confirm password",
+            labelStyle: TextStyle(fontSize: 14),
+            icon: Icon(PhosphorIcons.lock()),
+            isSecure: true,
+            isValid: (String? value) {
+              if (value == null || value.trim().isEmpty || value.length <= 6) {
+                return "Wrong Password";
+              }
+              if (value != password) {
+                return "Password not matched";
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
     );
   }
 }

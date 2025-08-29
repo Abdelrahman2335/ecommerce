@@ -28,7 +28,7 @@ class LoginWithPlatform extends StatelessWidget {
           onPressed: () async {
             await authProvider.loginWithGoogle();
             if (!authProvider.hasError) {
-              if (authProvider.isNewUser!) {
+              if (authProvider.isNewUser) {
                 GoRouter.of(context)
                     .pushReplacement(AppRouter.kUserSetupScreen);
               } else {

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/auth/data/create_user_repo/create_user_repo_impl.dart';
-import 'package:ecommerce/data/repositories/auth/user_data_repository_impl.dart';
+import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo_impl.dart';
 import 'package:ecommerce/data/repositories/main_data_repository_impl.dart';
 import 'package:ecommerce/data/repositories/order_repository_impl.dart';
 import 'package:ecommerce/features/auth/data/auth_repo/auth_repo_impl.dart';
@@ -16,12 +16,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'core/utils/global_keys.dart';
 import 'data/repositories/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
 import 'features/auth/presentation/manager/auth_provider.dart';
-import 'features/auth/presentation/manager/user_data_viewmodel.dart';
+import 'features/auth/presentation/manager/user_registration_provider.dart';
 import 'presentation/provider/cart_viewmodel.dart';
 import 'presentation/provider/location_viewmodel.dart';
 import 'presentation/provider/payment_provider.dart';
@@ -42,7 +41,7 @@ void main() async {
       ChangeNotifierProvider(
           create: (_) => AuthProvider(LoginRepositoryImpl())),
       ChangeNotifierProvider(
-          create: (_) => UserViewModel(UserDataRepositoryImpl())),
+          create: (_) => UserRegistrationProvider(UserRegistrationRepoImpl())),
       ChangeNotifierProvider(
         create: (_) => ItemViewModel(ItemRepositoryImpl()),
       ),
@@ -69,8 +68,8 @@ void main() async {
 }
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    AppKeys.scaffoldMessengerKey;
-final GlobalKey<NavigatorState> navigatorKey = AppKeys.navigatorKey;
+    GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

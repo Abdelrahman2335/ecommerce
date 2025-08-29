@@ -12,6 +12,7 @@ class CreateUserProvider extends ChangeNotifier {
   CreateUserProvider(this._signupRepository);
 
   final FirebaseService _firebaseService = FirebaseService();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   bool _isLoading = false;
   String? _errMessage;
@@ -95,5 +96,13 @@ class CreateUserProvider extends ChangeNotifier {
 
     _isLoading = false;
     notifyListeners();
+  }
+
+  bool validationForm() {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      return true;
+    }
+    return false;
   }
 }

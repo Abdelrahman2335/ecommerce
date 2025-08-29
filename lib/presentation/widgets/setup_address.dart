@@ -9,11 +9,10 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/utils/global_keys.dart';
 import '../../data/cities.dart';
 import '../../data/models/address_model.dart';
 import '../provider/location_viewmodel.dart';
-import '../../features/auth/presentation/manager/user_data_viewmodel.dart';
+import '../../features/auth/presentation/manager/user_registration_provider.dart';
 
 String selectedCity = egyptCities[0];
 
@@ -25,6 +24,7 @@ Widget setupAddress(
   final theme = Theme.of(context).primaryColor;
   final mediaQuery = MediaQuery.of(context).size;
   final userLocation = Provider.of<LocationProvider>(context).userLocation;
+
   /// Getting the location manually
   /// previewContent is the content of the page
   Widget previewContent = Padding(
@@ -42,7 +42,8 @@ Widget setupAddress(
               contentPadding: const EdgeInsets.all(20),
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(21),
-                  borderSide: BorderSide(color: Theme.of(context).primaryColor)),
+                  borderSide:
+                      BorderSide(color: Theme.of(context).primaryColor)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(21),
               ),
@@ -72,7 +73,6 @@ Widget setupAddress(
             },
           ),
 
-
           CustomField(
             controller: firstCon,
             isValid: (value) {
@@ -85,7 +85,6 @@ Widget setupAddress(
             isSecure: false,
             icon: Icon(PhosphorIcons.buildingApartment()),
           ),
-
 
           CustomField(
             controller: secondCon,
@@ -100,7 +99,6 @@ Widget setupAddress(
             isSecure: false,
           ),
 
-
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -111,7 +109,8 @@ Widget setupAddress(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   // minimumSize: Size(100, 40), /// Change the size of the button,
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
 
                   /// Change the padding of the button (the space inside the button)
                   /// Don't forget to change other buttons as well
@@ -135,7 +134,9 @@ Widget setupAddress(
                     );
 
                     ///  Here we are going to update the address information
-                    context.read<UserViewModel>().addressInfo(address);
+                    context
+                        .read<UserRegistrationProvider>()
+                        .updateAddressDetails(address);
                     firstCon.clear();
                     secondCon.clear();
                   }
@@ -161,13 +162,12 @@ Widget setupAddress(
   }
   if (userLocation != null) {
     previewContent = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16,vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
-
         children: [
           const Gap(70),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 7,vertical: 7),
+            padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
             height: mediaQuery.height * 0.27,
             width: double.infinity,
             alignment: Alignment.center,
@@ -199,7 +199,8 @@ Widget setupAddress(
                 children: [
                   /// OSM does not track your location, it just provides the map images
                   TileLayer(
-                    urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    urlTemplate:
+                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                   ),
                   MarkerLayer(markers: [
                     Marker(
@@ -227,10 +228,9 @@ Widget setupAddress(
                       borderRadius: BorderRadius.circular(8))),
               onPressed: () {
                 if (context.read<LocationProvider>().userLocation != null) {
-                  AppKeys.navigatorKey.currentState
-                      ?.pushReplacementNamed('/layout');
+                 
                   log("Valid");
-                }else {
+                } else {
                   log("Invalid");
                 }
               },

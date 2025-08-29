@@ -1,4 +1,18 @@
 /// Note: abstract class is just a blueprint for a class.
+enum Genders {
+  male,
+  female;
+
+  String get string {
+    switch (this) {
+      case Genders.male:
+        return "male";
+      case Genders.female:
+        return "female";
+    }
+  }
+}
+
 abstract class UserEntity {
   String? get name;
 
@@ -10,5 +24,5 @@ abstract class UserEntity {
 
   String? get age;
 
-  String? get gender;
+  Genders? get gender;
 }

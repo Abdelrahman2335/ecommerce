@@ -1,5 +1,5 @@
+import 'package:ecommerce/main.dart';
 import 'package:flutter/material.dart';
-import 'package:ecommerce/core/utils/global_keys.dart';
 
 class SnackBarHelper {
   static void show({
@@ -10,7 +10,7 @@ class SnackBarHelper {
     /// Important to know that we are using Scaffold global Key
     /// This allow us to don't use context + make the work more easy and effectuation.
 
-    final messenger = AppKeys.scaffoldMessengerKey.currentState;
+    final messenger = scaffoldMessengerKey.currentState;
     messenger?.clearSnackBars();
     messenger?.showSnackBar(
       SnackBar(

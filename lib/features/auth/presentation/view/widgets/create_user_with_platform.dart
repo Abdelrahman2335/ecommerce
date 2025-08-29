@@ -1,7 +1,8 @@
-import 'package:ecommerce/core/utils/global_keys.dart';
+import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CreateUserWithPlatform extends StatelessWidget {
@@ -10,7 +11,8 @@ class CreateUserWithPlatform extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final createUserProvider =
+        Provider.of<CreateUserProvider>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -24,10 +26,12 @@ class CreateUserWithPlatform extends StatelessWidget {
             side: BorderSide(color: theme.primaryColor),
           ),
           onPressed: () async {
-            await Provider.of<CreateUserProvider>(
-                    AppKeys.navigatorKey.currentContext!,
-                    listen: false)
-                .signUpWithGoogle();
+            await createUserProvider.signUpWithGoogle();
+            if (!createUserProvider.isNewUser) {
+              GoRouter.of(context).pushReplacement(AppRouter.kLayoutScreen);
+            } else {
+              GoRouter.of(context).pushReplacement(AppRouter.kUserSetupScreen);
+            }
           },
           child: const Image(
             image: AssetImage(

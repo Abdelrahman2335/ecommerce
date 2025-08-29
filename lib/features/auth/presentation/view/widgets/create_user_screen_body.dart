@@ -1,5 +1,4 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/core/utils/global_keys.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/create_user_fields.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/create_user_with_platform.dart';
 import 'package:flutter/material.dart';
@@ -18,73 +17,68 @@ class CreateUserScreenBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final GlobalKey<FormState> formKey = AppKeys.signupFormKey;
     final createUserProvider = context.read<CreateUserProvider>();
     return Animate(
       effects: [FadeEffect(duration: Duration(milliseconds: 600))],
       child: Padding(
         padding: const EdgeInsets.all(27),
         child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Gap(40),
-                Text(
-                  "Create an \naccount",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const Gap(34),
-                const CreateUserFields(),
-                const Gap(40),
-                Selector<CreateUserProvider, bool>(
-                    selector: (_, selectedValue) => selectedValue.loading,
-                    builder: (context, isLoading, child) {
-                      return !isLoading
-                          ? CustomButton(
-                              bottomWidth: 0.5,
-                              pressed: () async {
-                                final valid = formKey.currentState!.validate();
-                                if (valid) {
-                                  await createUserProvider.createUser();
-                                  if (!createUserProvider.hasError) {
-                                    GoRouter.of(context).pushReplacement(
-                                        AppRouter.kUserSetupScreen);
-                                  }
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Gap(40),
+              Text(
+                "Create an \naccount",
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const Gap(34),
+              const CreateUserFields(),
+              const Gap(40),
+              Selector<CreateUserProvider, bool>(
+                  selector: (_, selectedValue) => selectedValue.loading,
+                  builder: (context, isLoading, child) {
+                    return !isLoading
+                        ? CustomButton(
+                            bottomWidth: 0.5,
+                            pressed: () async {
+                              if (createUserProvider.validationForm()) {
+                                await createUserProvider.createUser();
+                                if (!createUserProvider.hasError) {
+                                  GoRouter.of(context).pushReplacement(
+                                      AppRouter.kUserSetupScreen);
                                 }
-                              },
-                              text: "Create Account",
-                            )
-                          : Center(
-                              child: CircularProgressIndicator(
-                                  color: theme.primaryColor),
-                            );
-                    }),
-                const Gap(46),
-                const Center(
-                  child: Text("- OR Continue with -"),
-                ),
-                const Gap(24),
-                const CreateUserWithPlatform(),
-                const SizedBox(
-                  height: 14,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "I Already Have an Account",
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
-                    TextButton(
-                      onPressed: () => GoRouter.of(context).pop(),
-                      child: const Text("Login"),
-                    )
-                  ],
-                )
-              ],
-            ),
+                              }
+                            },
+                            text: "Create Account",
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(
+                                color: theme.primaryColor),
+                          );
+                  }),
+              const Gap(46),
+              const Center(
+                child: Text("- OR Continue with -"),
+              ),
+              const Gap(24),
+              const CreateUserWithPlatform(),
+              const SizedBox(
+                height: 14,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "I Already Have an Account",
+                    style: Theme.of(context).textTheme.labelSmall,
+                  ),
+                  TextButton(
+                    onPressed: () => GoRouter.of(context).pop(),
+                    child: const Text("Login"),
+                  )
+                ],
+              )
+            ],
           ),
         ),
       ),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../../core/utils/global_keys.dart';
 import '../../manager/auth_provider.dart';
 
 class UserLocation extends StatefulWidget {
@@ -14,7 +13,8 @@ class UserLocation extends StatefulWidget {
 }
 
 class _UserLocationState extends State<UserLocation> {
-  final formKey = AppKeys.locationFormKey;
+  final formKey = GlobalKey<FormState>();
+
   final firstCon = TextEditingController();
   final secondCon = TextEditingController();
   @override
@@ -31,8 +31,8 @@ class _UserLocationState extends State<UserLocation> {
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            onPressed: ()  {
-               Provider.of<AuthProvider>(context, listen: false).signOut();
+            onPressed: () {
+              Provider.of<AuthProvider>(context, listen: false).signOut();
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),

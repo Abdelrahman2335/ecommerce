@@ -9,9 +9,7 @@ import 'package:provider/provider.dart' show Selector, Provider;
 class LoginButtons extends StatelessWidget {
   const LoginButtons({
     super.key,
-    required this.formKey,
   });
-  final GlobalKey<FormState> formKey;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -39,9 +37,7 @@ class LoginButtons extends StatelessWidget {
               return !isLoading
                   ? CustomButton(
                       pressed: () async {
-                        final valid = formKey.currentState!.validate();
-
-                        if (valid) {
+                        if (authProvider.validationForm()) {
                           await authProvider.loginUser();
                           if (!authProvider.hasError) {
                             GoRouter.of(context)

@@ -1,6 +1,5 @@
 import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/app_text_styles.dart';
-import 'package:ecommerce/core/utils/global_keys.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/login_buttons.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/login_fields.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/login_with_platform.dart';
@@ -16,9 +15,6 @@ class LoginScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> formKey = AppKeys.loginFormKey;
-    AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-
     return Animate(
       effects: [
         FadeEffect(
@@ -28,42 +24,38 @@ class LoginScreenBody extends StatelessWidget {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(27),
-          child: Form(
-            key: formKey,
-            autovalidateMode: autovalidateMode,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Gap(70),
-                Text(
-                  "Welcome \nBack!",
-                  style: AppTextStyles.title29(context),
-                ),
-                const Gap(30),
-                const LoginFields(),
-                LoginButtons(formKey: formKey),
-                const Gap(40),
-                const Center(child: Text("- OR Continue with -")),
-                const Gap(24),
-                const LoginWithPlatform(),
-                const SizedBox(height: 14),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Create An Account",
-                      style: AppTextStyles.label12(context),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        GoRouter.of(context).push(AppRouter.kSignupScreen);
-                      },
-                      child: const Text("Sign Up"),
-                    )
-                  ],
-                )
-              ],
-            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Gap(70),
+              Text(
+                "Welcome \nBack!",
+                style: AppTextStyles.title29(context),
+              ),
+              const Gap(30),
+              const LoginFields(),
+              const LoginButtons(),
+              const Gap(40),
+              const Center(child: Text("- OR Continue with -")),
+              const Gap(24),
+              const LoginWithPlatform(),
+              const SizedBox(height: 14),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Create An Account",
+                    style: AppTextStyles.label12(context),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      GoRouter.of(context).push(AppRouter.kCreateUserScreen);
+                    },
+                    child: const Text("Sign Up"),
+                  )
+                ],
+              )
+            ],
           ),
         ),
       ),

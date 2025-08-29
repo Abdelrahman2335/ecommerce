@@ -6,7 +6,7 @@ import 'package:ecommerce/features/auth/presentation/view/screens/create_user_sc
 import 'package:ecommerce/features/auth/presentation/view/screens/forgot_password.dart';
 import 'package:ecommerce/presentation/screens/place_order/check_out.dart';
 import 'package:ecommerce/presentation/screens/place_order/cart_screen.dart';
-import 'package:ecommerce/features/auth/presentation/view/screens/new_user_info_screen.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/user_registration_screen.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/user_location.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,7 +15,7 @@ abstract class AppRouter {
   static const kLoginScreen = "/login";
   static const kLayoutScreen = "/layout";
   static const kProfileScreen = "/profile";
-  static const kSignupScreen = "/signup";
+  static const kCreateUserScreen = "/create_user_screen";
   static const kForgotPasswordScreen = "/forgot";
   static const kCheckoutScreen = "/checkout";
   static const kCartScreen = "/cart";
@@ -47,7 +47,7 @@ abstract class AppRouter {
         builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
-        path: kSignupScreen,
+        path: kCreateUserScreen,
         builder: (context, state) => const CreateUser(),
       ),
       GoRoute(
@@ -64,7 +64,7 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kUserSetupScreen,
-        builder: (context, state) => const NewUserInfoScreen(),
+        builder: (context, state) => const UserRegistrationScreen(),
       ),
       GoRoute(
         path: kUserLocationScreen,

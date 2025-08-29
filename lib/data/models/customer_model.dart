@@ -13,7 +13,7 @@ class CustomerModel extends UserEntity {
   @override
   String? age;
   @override
-  String? gender;
+  Genders? gender;
   List<AddressModel>? address;
 
   CustomerModel({
@@ -44,9 +44,29 @@ class CustomerModel extends UserEntity {
       if (role != null) 'role': role,
       if (phone != null) 'phone': phone!.trim(),
       if (createdAt != null) 'createdAt': createdAt,
-      if (address != null) 'address': address!.map((a)=> a.toJson()).toList(),
+      if (address != null) 'address': address!.map((a) => a.toJson()).toList(),
       if (age != null) 'age': age!.trim(),
       if (gender != null) 'gender': gender,
     };
+  }
+
+  CustomerModel copyWith({
+    String? name,
+    String? role,
+    String? phone,
+    DateTime? createdAt,
+    String? age,
+    Genders? gender,
+    List<AddressModel>? address,
+  }) {
+    return CustomerModel(
+      name: name ?? this.name,
+      role: role ?? this.role,
+      phone: phone ?? this.phone,
+      createdAt: createdAt ?? this.createdAt,
+      age: age ?? this.age,
+      gender: gender ?? this.gender,
+      address: address ?? this.address,
+    );
   }
 }

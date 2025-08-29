@@ -14,6 +14,7 @@ class AuthProvider extends ChangeNotifier {
 
   final FirebaseService _firebaseService = FirebaseService();
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   String? _errMessage;
   String? _user;
@@ -144,6 +145,14 @@ class AuthProvider extends ChangeNotifier {
   void clearNewUserStatus() {
     _isNewUser = false;
     notifyListeners();
+  }
+
+  bool validationForm() {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      return true;
+    }
+    return false;
   }
 
   /// Reset provider state

@@ -2,16 +2,16 @@ import 'package:ecommerce/domain/entities/user_model.dart';
 
 class AdminModel implements UserEntity {
   @override
+  String? name;
+
+  @override
   String? age;
 
   @override
   DateTime? createdAt;
 
   @override
-  String? gender;
-
-  @override
-  String? name;
+  Genders? gender;
 
   @override
   String? phone;
@@ -46,5 +46,23 @@ class AdminModel implements UserEntity {
       if (age != null) 'age': age!.trim(),
       if (gender != null) 'gender': gender,
     };
+  }
+
+  AdminModel copyWith({
+    String? name,
+    String? role,
+    String? phone,
+    DateTime? createdAt,
+    String? age,
+    Genders? gender,
+  }) {
+    return AdminModel(
+      name: name ?? this.name,
+      role: role ?? this.role,
+      phone: phone ?? this.phone,
+      createdAt: createdAt ?? this.createdAt,
+      age: age ?? this.age,
+      gender: gender ?? this.gender,
+    );
   }
 }
