@@ -1,4 +1,4 @@
-import 'package:ecommerce/domain/entities/user_model.dart';
+import 'package:ecommerce/core/models/user_model.dart';
 import 'package:ecommerce/features/auth/presentation/manager/user_registration_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';

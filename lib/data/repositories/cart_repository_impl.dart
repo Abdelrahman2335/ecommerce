@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 
 import '../../domain/repositories/cart_repository.dart';
 import '../models/cart_model.dart';
-import '../models/product_model.dart';
 
 class CartRepositoryImpl implements CartRepository {
   static final CartRepositoryImpl _instance = CartRepositoryImpl._internal();
@@ -104,7 +104,7 @@ class CartRepositoryImpl implements CartRepository {
       log("itemExist: $itemExist");
       log("userId: $_userId");
       log("productId: ${product.id}");
-      log("Quantity for the main data: ${product.quantity}");
+      log("Quantity for the main data: ${product.stock}");
 
       if (itemExist) {
         /// If the item is already in the cart, increment the quantity
@@ -127,10 +127,9 @@ class CartRepositoryImpl implements CartRepository {
           "quantity": 1,
         });
 
-        fetchedItems.add(CartModel(
-            userId: _userId,
-            itemId: product.id,
-            quantity: 1));
+        fetchedItems
+
+            .add(CartModel(userId: _userId, itemId: product.id.toString(), quantity: 1));
         items.add(product);
         productIds.add(product.id);
       }

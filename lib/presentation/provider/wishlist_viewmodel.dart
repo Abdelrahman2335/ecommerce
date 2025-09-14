@@ -1,12 +1,10 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/data/repositories/wishlist_repository_impl.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../data/models/product_model.dart';
 import '../../domain/repositories/wishlist_repository.dart';
-
-
 
 /// TODO:
 /// there is an issue with loved items when we create it for the first time we can't remove the loved items

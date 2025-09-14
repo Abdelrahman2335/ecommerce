@@ -6,7 +6,6 @@ class SnackBarHelper {
     required String message,
     Duration duration = const Duration(seconds: 2),
   }) {
-
     /// Important to know that we are using Scaffold global Key
     /// This allow us to don't use context + make the work more easy and effectuation.
 

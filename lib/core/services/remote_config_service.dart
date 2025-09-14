@@ -24,5 +24,4 @@ class RemoteConfigService {
 
     /// Fetch the latest values from Firebase.
   }
-
 }

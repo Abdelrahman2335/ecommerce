@@ -1,5 +1,5 @@
 import 'package:ecommerce/data/models/address_model.dart';
-import 'package:ecommerce/domain/entities/user_model.dart';
+import 'package:ecommerce/core/models/user_model.dart';
 
 class CustomerModel extends UserEntity {
   @override

@@ -1,8 +1,8 @@
 import 'package:ecommerce/core/theme/app_text_styles.dart';
-import 'package:ecommerce/core/utils/snackbar_helper.dart';
+import 'package:ecommerce/core/widgets/snackbar_helper.dart';
 import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
-import 'package:ecommerce/presentation/widgets/custom_button.dart';
-import 'package:ecommerce/presentation/widgets/custom_field.dart';
+import 'package:ecommerce/core/widgets/custom_button.dart';
+import 'package:ecommerce/core/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';

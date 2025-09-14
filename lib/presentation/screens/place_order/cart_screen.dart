@@ -1,15 +1,16 @@
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce/core/models/product_model/product.dart';
+import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../data/models/cart_model.dart';
-import '../../../data/models/product_model.dart';
-import '../../widgets/custom_button.dart';
-import '../items/item_details.dart';
+import '../../../core/widgets/custom_button.dart';
+import '../../../features/home/presentation/view/screens/item_details.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -25,40 +26,39 @@ class _CartScreenState extends State<CartScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        
         title: Padding(
             padding: const EdgeInsets.only(top: 19.0),
             child: Text("Shopping Cart",
                 style: Theme.of(context).textTheme.labelMedium)),
         centerTitle: true,
       ),
-      body:   Consumer<CartViewModel>(
-        builder: (context, value, child) { return value.noItemsInCart
-            ? Center(
-          child: Text("No items in the cart",
-              style: Theme.of(context).textTheme.labelMedium),
-        )
-            :  Skeletonizer(
-              switchAnimationConfig: SwitchAnimationConfig(
-                duration: const Duration(milliseconds: 500),
-              ),
-              enabled: value.isLoading,
-              child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index >= value.items.length) {
-                          return null;
-                          // return Center(child: Text("No Items added to Cart"));
-                        }
+      body: Consumer<CartViewModel>(
+        builder: (context, value, child) {
+          return value.noItemsInCart
+              ? Center(
+                  child: Text("No items in the cart",
+                      style: Theme.of(context).textTheme.labelMedium),
+                )
+              : Skeletonizer(
+                  switchAnimationConfig: SwitchAnimationConfig(
+                    duration: const Duration(milliseconds: 500),
+                  ),
+                  enabled: value.isLoading,
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index >= value.items.length) {
+                              return null;
+                              // return Center(child: Text("No Items added to Cart"));
+                            }
 
                             final Product data = value.items[index];
 
-                            CartModel? cartData =
-                                (index < value.items.length)
-                                    ? value.fetchedItems[index]
-                                    : null;
+                            CartModel? cartData = (index < value.items.length)
+                                ? value.fetchedItems[index]
+                                : null;
                             int itemCount =
                                 cartData == null ? 0 : cartData.quantity;
                             return Animate(
@@ -89,27 +89,38 @@ class _CartScreenState extends State<CartScreen> {
                                           left: 14,
                                           top: 14,
                                         ),
-
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(11),
+                                          borderRadius:
+                                              BorderRadius.circular(11),
                                           child: CachedNetworkImage(
-                                            height:
-                                            MediaQuery.of(context).size.height * 0.24,
-                                            width:
-                                            MediaQuery.of(context).size.width * 0.6,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.24,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
                                             fit: BoxFit.cover,
                                             // placeholder: MemoryImage(kTransparentImage),
                                             memCacheWidth:
-                                            (MediaQuery.of(context).size.width * 0.9)
-                                                .round(),
+                                                (MediaQuery.of(context)
+                                                            .size
+                                                            .width *
+                                                        0.9)
+                                                    .round(),
                                             memCacheHeight:
-                                            (MediaQuery.of(context).size.height * 0.6)
-                                                .round(),
+                                                (MediaQuery.of(context)
+                                                            .size
+                                                            .height *
+                                                        0.6)
+                                                    .round(),
 
                                             imageUrl:
-                                            "${data.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
-                                            errorWidget: (context, url, error) =>
-                                            const Icon(
+                                                "${data.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(
                                               Icons.error,
                                               color: Colors.red,
                                             ),
@@ -124,17 +135,17 @@ class _CartScreenState extends State<CartScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                data.title,
+                                                data.title!,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold,),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                               SizedBox(
                                                 height: 16,
                                               ),
                                               Text(
-                                                data.description,
+                                                data.description!,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
                                               ),
@@ -160,10 +171,10 @@ class _CartScreenState extends State<CartScreen> {
                                                         "Total items ($itemCount):"),
                                                     Spacer(),
                                                     TextButton(
-                                                        onPressed: () async{
-                                                        await  value
+                                                        onPressed: () async {
+                                                          await value
                                                               .removeFromCart(
-                                                                  data ,true);
+                                                                  data, true);
                                                         },
                                                         child: Text("Remove")),
                                                   ],
@@ -178,25 +189,25 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                               ),
                             );
-
-                      },
-                    ),
-                  ),
-                  value.items.isEmpty
-                      ? SliverToBoxAdapter()
-                      : SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomButton(
-                              pressed: () {Navigator.pushNamed(context, "/checkout");},
-                              text: "Check Out",
-                            ),
-                          ),
+                          },
                         ),
-                ],
-              ));  },
-
-            ),
+                      ),
+                      value.items.isEmpty
+                          ? SliverToBoxAdapter()
+                          : SliverToBoxAdapter(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CustomButton(
+                                  pressed: () => GoRouter.of(context)
+                                      .push(AppRouter.kCheckoutScreen),
+                                  text: "Check Out",
+                                ),
+                              ),
+                            ),
+                    ],
+                  ));
+        },
+      ),
     );
   }
 }

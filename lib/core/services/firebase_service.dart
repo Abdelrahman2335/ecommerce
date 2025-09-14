@@ -12,5 +12,4 @@ class FirebaseService {
   final FirebaseAuth auth = FirebaseAuth.instance;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final GoogleSignIn google = GoogleSignIn();
-
 }

@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../data/models/address_model.dart';
 import '../../../features/auth/presentation/manager/auth_provider.dart';
-import '../../widgets/custom_button.dart';
+import '../../../core/widgets/custom_button.dart';
 import '../../widgets/new_address.dart';
 
 class ProfileScreen extends StatefulWidget {

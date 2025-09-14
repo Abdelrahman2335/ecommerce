@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 import '../../manager/user_registration_provider.dart';
-import '../../../../../presentation/widgets/custom_button.dart';
+import '../../../../../core/widgets/custom_button.dart';
 
 class UserRegistrationScreenBody extends StatelessWidget {
   const UserRegistrationScreenBody({super.key});

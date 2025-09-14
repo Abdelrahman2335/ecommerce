@@ -1,20 +1,20 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/domain/repositories/wishlist_repository.dart';
 
-import '../models/product_model.dart';
 
 class WishListRepositoryImpl implements WishListRepository {
-  static final WishListRepositoryImpl _instance = WishListRepositoryImpl._internal();
+  static final WishListRepositoryImpl _instance =
+      WishListRepositoryImpl._internal();
 
   /// Singleton
   factory WishListRepositoryImpl() => _instance;
 
   /// Named constructor
   WishListRepositoryImpl._internal();
-
 
   FirebaseService firebaseService = FirebaseService();
 
@@ -67,7 +67,6 @@ class WishListRepositoryImpl implements WishListRepository {
 
   @override
   Future addAndRemoveWish(Product product) async {
-
     itemExist = productIds.contains(product.id);
 
     try {
@@ -82,7 +81,6 @@ class WishListRepositoryImpl implements WishListRepository {
           productIds.remove(product.id);
           items.remove(product);
           items.isEmpty ? noItemsInWishList = true : noItemsInWishList = false;
-
         } else {
           await wishListRef?.doc(_userId).update({
             "productId": FieldValue.arrayUnion([product.id])
@@ -90,7 +88,6 @@ class WishListRepositoryImpl implements WishListRepository {
           productIds.add(product.id);
           items.add(product);
           noItemsInWishList = false;
-
         }
       } else {
         await wishListRef?.doc(_userId).set(

@@ -1,12 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce/core/models/product_model/product.dart';
+import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
-
-import '../../../data/models/product_model.dart';
 
 class ItemDetails extends StatefulWidget {
   final Product? itemData;
@@ -26,6 +27,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     CartViewModel cartList = Provider.of<CartViewModel>(context, listen: true);
     bool isInCart = cartList.productIds.contains((widget.itemData!.id));
     ColorScheme theme = Theme.of(context).colorScheme;
+
     /// TODO: Move this later to modelView
     if (isInCart) {
       itemCount = cartList.fetchedItems
@@ -35,7 +37,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     }
 
     String imageUrl =
-        "${widget.itemData!.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}";
+        "${widget.itemData!.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}";
 
     return Scaffold(
       appBar: AppBar(
@@ -56,7 +58,7 @@ class _ItemDetailsState extends State<ItemDetails> {
               padding: const EdgeInsets.only(right: 10.0, bottom: 5),
               child: IconButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, "/cart");
+                    GoRouter.of(context).push(AppRouter.kCartScreen);
                   },
                   icon: (Icon(
                     PhosphorIcons.shoppingBag(),
@@ -130,42 +132,10 @@ class _ItemDetailsState extends State<ItemDetails> {
                     ),
                   ),
                 ),
-                if (widget.itemData!.size != null)
-                  Row(
-                    children: [
-                      for (var i in widget.itemData!.size!)
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: OutlinedButton(
-                            onPressed: () {
-                              setState(() {
-                                selectedSize = i;
-                              });
-                            },
-                            style: OutlinedButton.styleFrom(
-                                backgroundColor: selectedSize == i
-                                    ? theme.primary.withValues(alpha: 0.5)
-                                    : theme.surface,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(9),
-                                ),
-                                side: BorderSide(color: theme.primary)),
-                            child: Text(
-                              i,
-                              style: TextStyle(
-                                color: selectedSize == i
-                                    ? theme.surface
-                                    : theme.primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    widget.itemData!.title,
+                    widget.itemData!.title!,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -182,7 +152,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                 ListTile(
                   title: const Text("Description:"),
                   subtitle: Text(
-                    widget.itemData!.description,
+                    widget.itemData!.description!,
                     style: TextStyle(),
                   ),
                 ),

@@ -1,5 +1,5 @@
 import 'package:ecommerce/presentation/provider/wishlist_viewmodel.dart';
-import 'package:ecommerce/presentation/widgets/custom_drawer.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -55,7 +55,6 @@ class _WishlistState extends State<Wishlist> {
           ),
         ),
       ),
-
       drawer: CustomDrawer(),
       body: context.read<WishListViewModel>().noItemsInWishList
           ? Center(

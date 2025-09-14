@@ -9,7 +9,6 @@ class PaymentBottomSheet extends StatefulWidget {
     super.key,
   });
 
-
   @override
   State<PaymentBottomSheet> createState() => _PaymentBottomSheetState();
 }
@@ -23,11 +22,15 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-
         children: [
           Padding(
             padding: const EdgeInsets.all(12.0),
-            child: Text("Choose a Payment Method",style: TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).colorScheme.primary),),
+            child: Text(
+              "Choose a Payment Method",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary),
+            ),
           ),
           ListTile(
             contentPadding: const EdgeInsets.only(left: 26, right: 30),

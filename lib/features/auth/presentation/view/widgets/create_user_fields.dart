@@ -1,5 +1,5 @@
 import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
-import 'package:ecommerce/presentation/widgets/custom_field.dart';
+import 'package:ecommerce/core/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';

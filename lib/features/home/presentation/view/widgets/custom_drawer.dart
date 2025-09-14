@@ -1,5 +1,6 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/presentation/provider/item_viewmodel.dart';
+import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
+import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -9,9 +10,10 @@ class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
+    final AuthProvider authProvider =
+        Provider.of<AuthProvider>(context, listen: false);
     final theme = Theme.of(context).colorScheme.secondary;
     return Consumer<ItemViewModel>(
         builder: (BuildContext context, provider, Widget? child) {
@@ -22,11 +24,11 @@ class CustomDrawer extends StatelessWidget {
               UserAccountsDrawerHeader(
                 currentAccountPictureSize: Size.square(59),
                 accountName: Text(
-                  provider.name ?? "No Name",
+                  authProvider.name ?? "No Name",
                   style: TextStyle(fontSize: 19),
                 ),
                 accountEmail: Text(
-                  provider.email ?? "No Email",
+                  authProvider.getEmail ?? "No Email",
                   style: TextStyle(fontSize: 12),
                 ),
                 currentAccountPicture: CircleAvatar(

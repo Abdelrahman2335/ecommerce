@@ -19,11 +19,6 @@ class LocationProvider extends ChangeNotifier {
   /// will be used to show the user location on the map
   LocationData? locationData;
 
-
-
-
-
-
   Future getCurrentLocation() async {
     Location location = Location();
     bool serviceEnabled;
@@ -81,18 +76,20 @@ class LocationProvider extends ChangeNotifier {
         final data = json.decode(response.body);
         await firestore.collection("customers").doc(user!.uid).update({
           "address": AddressModel(
-            fullAddress: data['display_name'] ?? 'Not Found',
-            country: data['address']['country'] ?? place.country,
-            city: data['address']['state'] ?? place.administrativeArea,
-            area: data['address']['city'] ?? place.locality,
-            street: data['address']['road'] ?? 'Not Found',
-            latitude: locationData?.latitude,
-            longitude: locationData?.longitude
-          ).toJson()
+                  fullAddress: data['display_name'] ?? 'Not Found',
+                  country: data['address']['country'] ?? place.country,
+                  city: data['address']['state'] ?? place.administrativeArea,
+                  area: data['address']['city'] ?? place.locality,
+                  street: data['address']['road'] ?? 'Not Found',
+                  latitude: locationData?.latitude,
+                  longitude: locationData?.longitude)
+              .toJson()
         });
         isGettingLocation = false;
-        userLocation = LatLng(locationData!.latitude!, locationData!.longitude!);
+        userLocation =
+            LatLng(locationData!.latitude!, locationData!.longitude!);
         notifyListeners();
+
         /// for debugging
         // log(place.country.toString());
         // log(place.administrativeArea.toString());

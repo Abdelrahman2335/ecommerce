@@ -23,7 +23,7 @@ class AuthProvider extends ChangeNotifier {
   String? _password;
   bool _isNewUser = false;
 
-  set email(String value) {
+  set setEmail(String value) {
     _email = value;
   }
 
@@ -33,6 +33,7 @@ class AuthProvider extends ChangeNotifier {
 
   String? get user => _user;
   String? get name => _name;
+  String? get getEmail => _email;
   String? get errMessage => _errMessage;
   bool get loading => _isLoading;
   bool get isNewUser => _isNewUser;

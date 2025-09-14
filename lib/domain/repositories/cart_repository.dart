@@ -1,4 +1,4 @@
-import '../../data/models/product_model.dart';
+import 'package:ecommerce/core/models/product_model/product.dart';
 
 abstract class CartRepository {
   Future<void> initializeCart();

@@ -1,5 +1,3 @@
-
-
 class CartModel {
   final String userId;
   final String itemId;

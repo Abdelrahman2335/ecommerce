@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../manager/create_user_provider.dart';
-import '../../../../../presentation/widgets/custom_button.dart';
+import '../../../../../core/widgets/custom_button.dart';
 
 class CreateUserScreenBody extends StatelessWidget {
   const CreateUserScreenBody({super.key});

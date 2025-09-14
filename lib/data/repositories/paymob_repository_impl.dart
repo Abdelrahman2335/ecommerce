@@ -33,7 +33,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
   }
 
   @override
-  Future<String?> createPaymentLink(String token, int amount) async {
+  Future<String?> createPaymentLink(String token, num amount) async {
     return await _paymentDio
         .post(
       "/payment-links",

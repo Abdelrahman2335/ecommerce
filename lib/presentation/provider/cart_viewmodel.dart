@@ -1,9 +1,9 @@
+import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/data/repositories/cart_repository_impl.dart';
 import 'package:ecommerce/domain/repositories/cart_repository.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/models/cart_model.dart';
-import '../../data/models/product_model.dart';
 
 class CartViewModel extends ChangeNotifier {
   final CartRepository _cartProvider;

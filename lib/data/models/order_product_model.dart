@@ -1,3 +1,4 @@
+
 enum OrderStatus {
   notConfirmed,
   pending,
@@ -14,12 +15,11 @@ enum OrderStatus {
 
 class OrderProductModel {
   final String id;
-  final List category;
-  final List imageUrl;
+  final String category;
+  final String imageUrl;
   final String title;
   final String description;
-  final int price;
-  final List? size;
+  final num price;
   final int quantity;
   OrderStatus status;
 
@@ -30,7 +30,6 @@ class OrderProductModel {
     required this.description,
     required this.title,
     required this.price,
-    required this.size,
     required this.quantity,
     required this.status,
   });
@@ -38,12 +37,11 @@ class OrderProductModel {
   /// Convert Firestore document to Product object
   factory OrderProductModel.fromJson(Map<String, dynamic> json) {
     return OrderProductModel(
-      category: List<String>.from(json['category'] ?? []),
-      imageUrl: List<String>.from(json['imageUrl'] ?? []),
+      category: json['category'] ?? "",
+      imageUrl: json['imageUrl'] ?? "",
       title: json['title'] ?? "",
       description: json['description'] ?? "",
       price: json['price'] ?? 0,
-      size: json['size'] != null ? List<String>.from(json['size']) : null,
       id: json["id"] ?? "",
       quantity: json["quantity"],
       status: OrderStatus.values[json["status"]],
@@ -58,7 +56,6 @@ class OrderProductModel {
       'title': title,
       'description': description,
       'price': price,
-      'size': size,
       'id': id,
       'quantity': quantity,
       "status": status.index,

@@ -5,5 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class SignupRepository {
   Future<Either<Failure, UserCredential>> createAccountWithGoogle();
 
-  Future<Either<Failure, UserCredential>> createUser(String password, String email);
+  Future<Either<Failure, UserCredential>> createUser(
+      String password, String email);
 }

@@ -32,7 +32,6 @@ class OrderModel {
       products: json['products'],
       createdAt: DateTime.parse(json['createdAt']),
       shippingAddress: AddressModel.fromJson(json['shippingAddress']),
-
     );
   }
 
@@ -41,7 +40,7 @@ class OrderModel {
         'deliveryFee': deliveryFee,
         'discount': discount,
         'paymentMethod': paymentMethod,
-        'products': products.map((p)=> p.toJson()).toList(),
+        'products': products.map((p) => p.toJson()).toList(),
         'createdAt': createdAt.toIso8601String(),
         'shippingAddress': shippingAddress.toJson(),
       };

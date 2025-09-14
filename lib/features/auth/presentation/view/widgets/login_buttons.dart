@@ -1,7 +1,7 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/core/utils/snackbar_helper.dart';
+import 'package:ecommerce/core/widgets/snackbar_helper.dart';
 import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
-import 'package:ecommerce/presentation/widgets/custom_button.dart';
+import 'package:ecommerce/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart' show Selector, Provider;

@@ -106,7 +106,7 @@ class SignupRepositoryImpl implements SignupRepository {
       if (isNewUser) {
         log("Setting up new user profile for: ${currentUser.uid}");
         try {
-         //TODO change this to add the user name not email
+          //TODO change this to add the user name not email
           await currentUser.updateDisplayName(email);
 
           // Create customer document

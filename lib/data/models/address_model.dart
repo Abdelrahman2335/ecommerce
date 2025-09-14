@@ -16,7 +16,6 @@ class AddressModel {
       this.latitude,
       this.longitude});
 
-
   /// Optionally, create a fromJson() method for deserialization
   factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(
@@ -33,7 +32,7 @@ class AddressModel {
   /// Convert AddressModel to a Map for Firestore
   Map<String, dynamic> toJson() {
     return {
-    if(fullAddress != null)  'fullAddress': fullAddress,
+      if (fullAddress != null) 'fullAddress': fullAddress,
       if (country != null) 'country': country,
       if (city != null) 'city': city,
       if (area != null) 'area': area,
@@ -42,5 +41,4 @@ class AddressModel {
       if (longitude != null) 'longitude': longitude,
     };
   }
-
 }

@@ -76,7 +76,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     /// Here we can use two functions one is fold (here we are giving the initial value it's good for later when adding the shipping fees)
     /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
 
-    int itemsPrice = 0;
+    num itemsPrice = 0;
     for (var cartItem in cartProvider.items) {
       // Find the corresponding product
       var product = cartProvider.fetchedItems.firstWhere(
@@ -84,7 +84,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
         // Avoids crash if no match is found
       );
 
-      itemsPrice += product.quantity * cartItem.price;
+      itemsPrice += product.quantity * cartItem.price!;
     }
     return Scaffold(
       appBar: AppBar(
@@ -232,15 +232,19 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 products: List.generate(
                                   cartProvider.items.length,
                                   (index) => OrderProductModel(
-                                      id: cartProvider.fetchedItems[index].itemId,
-                                      category: cartProvider.items[index].category,
-                                      imageUrl: cartProvider.items[index].imageUrl,
-                                      description: cartProvider.items[index].description,
-                                      title: cartProvider.items[index].title,
-                                      price: cartProvider.items[index].price,
-                                      size: cartProvider.items[index].size,
-                                      quantity: cartProvider.fetchedItems[index].quantity,
-                                    status: OrderStatus.pending
+                                    id: cartProvider.fetchedItems[index].itemId,
+                                    category:
+                                        cartProvider.items[index].category!,
+                                    imageUrl:
+                                        cartProvider.items[index].images![0],
+                                    description:
+                                        cartProvider.items[index].description!,
+                                    title: cartProvider.items[index].title!,
+                                    price: cartProvider.items[index].price!,
+                                    quantity: cartProvider
+                                        .fetchedItems[index].quantity,
+                                    status: OrderStatus.pending,
+                                    // rating: cartProvider.items[index].rating,
                                   ),
                                 ),
                                 createdAt: DateTime.now(),

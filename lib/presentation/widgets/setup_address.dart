@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ecommerce/presentation/widgets/custom_field.dart';
+import 'package:ecommerce/core/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -228,7 +228,6 @@ Widget setupAddress(
                       borderRadius: BorderRadius.circular(8))),
               onPressed: () {
                 if (context.read<LocationProvider>().userLocation != null) {
-                 
                   log("Valid");
                 } else {
                   log("Invalid");

@@ -1,16 +1,16 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/models/product_model.dart';
 import '../../data/repositories/cart_repository_impl.dart';
 import '../provider/wishlist_viewmodel.dart';
-import '../screens/items/item_details.dart';
+import '../../features/home/presentation/view/screens/item_details.dart';
 
 class WishListContent extends StatefulWidget {
   const WishListContent({super.key});
@@ -113,7 +113,7 @@ class _WishListContentState extends State<WishListContent> {
                                           .round(),
 
                                   imageUrl:
-                                      "${data.imageUrl[0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
+                                      "${data.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
                                   errorWidget: (context, url, error) =>
                                       const Icon(
                                     Icons.error,
@@ -124,7 +124,7 @@ class _WishListContentState extends State<WishListContent> {
                                   padding: const EdgeInsets.only(
                                       left: 6, top: 5, bottom: 2),
                                   child: Text(
-                                    data.title,
+                                    data.title!,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium,
                                     overflow: TextOverflow.ellipsis,

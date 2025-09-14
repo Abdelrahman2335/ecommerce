@@ -1,5 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:ecommerce/presentation/screens/items/home_screen.dart';
+import 'package:ecommerce/features/home/presentation/view/screens/home_screen.dart';
 import 'package:ecommerce/presentation/screens/items/wishlist.dart';
 import 'package:ecommerce/presentation/screens/place_order/cart_screen.dart';
 import 'package:flutter/material.dart';
@@ -17,16 +17,16 @@ class _LayOutState extends State<LayOut> {
   final double iconSize = 24;
 
   final List<Widget> curvedIcons = [
-     Icon(
+    Icon(
       PhosphorIcons.house(),
       size: 26,
     ),
-     Icon(
+    Icon(
       PhosphorIcons.heart(),
       size: 26,
     ),
-     Icon(
-       PhosphorIcons.shoppingBag(),
+    Icon(
+      PhosphorIcons.shoppingBag(),
       size: 26,
     ),
   ];

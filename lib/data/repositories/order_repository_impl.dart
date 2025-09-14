@@ -16,7 +16,9 @@ class OrderRepositoryImpl implements OrderRepository {
       await _firebaseService.firestore
           .collection("customers")
           .doc(_firebaseService.auth.currentUser!.uid)
-          .collection("orders").doc(order.id).set(order.toJson());
+          .collection("orders")
+          .doc(order.id)
+          .set(order.toJson());
     } catch (error) {
       log("error in the placeOrder impl: $error");
     }
@@ -27,7 +29,9 @@ class OrderRepositoryImpl implements OrderRepository {
     try {
       final data = await _firebaseService.firestore
           .collection("customers")
-          .doc(_firebaseService.auth.currentUser!.uid).collection("orders").doc(order.id)
+          .doc(_firebaseService.auth.currentUser!.uid)
+          .collection("orders")
+          .doc(order.id)
           .get();
 
       if (data.exists) {

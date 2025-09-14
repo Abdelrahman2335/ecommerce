@@ -14,7 +14,7 @@ class PaymentViewModel extends ChangeNotifier {
   String? paymentUrl;
   bool isLoading = false;
 
-  void makePayment(int amount) async {
+  void makePayment(num amount) async {
     isLoading = true;
     notifyListeners();
 
