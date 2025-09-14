@@ -24,14 +24,14 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<ItemViewModel, CartViewModel>(
+    return Consumer2<HomeProvider, CartViewModel>(
       builder: (BuildContext context, value, value2, Widget? child) {
         return SliverGrid(
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.5,
             crossAxisSpacing: 4,
             mainAxisSpacing: 3,
-            mainAxisExtent: MediaQuery.of(context).size.height * 0.39,
+            mainAxisExtent: MediaQuery.of(context).size.height * 0.34,
           ),
           delegate:
               SliverChildBuilderDelegate((BuildContext context, int index) {
@@ -39,7 +39,7 @@ class _HomeContentState extends State<HomeContent> {
               return null;
             }
             final Product data =
-                context.read<ItemViewModel>().receivedData[index];
+                context.read<HomeProvider>().receivedData[index];
             bool isWished = context
                 .watch<WishListViewModel>()
                 .productIds
@@ -102,7 +102,7 @@ class _HomeContentState extends State<HomeContent> {
                             ),
                         child: CachedNetworkImage(
                           useOldImageOnUrlChange: true,
-                          height: MediaQuery.of(context).size.height * 0.24,
+                          height: MediaQuery.of(context).size.height * 0.19,
                           width: MediaQuery.of(context).size.width * 0.6,
                           fit: BoxFit.cover,
                           // placeholder: MemoryImage(kTransparentImage),
@@ -140,15 +140,8 @@ class _HomeContentState extends State<HomeContent> {
                           children: [
                             Text(
                               "\$${data.price}",
-                              style: Theme.of(context).textTheme.titleMedium,
+                              style: Theme.of(context).textTheme.bodySmall,
                             ),
-
-                            /// we are using [Selector] here to listen to the [isLoading] value from [WishListProvider]
-                            /// and build only this widget when the value changes
-                            /// note if we didn't add Selector here when isLoading is true,
-                            /// the all buttons will load at once even if we didn't press it
-
-                            /// Edit this later because it take some time to load
                             Row(
                               children: [
                                 isInCart

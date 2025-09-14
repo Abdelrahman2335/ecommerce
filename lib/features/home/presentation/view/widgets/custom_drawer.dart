@@ -15,7 +15,7 @@ class CustomDrawer extends StatelessWidget {
     final AuthProvider authProvider =
         Provider.of<AuthProvider>(context, listen: false);
     final theme = Theme.of(context).colorScheme.secondary;
-    return Consumer<ItemViewModel>(
+    return Consumer<HomeProvider>(
         builder: (BuildContext context, provider, Widget? child) {
       return Drawer(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),

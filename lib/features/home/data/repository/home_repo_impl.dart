@@ -21,16 +21,21 @@ class HomeRepoImpl implements ItemRepository {
   Future<Either<Failure, List<Product>>> getData() async {
     try {
       final response = await apiService.get();
+      // log("Response for getData is: $response");
 
       List<Product> products =
-          response.values.map((i) => Product.fromJson(i)).toList();
+          (response["products"] as List<dynamic>)
+              .map((i) => Product.fromMap(i))
+              .toList();
 
+      log("Products loaded: $products");
       return Right(products);
     } catch (error) {
-      log("error when getting the data: $error");
       if (error is DioException) {
+        log("Error (Dio) in getData: $error");
         return Left(ServerFailure.fromDioException(error));
       } else {
+        log("Error (not Dio) in getData: $error");
         return Left(ServerFailure(error.toString()));
       }
     }
@@ -40,17 +45,18 @@ class HomeRepoImpl implements ItemRepository {
   Future<Either<Failure, List<String>>> getCategories() async {
     try {
       final response = await apiService.get(endPoint: "category-list");
-
-      // Note: category-list endpoint returns a raw list, but apiService.get
-      // always forces it into a Map. That's why we use data.values here.
-      final List<String> categories = List<String>.from(response.values);
+      log("Response for getCategories is: $response");
+      // category-list endpoint returns a List<String> directly
+      final List<String> categories =
+          List<String>.from(response as List<dynamic>);
 
       return Right(categories);
     } catch (error) {
-      log("error when getting the category: $error");
       if (error is DioException) {
+        log("Error (Dio) in getCategories: $error");
         return Left(ServerFailure.fromDioException(error));
       } else {
+        log("Error (not Dio) in getCategories: $error");
         return Left(ServerFailure(error.toString()));
       }
     }
@@ -61,8 +67,9 @@ class HomeRepoImpl implements ItemRepository {
       {required String category}) async {
     try {
       var response = await apiService.get(endPoint: "category/$category");
-      final List<Product> products =
-          response["products"].map((value) => Product.fromJson(value));
+      final List<Product> products = (response["products"] as List<dynamic>)
+          .map((value) => Product.fromMap(value))
+          .toList();
       return Right(products);
     } catch (error) {
       if (error is DioException) {

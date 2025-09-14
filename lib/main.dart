@@ -43,7 +43,7 @@ void main() async {
       ChangeNotifierProvider(
           create: (_) => UserRegistrationProvider(UserRegistrationRepoImpl())),
       ChangeNotifierProvider(
-        create: (_) => ItemViewModel(HomeRepoImpl()),
+        create: (_) => HomeProvider(HomeRepoImpl()),
       ),
 
       ChangeNotifierProvider(

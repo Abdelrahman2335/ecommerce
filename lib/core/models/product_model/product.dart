@@ -64,7 +64,9 @@ class Product extends Equatable {
         discountPercentage: (data['discountPercentage'] as num?)?.toDouble(),
         rating: (data['rating'] as num?)?.toDouble(),
         stock: data['stock'] as int?,
-        tags: data['tags'] as List<String>?,
+        tags: data['tags'] != null
+            ? List<String>.from(data['tags'] as List<dynamic>)
+            : null,
         brand: data['brand'] as String?,
         sku: data['sku'] as String?,
         weight: data['weight'] as int?,
@@ -82,7 +84,9 @@ class Product extends Equatable {
         meta: data['meta'] == null
             ? null
             : Meta.fromMap(data['meta'] as Map<String, dynamic>),
-        images: data['images'] as List<String>?,
+        images: data['images'] != null
+            ? List<String>.from(data['images'] as List<dynamic>)
+            : null,
         thumbnail: data['thumbnail'] as String?,
       );
 
@@ -114,8 +118,8 @@ class Product extends Equatable {
   /// `dart:convert`
   ///
   /// Parses the string and returns the resulting Json object as [Product].
-  factory Product.fromJson(Map<String, dynamic> data) {
-    return Product.fromMap(data);
+  factory Product.fromJson(String data) {
+    return Product.fromMap(json.decode(data) as Map<String, dynamic>);
   }
 
   /// `dart:convert`

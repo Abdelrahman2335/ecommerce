@@ -1,6 +1,7 @@
 import 'package:ecommerce/data/category_data.dart';
+import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({
@@ -9,6 +10,8 @@ class CategoryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    final categories = homeProvider.categoryList;
     return SizedBox(
       height: 100,
       width: double.infinity,
@@ -16,18 +19,16 @@ class CategoryWidget extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: categoryData.length,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  backgroundImage: AssetImage(categoryData[index].image),
-                  radius: 27,
-                ),
-                const Gap(4),
-                Text(categoryData[index].name),
-              ],
-            ),
+          return Row(
+            spacing: 8,
+            children: List.generate(categories.length, (index) {
+              return TextButton(
+                onPressed: () {
+                  homeProvider.categoryProducts(category: categories[index]);
+                },
+                child: Text(categories[index]),
+              );
+            }),
           );
         },
       ),

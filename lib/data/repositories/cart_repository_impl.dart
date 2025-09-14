@@ -28,71 +28,71 @@ class CartRepositoryImpl implements CartRepository {
 
   @override
   initializeCart() async {
-    items.clear();
-    fetchedItems.clear();
-    productIds.clear();
-    totalQuantity = 0;
+    // items.clear();
+    // fetchedItems.clear();
+    // productIds.clear();
+    // totalQuantity = 0;
 
-    try {
-      _userId = firebaseService.auth.currentUser!.uid;
-      cartListRef = FirebaseFirestore.instance.collection("cartData");
+    // try {
+    //   _userId = firebaseService.auth.currentUser!.uid;
+    //   cartListRef = FirebaseFirestore.instance.collection("cartData");
 
-      /// Get the data from the database where the userId is equal to the current userId
-      /// each doc contains 3 fields: userId, productId, quantity
-      cartData = await cartListRef?.where("userId", isEqualTo: _userId).get();
+    //   /// Get the data from the database where the userId is equal to the current userId
+    //   /// each doc contains 3 fields: userId, productId, quantity
+    //   cartData = await cartListRef?.where("userId", isEqualTo: _userId).get();
 
-      if (cartData?.docs.isNotEmpty ?? false) {
-        log("cartData is not null");
+    //   if (cartData?.docs.isNotEmpty ?? false) {
+    //     log("cartData is not null");
 
-        /// Get the cart items from the cartData
-        fetchedItems.addAll(cartData!.docs
-            .map((element) => CartModel.fromJson(element.data())));
+    //     /// Get the cart items from the cartData
+    //     fetchedItems.addAll(cartData!.docs
+    //         .map((element) => CartModel.fromJson(element.data())));
 
-        /// List of IDs of the items in the cart
-        productIds
-            .addAll(fetchedItems.map((element) => element.itemId).toList());
-        log("fetchedItems is ${fetchedItems.length}, ${fetchedItems.first.itemId}");
+    //     /// List of IDs of the items in the cart
+    //     productIds
+    //         .addAll(fetchedItems.map((element) => element.itemId).toList());
+    //     log("fetchedItems is ${fetchedItems.length}, ${fetchedItems.first.itemId}");
 
-        /// Firestore `whereIn` only supports a max of 10 items, so we need to split queries if needed
-        List<Product> fetchedProducts = [];
-        if (productIds.isNotEmpty) {
-          for (int i = 0; i < productIds.length; i += 10) {
-            List batch = productIds.sublist(
-                i, (i + 10 > productIds.length) ? productIds.length : i + 10);
-            QuerySnapshot<Map<String, dynamic>> docSnapshot =
-                await firebaseService.firestore
-                    .collection("mainData")
-                    .where("id", whereIn: batch)
-                    .get();
+    //     /// Firestore `whereIn` only supports a max of 10 items, so we need to split queries if needed
+    //     List<Product> fetchedProducts = [];
+    //     if (productIds.isNotEmpty) {
+    //       for (int i = 0; i < productIds.length; i += 10) {
+    //         List batch = productIds.sublist(
+    //             i, (i + 10 > productIds.length) ? productIds.length : i + 10);
+    //         QuerySnapshot<Map<String, dynamic>> docSnapshot =
+    //             await firebaseService.firestore
+    //                 .collection("mainData")
+    //                 .where("id", whereIn: batch)
+    //                 .get();
 
-            /// Get only the products that we have their ID
-            if (docSnapshot.docs.isNotEmpty) {
-              fetchedProducts.addAll(docSnapshot.docs
-                  .map((element) => Product.fromJson(element.data())));
-            }
-          }
-        }
+    //         /// Get only the products that we have their ID
+    //         if (docSnapshot.docs.isNotEmpty) {
+    //           fetchedProducts.addAll(docSnapshot.docs
+    //               .map((element) => Product.fromJson(element.data().toString())));
+    //         }
+    //       }
+    //     }
 
-        /// Now add the fetched products to the items list
-        if (fetchedProducts.isNotEmpty) {
-          items.addAll(fetchedProducts);
-          noItemsInCart = false;
-        } else {
-          noItemsInCart = true;
-        }
+    //     /// Now add the fetched products to the items list
+    //     if (fetchedProducts.isNotEmpty) {
+    //       items.addAll(fetchedProducts);
+    //       noItemsInCart = false;
+    //     } else {
+    //       noItemsInCart = true;
+    //     }
 
-        /// Update total quantity based on fetched items
-        for (CartModel item in fetchedItems) {
-          totalQuantity += item.quantity;
-        }
-      } else {
-        log("nothing in the cartData: $cartData");
-        noItemsInCart = true;
-      }
-    } catch (error) {
-      log("Error in the Cart: $error");
-      log("Error in the Cart: ${cartData?.docs.length.toString()}");
-    } finally {}
+    //     /// Update total quantity based on fetched items
+    //     for (CartModel item in fetchedItems) {
+    //       totalQuantity += item.quantity;
+    //     }
+    //   } else {
+    //     log("nothing in the cartData: $cartData");
+    //     noItemsInCart = true;
+    //   }
+    // } catch (error) {
+    //   log("Error in the Cart: $error");
+    //   // log("Error in the Cart: ${cartData?.docs.length.toString()}");
+    // } finally {}
   }
 
   @override

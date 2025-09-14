@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeProvider = Provider.of<ItemViewModel>(context);
+    final homeProvider = Provider.of<HomeProvider>(context);
     return Scaffold(
       appBar: homeAppBar(context),
       drawer: CustomDrawer(),

@@ -6,13 +6,13 @@ class ApiService {
 
   factory ApiService() => instance;
 
-  final _baseUrl = 'https://dummyjson.com/products/';
+  var _baseUrl = 'https://dummyjson.com/products/';
 
   final Dio _dio = Dio();
 
-  Future<Map<String, dynamic>> get(
-      {String? baseUrl, String endPoint = ""}) async {
-    var response = await _dio.get("$baseUrl??$_baseUrl$endPoint");
+  Future<dynamic> get({String? baseUrl, String endPoint = ""}) async {
+    _baseUrl = baseUrl ?? _baseUrl;
+    var response = await _dio.get("$_baseUrl$endPoint");
 
     return response.data;
   }

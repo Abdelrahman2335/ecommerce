@@ -2,13 +2,15 @@ import '../../../../../core/models/product_model/product.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo.dart';
 import 'package:flutter/cupertino.dart';
 
-class ItemViewModel extends ChangeNotifier {
+class HomeProvider extends ChangeNotifier {
   final ItemRepository _itemRepository;
   List<Product> _mainData = [];
-  List<Product> _productCategories = [];
+  List<Product> _productCategoryList = [];
   List<String> _categories = [];
 
   List<Product> get receivedData => _mainData;
+  List<Product> get productCategoryList => _productCategoryList;
+  List<String> get categoryList => _categories;
   bool _isLoading = false;
   bool _removeAdd = false;
   String? errorMessage;
@@ -19,8 +21,11 @@ class ItemViewModel extends ChangeNotifier {
 
   bool get hasError => errorMessage != null;
 
-  ItemViewModel(this._itemRepository) {
-    Future.microtask(() => fetchData());
+  HomeProvider(this._itemRepository) {
+    Future.microtask(() {
+      fetchData();
+      getCategories();
+    });
 
     /// Ensure data is fetched after the constructor is completed
   }
@@ -64,7 +69,7 @@ class ItemViewModel extends ChangeNotifier {
 
   void categoryProducts({required String category}) async {
     _isLoading = true;
-    _productCategories.clear;
+    _productCategoryList.clear;
     notifyListeners();
 
     final value = await _itemRepository.categoryProducts(category: category);
@@ -73,7 +78,7 @@ class ItemViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }, (value) {
-      _productCategories = value;
+      _productCategoryList = value;
 
       _isLoading = false;
       notifyListeners();

@@ -36,7 +36,7 @@ class BannerWidget extends StatelessWidget {
             right: 4,
             child: IconButton(
               onPressed: () {
-                context.read<ItemViewModel>().toggleRemoveAdd();
+                context.read<HomeProvider>().toggleRemoveAdd();
               },
               icon: Icon(
                 PhosphorIcons.xCircle(),
