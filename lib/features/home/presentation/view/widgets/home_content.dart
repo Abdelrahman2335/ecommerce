@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/presentation/provider/wishlist_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -50,7 +50,7 @@ class _HomeContentState extends State<HomeContent> {
             bool isInCart = value2.productIds.contains((data.id));
             if (isInCart) {
               itemCount = value2.fetchedItems
-                  .where((element) => element.itemId == data.id)
+                  .where((element) => element.product.id == data.id)
                   .first
                   .quantity;
             } else {

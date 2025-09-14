@@ -1,9 +1,9 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/data/repositories/cart_repository_impl.dart';
-import 'package:ecommerce/domain/repositories/cart_repository.dart';
+import 'package:ecommerce/features/cart/data/cart_repository_impl.dart';
+import 'package:ecommerce/features/cart/data/cart_repository.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/cart_model.dart';
+import '../../data/cart_model.dart';
 
 class CartViewModel extends ChangeNotifier {
   final CartRepository _cartProvider;
@@ -13,7 +13,7 @@ class CartViewModel extends ChangeNotifier {
     Future.microtask(() => initializeCart());
   }
 
-  List<Product> _items = [];
+  List<CartModel> _items = [];
   List<CartModel> _fetchedItems = [];
   List productIds = [];
   int _totalQuantity = 0;
@@ -28,7 +28,7 @@ class CartViewModel extends ChangeNotifier {
 
   int get totalQuantity => _totalQuantity;
 
-  List<Product> get items => _items;
+  List<CartModel> get items => _items;
 
   List<CartModel> get fetchedItems => _fetchedItems;
 
@@ -39,8 +39,8 @@ class CartViewModel extends ChangeNotifier {
 
     try {
       await _cartProvider.initializeCart();
-      _items = cartRepositoryImpl.items;
-      _fetchedItems = cartRepositoryImpl.fetchedItems;
+      _items = cartRepositoryImpl.fetchedProducts;
+      _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
       _noItemsInCart = items.isEmpty;
@@ -61,8 +61,8 @@ class CartViewModel extends ChangeNotifier {
     try {
       await _cartProvider.addToCart(product);
 
-      _items = cartRepositoryImpl.items;
-      _fetchedItems = cartRepositoryImpl.fetchedItems;
+      _items = cartRepositoryImpl.fetchedProducts;
+      _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
 
@@ -85,8 +85,8 @@ class CartViewModel extends ChangeNotifier {
       await _cartProvider.removeFromCart(product, deleteItem);
 
       /// Update fetchedItems immediately
-      _items = cartRepositoryImpl.items;
-      _fetchedItems = cartRepositoryImpl.fetchedItems;
+      _items = cartRepositoryImpl.fetchedProducts;
+      _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
 

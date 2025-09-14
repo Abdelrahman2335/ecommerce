@@ -2,13 +2,12 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/repositories/cart_repository_impl.dart';
 import '../provider/wishlist_viewmodel.dart';
 import '../../features/home/presentation/view/screens/item_details.dart';
 
@@ -52,7 +51,7 @@ class _WishListContentState extends State<WishListContent> {
 
                   if (isInCart) {
                     itemCount = inCartProvider.fetchedItems
-                        .where((element) => element.itemId == data.id)
+                        .where((element) => element.product.id == data.id)
                         .first
                         .quantity;
                   } else {

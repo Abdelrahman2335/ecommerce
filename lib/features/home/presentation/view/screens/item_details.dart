@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +31,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     /// TODO: Move this later to modelView
     if (isInCart) {
       itemCount = cartList.fetchedItems
-          .where((element) => element.itemId == widget.itemData!.id)
+          .where((element) => element.product.id == widget.itemData!.id)
           .first
           .quantity;
     }

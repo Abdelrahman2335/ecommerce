@@ -16,12 +16,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'data/repositories/cart_repository_impl.dart';
+import 'features/cart/data/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
 import 'features/auth/presentation/manager/auth_provider.dart';
 import 'features/auth/presentation/manager/user_registration_provider.dart';
-import 'presentation/provider/cart_viewmodel.dart';
+import 'features/cart/presentation/manager/cart_provider.dart';
 import 'presentation/provider/location_viewmodel.dart';
 import 'presentation/provider/payment_provider.dart';
 import 'presentation/provider/wishlist_viewmodel.dart';

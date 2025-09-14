@@ -1,16 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/presentation/provider/cart_viewmodel.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../../../data/models/cart_model.dart';
-import '../../../core/widgets/custom_button.dart';
-import '../../../features/home/presentation/view/screens/item_details.dart';
+import '../../../data/cart_model.dart';
+import '../../../../../core/widgets/custom_button.dart';
+import '../../../../home/presentation/view/screens/item_details.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -54,7 +53,7 @@ class _CartScreenState extends State<CartScreen> {
                               // return Center(child: Text("No Items added to Cart"));
                             }
 
-                            final Product data = value.items[index];
+                            final CartModel data = value.items[index];
 
                             CartModel? cartData = (index < value.items.length)
                                 ? value.fetchedItems[index]
@@ -71,7 +70,7 @@ class _CartScreenState extends State<CartScreen> {
                                 onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => ItemDetails(
-                                            itemData: data,
+                                            itemData: data.product,
                                           )));
                                 },
                                 child: Card(
@@ -117,7 +116,7 @@ class _CartScreenState extends State<CartScreen> {
                                                     .round(),
 
                                             imageUrl:
-                                                "${data.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
+                                                "${data.product.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}",
                                             errorWidget:
                                                 (context, url, error) =>
                                                     const Icon(
@@ -135,7 +134,7 @@ class _CartScreenState extends State<CartScreen> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                data.title!,
+                                                data.product.title!,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
@@ -145,14 +144,15 @@ class _CartScreenState extends State<CartScreen> {
                                                 height: 16,
                                               ),
                                               Text(
-                                                data.description!,
+                                                data.product.description!,
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
                                               ),
                                               SizedBox(
                                                 height: 24,
                                               ),
-                                              Text("  ${data.price} EGP"),
+                                              Text(
+                                                  "  ${data.product.price} EGP"),
                                               const Gap(3),
                                               Divider(
                                                 indent: 4,
@@ -174,7 +174,8 @@ class _CartScreenState extends State<CartScreen> {
                                                         onPressed: () async {
                                                           await value
                                                               .removeFromCart(
-                                                                  data, true);
+                                                                  data.product,
+                                                                  true);
                                                         },
                                                         child: Text("Remove")),
                                                   ],

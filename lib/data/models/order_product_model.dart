@@ -14,7 +14,7 @@ enum OrderStatus {
 }
 
 class OrderProductModel {
-  final String id;
+  final int id;
   final String category;
   final String imageUrl;
   final String title;

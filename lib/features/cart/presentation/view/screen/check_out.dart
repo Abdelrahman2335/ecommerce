@@ -9,10 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/cart_viewmodel.dart';
-import '../../provider/payment_provider.dart';
-import '../../widgets/address_with_order.dart';
-import '../payment/payment_method.dart';
+import '../../manager/cart_provider.dart';
+import '../../../../../presentation/provider/payment_provider.dart';
+import '../../../../../presentation/widgets/address_with_order.dart';
+import '../../../../../presentation/screens/payment/payment_method.dart';
 
 class CheckOutScreen extends StatefulWidget {
   const CheckOutScreen({super.key});
@@ -80,11 +80,11 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     for (var cartItem in cartProvider.items) {
       // Find the corresponding product
       var product = cartProvider.fetchedItems.firstWhere(
-        (prod) => prod.itemId == cartItem.id,
+        (prod) => prod.product.id == cartItem.product.id,
         // Avoids crash if no match is found
       );
 
-      itemsPrice += product.quantity * cartItem.price!;
+      itemsPrice += product.quantity * cartItem.product.price!;
     }
     return Scaffold(
       appBar: AppBar(
@@ -232,15 +232,18 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 products: List.generate(
                                   cartProvider.items.length,
                                   (index) => OrderProductModel(
-                                    id: cartProvider.fetchedItems[index].itemId,
-                                    category:
-                                        cartProvider.items[index].category!,
-                                    imageUrl:
-                                        cartProvider.items[index].images![0],
-                                    description:
-                                        cartProvider.items[index].description!,
-                                    title: cartProvider.items[index].title!,
-                                    price: cartProvider.items[index].price!,
+                                    id: cartProvider
+                                        .fetchedItems[index].product.id!,
+                                    category: cartProvider
+                                        .items[index].product.category!,
+                                    imageUrl: cartProvider
+                                        .items[index].product.images![0],
+                                    description: cartProvider
+                                        .items[index].product.description!,
+                                    title: cartProvider
+                                        .items[index].product.title!,
+                                    price: cartProvider
+                                        .items[index].product.price!,
                                     quantity: cartProvider
                                         .fetchedItems[index].quantity,
                                     status: OrderStatus.pending,
