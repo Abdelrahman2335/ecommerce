@@ -10,9 +10,9 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ItemDetails extends StatefulWidget {
-  final Product? itemData;
+  final Product? itemDetails;
 
-  const ItemDetails({super.key, required this.itemData});
+  const ItemDetails({super.key, required this.itemDetails});
 
   @override
   State<ItemDetails> createState() => _ItemDetailsState();
@@ -24,20 +24,20 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   @override
   Widget build(BuildContext context) {
-    CartViewModel cartList = Provider.of<CartViewModel>(context, listen: true);
-    bool isInCart = cartList.productIds.contains((widget.itemData!.id));
+    CartProvider cartList = Provider.of<CartProvider>(context, listen: true);
+    bool isInCart = cartList.productIds.contains((widget.itemDetails!.id));
     ColorScheme theme = Theme.of(context).colorScheme;
 
     /// TODO: Move this later to modelView
     if (isInCart) {
       itemCount = cartList.fetchedItems
-          .where((element) => element.product.id == widget.itemData!.id)
+          .where((element) => element.product.id == widget.itemDetails!.id)
           .first
           .quantity;
     }
 
     String imageUrl =
-        "${widget.itemData!.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}";
+        "${widget.itemDetails!.images![0]}&w=${MediaQuery.of(context).size.width * 0.8}&h=${MediaQuery.of(context).size.height * 0.4}";
 
     return Scaffold(
       appBar: AppBar(
@@ -135,7 +135,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    widget.itemData!.title!,
+                    widget.itemDetails!.title!,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                     ),
@@ -144,7 +144,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    "\$${widget.itemData!.price}",
+                    "\$${widget.itemDetails!.price}",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, color: Colors.grey),
                   ),
@@ -152,7 +152,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                 ListTile(
                   title: const Text("Description:"),
                   subtitle: Text(
-                    widget.itemData!.description!,
+                    widget.itemDetails!.description!,
                     style: TextStyle(),
                   ),
                 ),
@@ -163,13 +163,13 @@ class _ItemDetailsState extends State<ItemDetails> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (cartList.productIds
-                              .contains(widget.itemData!.id)) {
+                              .contains(widget.itemDetails!.id)) {
                             Navigator.pushNamed(context, "/checkout");
                             return;
                           }
 
-                          cartList.addToCart(widget.itemData!).then((value) =>
-                              Navigator.pushReplacementNamed(
+                          cartList.addToCart(widget.itemDetails!).then(
+                              (value) => Navigator.pushReplacementNamed(
                                   context, "/checkout"));
                         },
                         style: ElevatedButton.styleFrom(
@@ -195,7 +195,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                                         ? null
                                         : () async {
                                             await cartList.removeFromCart(
-                                                widget.itemData!, false);
+                                                widget.itemDetails!, false);
                                           },
                                     icon: Icon(
                                       PhosphorIcons.minusCircle(),
@@ -215,7 +215,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                                         ? null
                                         : () async {
                                             await cartList
-                                                .addToCart(widget.itemData!);
+                                                .addToCart(widget.itemDetails!);
                                           },
                                     icon: Icon(
                                       PhosphorIcons.plusCircle(),
@@ -231,7 +231,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                                   ? null
                                   : () async {
                                       await cartList
-                                          .addToCart(widget.itemData!);
+                                          .addToCart(widget.itemDetails!);
                                     },
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: theme.secondary,

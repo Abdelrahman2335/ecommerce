@@ -23,8 +23,8 @@ class _WishListContentState extends State<WishListContent> {
 
   @override
   Widget build(BuildContext context) {
-    CartViewModel inCartProvider =
-        Provider.of<CartViewModel>(context, listen: true);
+    CartProvider inCartProvider =
+        Provider.of<CartProvider>(context, listen: true);
     return Selector(
         selector: (BuildContext ctx, WishListViewModel value) => value.items,
         builder: (context, usedProvider, child) {
@@ -83,7 +83,7 @@ class _WishListContentState extends State<WishListContent> {
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => ItemDetails(
-                                      itemData: data,
+                                      itemDetails: data,
                                     )));
                           },
                           child: ConstrainedBox(

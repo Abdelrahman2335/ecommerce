@@ -1,11 +1,13 @@
+import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/login_screen.dart';
+import 'package:ecommerce/features/home/presentation/view/screens/item_details.dart';
 import 'package:ecommerce/presentation/screens/items/layout.dart';
 import 'package:ecommerce/presentation/screens/auth/profile_screen.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/create_user_screen.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/forgot_password.dart';
 import 'package:ecommerce/features/cart/presentation/view/screen/check_out.dart';
-import 'package:ecommerce/features/cart/presentation/view/screen/cart_screen.dart';
+import 'package:ecommerce/features/cart/presentation/view/screen/cart_view.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/user_registration_screen.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/user_location.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +21,7 @@ abstract class AppRouter {
   static const kForgotPasswordScreen = "/forgot";
   static const kCheckoutScreen = "/checkout";
   static const kCartScreen = "/cart";
+  static const kItemDetails = "/item_details";
   static const kUserSetupScreen = "/user_setup";
   static const kUserLocationScreen = "/user_location";
 
@@ -60,7 +63,14 @@ abstract class AppRouter {
       ),
       GoRoute(
         path: kCartScreen,
-        builder: (context, state) => const CartScreen(),
+        builder: (context, state) => const CartView(),
+      ),
+      GoRoute(
+        path: kItemDetails,
+        builder: (context, state) {
+          final itemDetails = state.extra as Product;
+          return  ItemDetails(itemDetails: itemDetails,);
+        },
       ),
       GoRoute(
         path: kUserSetupScreen,

@@ -46,8 +46,7 @@ void main() async {
         create: (_) => HomeProvider(HomeRepoImpl()),
       ),
 
-      ChangeNotifierProvider(
-          create: (_) => CartViewModel(CartRepositoryImpl())),
+      ChangeNotifierProvider(create: (_) => CartProvider(CartRepositoryImpl())),
       ChangeNotifierProvider(
           create: (_) => WishListViewModel(WishListRepositoryImpl())),
       ChangeNotifierProvider(create: (_) => PaymentProvider()),

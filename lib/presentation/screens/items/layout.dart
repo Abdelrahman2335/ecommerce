@@ -1,7 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:ecommerce/features/home/presentation/view/screens/home_screen.dart';
 import 'package:ecommerce/presentation/screens/items/wishlist.dart';
-import 'package:ecommerce/features/cart/presentation/view/screen/cart_screen.dart';
+import 'package:ecommerce/features/cart/presentation/view/screen/cart_view.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
@@ -34,7 +34,7 @@ class _LayOutState extends State<LayOut> {
   final List<Widget> selectedPage = [
     const HomeScreen(),
     const Wishlist(),
-    const CartScreen(),
+    const CartView(),
   ];
 
   @override

@@ -24,7 +24,7 @@ class _HomeContentState extends State<HomeContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<HomeProvider, CartViewModel>(
+    return Consumer2<HomeProvider, CartProvider>(
       builder: (BuildContext context, value, value2, Widget? child) {
         return SliverGrid(
           gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -84,7 +84,7 @@ class _HomeContentState extends State<HomeContent> {
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => ItemDetails(
-                              itemData: data,
+                              itemDetails: data,
                             )));
                   },
 

@@ -67,8 +67,8 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CartViewModel cartProvider =
-        Provider.of<CartViewModel>(context, listen: false);
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
 
     PaymentProvider paymentProvider =
         Provider.of<PaymentProvider>(context, listen: true);
@@ -77,7 +77,7 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
     /// and the other is reduce (if you will use reduce you have to make sure that the list is not empty)
 
     num itemsPrice = 0;
-    for (var cartItem in cartProvider.items) {
+    for (var cartItem in cartProvider.fetchedItems) {
       // Find the corresponding product
       var product = cartProvider.fetchedItems.firstWhere(
         (prod) => prod.product.id == cartItem.product.id,
@@ -230,20 +230,20 @@ class _CheckOutScreenState extends State<CheckOutScreen> {
                                 discount: promo.toString(),
                                 paymentMethod: paymentProvider.paymentMethod,
                                 products: List.generate(
-                                  cartProvider.items.length,
+                                  cartProvider.fetchedItems.length,
                                   (index) => OrderProductModel(
                                     id: cartProvider
                                         .fetchedItems[index].product.id!,
                                     category: cartProvider
-                                        .items[index].product.category!,
+                                        .fetchedItems[index].product.category!,
                                     imageUrl: cartProvider
-                                        .items[index].product.images![0],
+                                        .fetchedItems[index].product.images![0],
                                     description: cartProvider
-                                        .items[index].product.description!,
+                                        .fetchedItems[index].product.description!,
                                     title: cartProvider
-                                        .items[index].product.title!,
+                                        .fetchedItems[index].product.title!,
                                     price: cartProvider
-                                        .items[index].product.price!,
+                                        .fetchedItems[index].product.price!,
                                     quantity: cartProvider
                                         .fetchedItems[index].quantity,
                                     status: OrderStatus.pending,
