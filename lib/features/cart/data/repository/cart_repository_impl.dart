@@ -5,7 +5,7 @@ import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 
 import 'cart_repository.dart';
-import 'cart_model.dart';
+import '../model/cart_model.dart';
 
 class CartRepositoryImpl implements CartRepository {
   static final CartRepositoryImpl _instance = CartRepositoryImpl._internal();
@@ -97,7 +97,7 @@ class CartRepositoryImpl implements CartRepository {
           }
         }
       } else {
-        await cartRef?.doc(docId).set(
+        await cartRef!.doc(docId).set(
             CartModel(userId: _userId, product: product, quantity: 1).toJson());
 
         fetchedProducts
@@ -119,11 +119,12 @@ class CartRepositoryImpl implements CartRepository {
 
     try {
       /// Get the document from the database with this ID
-      DocumentSnapshot<Map<String, dynamic>> docSnapshot =
-          await cartRef!.doc(docId).get();
-      if (!docSnapshot.exists) return;
 
-      int currentQuantity = docSnapshot.data()?["quantity"] ?? 0;
+      if (fetchedProducts.isEmpty) return;
+
+      CartModel selectedProduct = fetchedProducts
+          .firstWhere((cartItem) => cartItem.product.id == product.id);
+      int currentQuantity = selectedProduct.quantity;
       log("Current quantity: $currentQuantity");
 
       if (currentQuantity > 1 && !deleteItem) {
@@ -132,13 +133,10 @@ class CartRepositoryImpl implements CartRepository {
         });
 
         /// Update fetchedItems immediately
-        for (var item in fetchedProducts) {
-          if (item.product.id == product.id) {
-            item.quantity--;
-            log("Item quantity updated: ${item.product.id}: ${item.quantity}");
-            break;
-          }
-        }
+
+        selectedProduct.quantity--;
+        log("Item quantity updated: ${selectedProduct.product.id}: ${selectedProduct.quantity}");
+
         totalQuantity--;
       } else {
         await cartRef!.doc(docId).delete();

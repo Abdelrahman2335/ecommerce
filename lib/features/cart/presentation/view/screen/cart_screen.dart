@@ -7,7 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../../../data/cart_model.dart';
+import '../../../data/model/cart_model.dart';
 import '../../../../../core/widgets/custom_button.dart';
 import '../../../../home/presentation/view/screens/item_details.dart';
 

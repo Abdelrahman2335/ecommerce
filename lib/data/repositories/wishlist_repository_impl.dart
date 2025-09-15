@@ -32,36 +32,36 @@ class WishListRepositoryImpl implements WishListRepository {
   /// also it's used to filter the data to get only the wished items
   @override
   fetchData() async {
-    _userId = firebaseService.auth.currentUser?.uid;
-    mainListRef = firebaseService.firestore.collection("mainData");
-    wishListRef = firebaseService.firestore.collection("wishList");
+    // _userId = firebaseService.auth.currentUser?.uid;
+    // mainListRef = firebaseService.firestore.collection("mainData");
+    // wishListRef = firebaseService.firestore.collection("wishList");
 
-    /// Don't take [docSnapshot] out of the try block, when we are creating the doc for the first time it's null
-    try {
-      wishData =
-          await wishListRef?.doc(_userId).get().then((value) => value.data());
+    // /// Don't take [docSnapshot] out of the try block, when we are creating the doc for the first time it's null
+    // try {
+    //   wishData =
+    //       await wishListRef?.doc(_userId).get().then((value) => value.data());
 
-      productIds = wishData?["productId"] ?? [];
+    //   productIds = wishData?["productId"] ?? [];
 
-      /// You have to check if the [wishData] is not null and not empty or you will catch an error
-      if (wishData != null && !wishData?["productId"].isEmpty) {
-        /// Important to know that whereIn is limited with only 10 elements.
-        /// this variable is used to get the data from the database
-        /// [where] and [whereIn] go inside the document. Note: doc id is the same as the product id
-        QuerySnapshot<Map<String, dynamic>> docSnapshot =
-            await mainListRef!.where("id", whereIn: productIds).get();
+    //   /// You have to check if the [wishData] is not null and not empty or you will catch an error
+    //   if (wishData != null && !wishData?["productId"].isEmpty) {
+    //     /// Important to know that whereIn is limited with only 10 elements.
+    //     /// this variable is used to get the data from the database
+    //     /// [where] and [whereIn] go inside the document. Note: doc id is the same as the product id
+    //     QuerySnapshot<Map<String, dynamic>> docSnapshot =
+    //         await mainListRef!.where("id", whereIn: productIds).get();
 
-        if (docSnapshot.docs.isNotEmpty) {
-          items.addAll(docSnapshot.docs
-              .map((element) => Product.fromJson(element.data().toString())));
-          noItemsInWishList = false;
-        }
-      } else {
-        return;
-      }
-    } catch (error) {
-      log("Error fetchData: $error");
-    }
+    //     if (docSnapshot.docs.isNotEmpty) {
+    //       items.addAll(docSnapshot.docs
+    //           .map((element) => Product.fromJson(element.data().toString())));
+    //       noItemsInWishList = false;
+    //     }
+    //   } else {
+    //     return;
+    //   }
+    // } catch (error) {
+    //   log("Error fetchData: $error");
+    // }
   }
 
   @override
