@@ -1,14 +1,14 @@
 import 'dart:developer';
 
-import 'package:ecommerce/domain/repositories/order_repository.dart';
+import 'package:ecommerce/features/order_managment/data/repository/order_repo.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/order_model.dart';
+import '../../../../data/models/order_model.dart';
 
-class OrderViewModel extends ChangeNotifier {
+class OrderProvider extends ChangeNotifier {
   final OrderRepository _orderRepository;
 
-  OrderViewModel(this._orderRepository);
+  OrderProvider(this._orderRepository);
 
   bool _isLoading = false;
 

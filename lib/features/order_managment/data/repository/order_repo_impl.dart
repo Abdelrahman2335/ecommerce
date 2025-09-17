@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/data/models/order_product_model.dart';
+import 'package:ecommerce/features/order_managment/data/repository/order_repo.dart';
 
-import '../../domain/repositories/order_repository.dart';
-import '../models/order_model.dart';
+import '../../../../data/models/order_model.dart';
 
 class OrderRepositoryImpl implements OrderRepository {
   final FirebaseService _firebaseService = FirebaseService();

@@ -4,13 +4,15 @@ import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/auth/data/create_user_repo/create_user_repo_impl.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo_impl.dart';
-import 'package:ecommerce/data/repositories/order_repository_impl.dart';
+import 'package:ecommerce/features/order_managment/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/auth/data/auth_repo/auth_repo_impl.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo_impl.dart';
+import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
+import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
-import 'package:ecommerce/presentation/provider/order_viewmodel.dart';
+import 'package:ecommerce/features/order_managment/presentation/manager/order_provider.dart';
 import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +60,10 @@ void main() async {
         create: (_) => LocationProvider(),
       ),
       ChangeNotifierProvider(
-        create: (_) => OrderViewModel(OrderRepositoryImpl()),
+        create: (_) => OrderProvider(OrderRepositoryImpl()),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => CheckoutProvider(CheckoutRepositoryImpl()),
       ),
     ], child: const MyApp()));
   } catch (error) {
