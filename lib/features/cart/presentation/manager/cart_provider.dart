@@ -10,9 +10,7 @@ class CartProvider extends ChangeNotifier {
   final CartRepositoryImpl cartRepositoryImpl = CartRepositoryImpl();
 
   CartProvider(this._cartProvider) {
-    Future.microtask(
-      initializeCart(),
-    );
+    Future.microtask(initializeCart());
   }
 
   List<CartModel> _fetchedItems = [];
@@ -20,26 +18,29 @@ class CartProvider extends ChangeNotifier {
   int _totalQuantity = 0;
   Map<int, int> _totalItemCount = {};
 
-  bool _isLoading = false; // Track loading state
+  bool _isLoading = false;
   bool _noItemsInCart = true;
+  bool _itemInCart = false;
   String errorMessage = '';
 
   bool get isLoading => _isLoading;
 
   bool get noItemsInCart => _noItemsInCart;
+  bool get itemInCart => _itemInCart;
 
   int get totalQuantity => _totalQuantity;
 
   List<CartModel> get fetchedItems => _fetchedItems;
 
   int getProductQuantity(int productId) {
+    _itemInCart = productIds.contains((productId));
+
     return _totalItemCount[productId] ?? 0;
   }
 
   // Initialize cart
   initializeCart() async {
-    _isLoading = true; // Set isLoading to true before starting the operation
-    notifyListeners();
+    _isLoading = true;
 
     try {
       await _cartProvider.initializeCart();
@@ -52,14 +53,14 @@ class CartProvider extends ChangeNotifier {
       errorMessage = "Failed to load cart: $e";
       rethrow;
     } finally {
-      _isLoading = false; // Set isLoading to false after the operation is done
+      _isLoading = false; 
       notifyListeners();
     }
   }
 
   // Add to cart
   Future<void> addToCart(Product product) async {
-    _isLoading = true; // Set isLoading to true before starting the operation
+    _isLoading = true; 
     notifyListeners();
 
     try {
@@ -76,20 +77,19 @@ class CartProvider extends ChangeNotifier {
       errorMessage = "Failed to add item to cart: $e";
       rethrow;
     } finally {
-      _isLoading = false; // Set isLoading to false after the operation is done
+      _isLoading = false;
       notifyListeners();
     }
   }
 
   // Remove from cart
   Future<void> removeFromCart(Product product, bool deleteItem) async {
-    _isLoading = true; // Set isLoading to true before starting the operation
+    _isLoading = true; 
     notifyListeners();
 
     try {
       await _cartProvider.removeFromCart(product, deleteItem);
 
-      /// Update fetchedItems immediately
       _fetchedItems = cartRepositoryImpl.fetchedProducts;
       _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
@@ -101,7 +101,7 @@ class CartProvider extends ChangeNotifier {
       errorMessage = "Failed to remove item from cart: $e";
       rethrow;
     } finally {
-      _isLoading = false; // Set isLoading to false after the operation is done
+      _isLoading = false;
       notifyListeners();
     }
   }
