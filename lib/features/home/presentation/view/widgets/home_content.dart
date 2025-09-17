@@ -11,9 +11,7 @@ import '../../manager/home_provider.dart';
 import '../screens/item_details.dart';
 
 class HomeContent extends StatefulWidget {
-  const HomeContent({
-    super.key,
-  });
+  const HomeContent({super.key});
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -45,18 +43,8 @@ class _HomeContentState extends State<HomeContent> {
                 .productIds
                 .contains((data.id));
 
-            /// this boolean is used to check if the item is in the cart
-
             bool isInCart = value2.productIds.contains((data.id));
-            if (isInCart) {
-              itemCount = value2.fetchedItems
-                  .where((element) => element.product.id == data.id)
-                  .first
-                  .quantity;
-            } else {
-              itemCount = 0;
-            }
-
+            itemCount = value2.getProductQuantity(data.id!);
             return Animate(
               effects: const [
                 FadeEffect(

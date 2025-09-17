@@ -36,7 +36,9 @@ class CartViewBody extends StatelessWidget {
                       (context, index) {
                         return Animate(
                           effects: const [
-                            FadeEffect(duration: Duration(milliseconds: 500)),
+                            FadeEffect(
+                              duration: Duration(milliseconds: 500),
+                            ),
                           ],
                           child: CartItem(
                               selectedCartItem: value.fetchedItems[index]),

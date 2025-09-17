@@ -1,4 +1,3 @@
-import 'package:ecommerce/data/category_data.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +16,7 @@ class CategoryWidget extends StatelessWidget {
       width: double.infinity,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: categoryData.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
           return Row(
             spacing: 8,

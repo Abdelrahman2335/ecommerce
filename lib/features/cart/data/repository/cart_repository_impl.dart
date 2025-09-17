@@ -26,7 +26,7 @@ class CartRepositoryImpl implements CartRepository {
   int totalQuantity = 0;
 
   @override
-  initializeCart() async {
+  Future<void> initializeCart() async {
     productIds.clear();
     fetchedProducts.clear();
     totalQuantity = 0;
@@ -49,6 +49,7 @@ class CartRepositoryImpl implements CartRepository {
         for (CartModel item in fetchedProducts) {
           productIds.add(item.product.id);
         }
+        totalItemCount();
 
         /// Now check if we have items in cart
         if (fetchedProducts.isNotEmpty) {
@@ -67,8 +68,18 @@ class CartRepositoryImpl implements CartRepository {
       }
     } catch (error) {
       log("Error in the Cart: $error");
-      // log("Error in the Cart: ${cartData?.docs.length.toString()}");
-    } finally {}
+    }
+  }
+
+  @override
+  Map<int, int> totalItemCount() {
+    Map<int, int> productQuantities = {};
+
+    productQuantities.clear();
+    for (var item in fetchedProducts) {
+      productQuantities[item.product.id!] = item.quantity;
+    }
+    return productQuantities;
   }
 
   @override

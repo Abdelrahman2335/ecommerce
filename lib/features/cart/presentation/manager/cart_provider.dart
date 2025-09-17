@@ -10,12 +10,15 @@ class CartProvider extends ChangeNotifier {
   final CartRepositoryImpl cartRepositoryImpl = CartRepositoryImpl();
 
   CartProvider(this._cartProvider) {
-    Future.microtask(() => initializeCart());
+    Future.microtask(
+      initializeCart(),
+    );
   }
 
   List<CartModel> _fetchedItems = [];
   List productIds = [];
   int _totalQuantity = 0;
+  Map<int, int> _totalItemCount = {};
 
   bool _isLoading = false; // Track loading state
   bool _noItemsInCart = true;
@@ -27,11 +30,14 @@ class CartProvider extends ChangeNotifier {
 
   int get totalQuantity => _totalQuantity;
 
-
   List<CartModel> get fetchedItems => _fetchedItems;
 
+  int getProductQuantity(int productId) {
+    return _totalItemCount[productId] ?? 0;
+  }
+
   // Initialize cart
-  Future<void> initializeCart() async {
+  initializeCart() async {
     _isLoading = true; // Set isLoading to true before starting the operation
     notifyListeners();
 
@@ -40,6 +46,7 @@ class CartProvider extends ChangeNotifier {
       _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
+      _totalItemCount = cartRepositoryImpl.totalItemCount();
       _noItemsInCart = _fetchedItems.isEmpty;
     } catch (e) {
       errorMessage = "Failed to load cart: $e";
@@ -62,6 +69,7 @@ class CartProvider extends ChangeNotifier {
       _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
+      _totalItemCount = cartRepositoryImpl.totalItemCount();
 
       _noItemsInCart = _fetchedItems.isEmpty;
     } catch (e) {
@@ -86,6 +94,7 @@ class CartProvider extends ChangeNotifier {
       _fetchedItems = cartRepositoryImpl.fetchedProducts;
       productIds = cartRepositoryImpl.productIds;
       _totalQuantity = cartRepositoryImpl.totalQuantity;
+      _totalItemCount = cartRepositoryImpl.totalItemCount();
 
       _noItemsInCart = _fetchedItems.isEmpty;
     } catch (e) {
