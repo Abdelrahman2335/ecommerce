@@ -1,4 +1,7 @@
 import 'dart:developer';
+
+import 'package:ecommerce/data/models/address_model.dart';
+
 import 'checkout_repository.dart';
 import '../models/checkout_summary.dart';
 import '../models/promo_code_model.dart';
@@ -73,17 +76,6 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   @override
   Future<PromoCodeModel> validatePromoCode(String promoCode) async {
     try {
-      // Simulate API call delay
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      if (promoCode.isEmpty) {
-        return PromoCodeModel(
-          code: promoCode,
-          discountAmount: 0,
-          isValid: false,
-        );
-      }
-
       if (_promoCodes.containsKey(promoCode)) {
         return PromoCodeModel(
           code: promoCode,
@@ -137,23 +129,9 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
   }
 
   @override
-  Future<Map<String, num>> getAvailablePromoCodes() async {
-    try {
-      // Simulate API call
-      await Future.delayed(const Duration(milliseconds: 300));
-      return Map.from(_promoCodes);
-    } catch (e) {
-      log("Error getting available promo codes: $e");
-      return {};
-    }
-  }
-
-  @override
-  Future<bool> validateCheckoutData({
-    required List<CartModel> cartItems,
-    required String paymentMethod,
-    required String shippingAddress,
-  }) async {
+  Future<bool> validateCheckoutData(
+      {required List<CartModel> cartItems,
+      required AddressModel shippingAddress}) async {
     try {
       // Validate cart items
       if (cartItems.isEmpty) {
@@ -171,14 +149,9 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
         }
       }
 
-      // Validate payment method
-      if (paymentMethod.isEmpty) {
-        log("Checkout validation failed: Payment method is required");
-        return false;
-      }
-
       // Validate shipping address
-      if (shippingAddress.isEmpty) {
+      if (shippingAddress.street == null ||
+          shippingAddress.street!.trim().isEmpty) {
         log("Checkout validation failed: Shipping address is required");
         return false;
       }

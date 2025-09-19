@@ -1,8 +1,7 @@
+import 'package:ecommerce/presentation/provider/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-
-import '../../provider/payment_provider.dart';
 
 class PaymentBottomSheet extends StatefulWidget {
   const PaymentBottomSheet({
@@ -42,7 +41,8 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
               color: Colors.green,
             ),
             onTap: () {
-              paymentProvider.payByCard("Cash On Delivery");
+              paymentProvider.selectPayment(
+                  selectedPayment: PaymentMethod.cashOnDelivery);
               Navigator.pop(context);
             },
           ),
@@ -60,7 +60,8 @@ class _PaymentBottomSheetState extends State<PaymentBottomSheet> {
               color: Theme.of(context).colorScheme.secondary,
             ),
             onTap: () {
-              paymentProvider.payByCard("Pay By Card");
+              paymentProvider.selectPayment(
+                  selectedPayment: PaymentMethod.payByCard);
               Navigator.pop(context);
             },
           ),

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ecommerce/features/order_managment/data/repository/order_repo.dart';
+import 'package:ecommerce/features/order_management/data/repository/order_repo.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../data/models/order_model.dart';
@@ -14,7 +14,7 @@ class OrderProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  placeOrder({required OrderModel order}) async {
+  void placeOrder({required OrderModel order}) async {
     try {
       _isLoading = true;
       notifyListeners();

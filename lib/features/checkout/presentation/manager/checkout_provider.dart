@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:ecommerce/data/models/address_model.dart';
 import 'package:flutter/material.dart';
 import '../../data/repository/checkout_repository.dart';
 import '../../data/models/checkout_summary.dart';
@@ -26,6 +27,17 @@ class CheckoutProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   Map<String, num> get availablePromoCodes => _availablePromoCodes;
 
+  /// Get items price from checkout summary, with fallback calculation
+  num getItemsPrice(List<CartModel> cartItems) {
+    // If checkout summary is available, use it
+    if (_checkoutSummary != null) {
+      return _checkoutSummary!.itemsPrice;
+    }
+
+    // Fallback: calculate items price directly
+    return _checkoutRepository.calculateItemsPrice(cartItems).itemsPrice;
+  }
+
   /// Initialize checkout with cart items
   Future<void> initializeCheckout(List<CartModel> cartItems) async {
     try {
@@ -34,7 +46,6 @@ class CheckoutProvider extends ChangeNotifier {
       notifyListeners();
 
       // Load available promo codes
-      _availablePromoCodes = await _checkoutRepository.getAvailablePromoCodes();
 
       // Calculate initial checkout summary
       await _calculateCheckoutSummary(cartItems);
@@ -119,8 +130,7 @@ class CheckoutProvider extends ChangeNotifier {
   /// Validate checkout before proceeding to payment
   Future<bool> validateCheckout({
     required List<CartModel> cartItems,
-    required String paymentMethod,
-    required String shippingAddress,
+    required AddressModel shippingAddress,
   }) async {
     try {
       _isLoading = true;
@@ -129,7 +139,6 @@ class CheckoutProvider extends ChangeNotifier {
 
       final isValid = await _checkoutRepository.validateCheckoutData(
         cartItems: cartItems,
-        paymentMethod: paymentMethod,
         shippingAddress: shippingAddress,
       );
 

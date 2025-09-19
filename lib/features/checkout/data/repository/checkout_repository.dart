@@ -1,3 +1,7 @@
+
+
+import 'package:ecommerce/data/models/address_model.dart';
+
 import '../models/checkout_summary.dart';
 import '../models/promo_code_model.dart';
 import '../../../cart/data/model/cart_model.dart';
@@ -19,13 +23,9 @@ abstract class CheckoutRepository {
     required num discount,
   });
 
-  /// Get available promo codes
-  Future<Map<String, num>> getAvailablePromoCodes();
-
   /// Process checkout validation before confirming order
   Future<bool> validateCheckoutData({
     required List<CartModel> cartItems,
-    required String paymentMethod,
-    required String shippingAddress,
+    required AddressModel shippingAddress,
   });
 }

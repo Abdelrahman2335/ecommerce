@@ -4,7 +4,7 @@ import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/auth/data/create_user_repo/create_user_repo_impl.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo_impl.dart';
-import 'package:ecommerce/features/order_managment/data/repository/order_repo_impl.dart';
+import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/auth/data/auth_repo/auth_repo_impl.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo_impl.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
@@ -12,8 +12,8 @@ import 'package:ecommerce/features/checkout/presentation/manager/checkout_provid
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
-import 'package:ecommerce/features/order_managment/presentation/manager/order_provider.dart';
-import 'package:ecommerce/presentation/provider/payment_viewmodel.dart';
+import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
+import 'package:ecommerce/presentation/provider/payment_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +25,6 @@ import 'features/auth/presentation/manager/auth_provider.dart';
 import 'features/auth/presentation/manager/user_registration_provider.dart';
 import 'features/cart/presentation/manager/cart_provider.dart';
 import 'presentation/provider/location_viewmodel.dart';
-import 'presentation/provider/payment_provider.dart';
 import 'presentation/provider/wishlist_viewmodel.dart';
 
 void main() async {
@@ -51,10 +50,9 @@ void main() async {
       ChangeNotifierProvider(create: (_) => CartProvider(CartRepositoryImpl())),
       ChangeNotifierProvider(
           create: (_) => WishListViewModel(WishListRepositoryImpl())),
-      ChangeNotifierProvider(create: (_) => PaymentProvider()),
       // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
-        create: (_) => PaymentViewModel(PaymentRepositoryImpl()),
+        create: (_) => PaymentProvider(PaymentRepositoryImpl()),
       ),
       ChangeNotifierProvider(
         create: (_) => LocationProvider(),

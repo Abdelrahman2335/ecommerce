@@ -1,8 +1,7 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/data/models/order_product_model.dart';
-import 'package:ecommerce/features/order_managment/data/repository/order_repo.dart';
+import 'package:ecommerce/features/order_management/data/repository/order_repo.dart';
 
 import '../../../../data/models/order_model.dart';
 
@@ -35,8 +34,8 @@ class OrderRepositoryImpl implements OrderRepository {
           .get();
 
       if (data.exists) {
-        OrderProductModel item = data.data()!["cartItems"] as OrderProductModel;
-        item.status = OrderStatus.cancelled;
+        OrderModel item = data.data()!["cartItems"] as OrderModel;
+        item.copyWith(orderStatus: OrderStatus.cancelled);
       }
     } catch (error) {
       log("error in the cancelOrder: $error");

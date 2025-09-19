@@ -1,23 +1,22 @@
+import 'package:ecommerce/presentation/provider/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../provider/payment_provider.dart';
-import 'payment_bottomSheet.dart';
+import 'payment_bottom_sheet.dart';
 
-class PaymentMethod extends StatefulWidget {
-  const PaymentMethod({
+class PaymentMethodWidget extends StatefulWidget {
+  const PaymentMethodWidget({
     super.key,
   });
 
   @override
-  State<PaymentMethod> createState() => _PaymentMethodState();
+  State<PaymentMethodWidget> createState() => _PaymentMethodWidgetState();
 }
 
-class _PaymentMethodState extends State<PaymentMethod> {
+class _PaymentMethodWidgetState extends State<PaymentMethodWidget> {
   @override
   Widget build(BuildContext context) {
-    PaymentProvider paymentProvider =
-        Provider.of<PaymentProvider>(context, listen: true);
+    PaymentProvider paymentProvider = Provider.of<PaymentProvider>(context);
     return Container(
       height: MediaQuery.of(context).size.height * 0.10,
       width: MediaQuery.of(context).size.width,
@@ -47,11 +46,8 @@ class _PaymentMethodState extends State<PaymentMethod> {
               left: 6,
               child: Opacity(
                 opacity: 0.5,
-                child: Text(
-                  paymentProvider.paymentMethod,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                ),
+                child: Text(paymentProvider.getPaymentMethod.displayName,
+                    overflow: TextOverflow.ellipsis, maxLines: 2),
               ),
             ),
             Positioned(
