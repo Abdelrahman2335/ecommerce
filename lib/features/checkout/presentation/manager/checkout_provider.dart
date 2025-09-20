@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/data/models/order_model.dart';
+import 'package:ecommerce/presentation/provider/payment_provider.dart';
 import 'package:flutter/material.dart';
 import '../../data/repository/checkout_repository.dart';
 import '../../data/models/checkout_summary.dart';
@@ -17,7 +19,6 @@ class CheckoutProvider extends ChangeNotifier {
   CheckoutModel? _checkoutSummary;
   PromoCodeModel? _appliedPromoCode;
   String? _errorMessage;
-  Map<String, num> _availablePromoCodes = {};
 
   // Getters
   bool get isLoading => _isLoading;
@@ -25,7 +26,6 @@ class CheckoutProvider extends ChangeNotifier {
   CheckoutModel? get checkoutSummary => _checkoutSummary;
   PromoCodeModel? get appliedPromoCode => _appliedPromoCode;
   String? get errorMessage => _errorMessage;
-  Map<String, num> get availablePromoCodes => _availablePromoCodes;
 
   /// Get items price from checkout summary, with fallback calculation
   num getItemsPrice(List<CartModel> cartItems) {
@@ -183,5 +183,56 @@ class CheckoutProvider extends ChangeNotifier {
     _isLoading = false;
     _isValidatingPromo = false;
     notifyListeners();
+  }
+
+  /// Confirm order with validation and order creation
+  /// Returns OrderModel if successful, null if failed
+  Future<OrderModel?> confirmOrder({
+    required List<CartModel> cartItems,
+    required AddressModel shippingAddress,
+    required PaymentMethod paymentMethod,
+  }) async {
+    try {
+      _isLoading = true;
+      _errorMessage = null;
+      notifyListeners();
+
+      // Validate checkout first
+      final isValid = await validateCheckout(
+        cartItems: cartItems,
+        shippingAddress: shippingAddress,
+      );
+
+      if (!isValid) {
+        return null; // Error message is already set in validateCheckout
+      }
+
+      // Calculate total price
+      final itemsPrice = getItemsPrice(cartItems);
+      final totalPrice = _checkoutSummary?.totalPrice ?? itemsPrice + 10;
+      final deliveryFee = _checkoutSummary?.shippingFee ?? 10;
+      final discount = _checkoutSummary?.discount ?? 0;
+
+      // Create order
+      final order = OrderModel(
+        totalPrice: totalPrice,
+        deliveryFee: deliveryFee,
+        discount: discount,
+        paymentMethod: paymentMethod,
+        products: cartItems,
+        createdAt: DateTime.now(),
+        shippingAddress: shippingAddress,
+      );
+
+      log("Order created successfully for ${paymentMethod.displayName}");
+      return order;
+    } catch (e) {
+      log("Error confirming order: $e");
+      _errorMessage = "Failed to process order. Please try again.";
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

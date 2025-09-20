@@ -9,6 +9,7 @@ import 'package:ecommerce/features/auth/data/auth_repo/auth_repo_impl.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo_impl.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
+import 'package:ecommerce/features/checkout/presentation/manager/checkout_address_provider.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
@@ -22,6 +23,7 @@ import 'features/cart/data/repository/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
 import 'data/repositories/wishlist_repository_impl.dart';
 import 'features/auth/presentation/manager/auth_provider.dart';
+import 'features/auth/presentation/manager/address_provider.dart';
 import 'features/auth/presentation/manager/user_registration_provider.dart';
 import 'features/cart/presentation/manager/cart_provider.dart';
 import 'presentation/provider/location_viewmodel.dart';
@@ -43,6 +45,15 @@ void main() async {
           create: (_) => AuthProvider(LoginRepositoryImpl())),
       ChangeNotifierProvider(
           create: (_) => UserRegistrationProvider(UserRegistrationRepoImpl())),
+      ChangeNotifierProvider(
+          create: (_) => AddressProvider(UserRegistrationRepoImpl())),
+      ChangeNotifierProxyProvider<AddressProvider, CheckoutAddressProvider>(
+        create: (context) => CheckoutAddressProvider(
+          Provider.of<AddressProvider>(context, listen: false),
+        ),
+        update: (context, addressProvider, checkoutAddressProvider) =>
+            checkoutAddressProvider ?? CheckoutAddressProvider(addressProvider),
+      ),
       ChangeNotifierProvider(
         create: (_) => HomeProvider(HomeRepoImpl()),
       ),

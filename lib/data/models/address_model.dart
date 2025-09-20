@@ -6,6 +6,7 @@ class AddressModel {
   String? street;
   double? latitude;
   double? longitude;
+  bool? defaultAddress;
 
   AddressModel(
       {this.city,
@@ -14,7 +15,8 @@ class AddressModel {
       this.country,
       this.fullAddress,
       this.latitude,
-      this.longitude});
+      this.longitude,
+      this.defaultAddress = false});
 
   /// Optionally, create a fromJson() method for deserialization
   factory AddressModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class AddressModel {
       street: json['street'],
       latitude: json['latitude'],
       longitude: json['longitude'],
+      defaultAddress: json['defaultAddress'] ?? false,
     );
   }
 
@@ -39,6 +42,7 @@ class AddressModel {
       if (street != null) 'street': street,
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
+      'defaultAddress': defaultAddress ?? false,
     };
   }
 }

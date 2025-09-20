@@ -4,7 +4,7 @@ import 'package:ecommerce/features/checkout/presentation/view/widgets/order_conf
 import 'package:ecommerce/features/checkout/presentation/view/widgets/promo_code_widget.dart';
 import 'package:ecommerce/presentation/provider/payment_provider.dart';
 import 'package:ecommerce/presentation/screens/payment/payment_method.dart';
-import 'package:ecommerce/presentation/widgets/address_with_order.dart';
+import 'package:ecommerce/features/checkout/presentation/view/widgets/shipping_address.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +42,7 @@ class CheckoutViewBody extends StatelessWidget {
                   ],
                 ),
                 Gap(9),
-                AddressWithOrder(),
+                ShippingAddress(),
                 Gap(26),
                 PaymentMethodWidget(),
                 Gap(19),
