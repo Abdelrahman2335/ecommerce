@@ -1,5 +1,5 @@
 
-import 'package:ecommerce/data/models/order_model.dart';
+import 'package:ecommerce/features/order_management/data/model/order_model.dart';
 
 abstract class OrderRepository {
   Future<void> placeOrder(OrderModel order);

@@ -1,14 +1,14 @@
-import 'package:ecommerce/features/home/presentation/view/widgets/banner_widget.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/category_widget.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/home_app_bar.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/banner_widget.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/category_widget.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/home_app_bar.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/custom_drawer.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../widgets/home_content.dart';
+import '../widgets/home_widgets/home_content.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

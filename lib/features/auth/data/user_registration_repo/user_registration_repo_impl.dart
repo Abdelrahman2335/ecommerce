@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/error/firebase_failure.dart';
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../../core/services/firebase_service.dart';
 import 'user_registration_repo.dart';
-import '../../../../data/models/customer_model.dart';
+import '../../../../core/models/customer_model.dart';
 
 class UserRegistrationRepoImpl implements UserRegistrationRepo {
   final FirebaseService _firebaseService = FirebaseService();

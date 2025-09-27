@@ -1,8 +1,8 @@
 import 'dart:math';
 
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 import 'package:ecommerce/features/cart/data/model/cart_model.dart';
-import 'package:ecommerce/presentation/provider/payment_provider.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 
 enum OrderStatus {
   notConfirmed('Not Confirmed'),

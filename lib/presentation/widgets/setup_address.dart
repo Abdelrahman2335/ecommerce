@@ -10,7 +10,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/cities.dart';
-import '../../data/models/address_model.dart';
+import '../../core/models/address_model.dart';
 import '../provider/location_viewmodel.dart';
 import '../../features/auth/presentation/manager/user_registration_provider.dart';
 

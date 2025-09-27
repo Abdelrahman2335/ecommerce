@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:ecommerce/features/order_management/data/repository/order_repo.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/order_model.dart';
+import '../../data/model/order_model.dart';
 
 class OrderProvider extends ChangeNotifier {
   final OrderRepository _orderRepository;

@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/failure.dart';
-import 'package:ecommerce/data/models/customer_model.dart';
+import 'package:ecommerce/core/models/customer_model.dart';
 
-import '../../../../data/models/address_model.dart';
+import '../../../../core/models/address_model.dart';
 
 abstract class UserRegistrationRepo {
   /// Update user profile information

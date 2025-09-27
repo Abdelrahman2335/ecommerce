@@ -22,7 +22,7 @@ class WishlistProvider extends ChangeNotifier {
   bool _isLoading = false;
 
   List _productIds = [];
-  List _items = [];
+  List<Product> _items = [];
 
   bool get isWishlistEmpty => _noItemsInWishList;
 
@@ -30,7 +30,7 @@ class WishlistProvider extends ChangeNotifier {
 
   List get productIds => _productIds;
 
-  List get items => _items;
+  List<Product> get items => _items;
 
   Future<void> initializeWishList() async {
     _isLoading = true;
@@ -44,7 +44,6 @@ class WishlistProvider extends ChangeNotifier {
     _isLoading = false;
     notifyListeners();
   }
-
 
   void addAndRemoveWish(Product product) async {
     try {

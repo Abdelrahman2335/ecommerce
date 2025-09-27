@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
-import '../../core/network/dio_client.dart';
-import '../../domain/repositories/payment_repository.dart';
+import '../../../../core/network/dio_client.dart';
+import 'payment_repository.dart';
 
 /// When a class [implements] an abstract class, it must provide an implementation for all methods in that abstract class.
 class PaymentRepositoryImpl implements PaymentRepository {

@@ -8,7 +8,7 @@ import 'package:ecommerce/features/auth/data/create_user_repo/create_user_repo.d
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../../../data/models/customer_model.dart';
+import '../../../../core/models/customer_model.dart';
 
 class SignupRepositoryImpl implements SignupRepository {
   final FirebaseService _firebaseService = FirebaseService();

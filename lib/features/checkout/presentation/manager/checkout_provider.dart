@@ -1,7 +1,7 @@
 import 'dart:developer';
-import 'package:ecommerce/data/models/address_model.dart';
-import 'package:ecommerce/data/models/order_model.dart';
-import 'package:ecommerce/presentation/provider/payment_provider.dart';
+import 'package:ecommerce/core/models/address_model.dart';
+import 'package:ecommerce/features/order_management/data/model/order_model.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:flutter/material.dart';
 import '../../data/repository/checkout_repository.dart';
 import '../../data/models/checkout_summary.dart';
@@ -100,7 +100,7 @@ class CheckoutProvider extends ChangeNotifier {
         _errorMessage = null;
       } else {
         _appliedPromoCode = null;
-        _errorMessage = "Invalid promo code";
+        _errorMessage = "Invalid voucher";
       }
 
       // Recalculate summary with new promo code

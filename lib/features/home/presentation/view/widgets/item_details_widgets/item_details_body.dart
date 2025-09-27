@@ -1,6 +1,6 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/item_images.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/product_action_buttons.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/item_details_widgets/item_images.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/item_details_widgets/product_action_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 

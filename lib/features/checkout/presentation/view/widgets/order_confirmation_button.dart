@@ -4,7 +4,7 @@ import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart'
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_address_provider.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
-import 'package:ecommerce/presentation/provider/payment_provider.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

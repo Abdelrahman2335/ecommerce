@@ -1,11 +1,10 @@
 import 'package:ecommerce/features/wishlist/presentation/manager/wishlist_provider.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/custom_drawer.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/custom_drawer.dart';
 import 'package:ecommerce/features/wishlist/presentation/view/widgets/app_bar.dart';
+import 'package:ecommerce/features/wishlist/presentation/view/widgets/wishlist_content.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
-import '../widgets/wishlist_content.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -16,7 +15,7 @@ class WishlistScreen extends StatelessWidget {
     return Scaffold(
       appBar: buildAppBar(context),
       drawer: CustomDrawer(),
-      body: wishlistProvider.isWishlistEmpty
+      body: (wishlistProvider.isWishlistEmpty)
           ? Center(
               child: Text("No items in the cart",
                   style: Theme.of(context).textTheme.labelMedium))
@@ -25,12 +24,7 @@ class WishlistScreen extends StatelessWidget {
                 duration: const Duration(milliseconds: 500),
               ),
               enabled: wishlistProvider.isLoading,
-              child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  children: const [SizedBox(height: 10), WishListContent()],
-                ),
-              ),
+              child: const SingleChildScrollView(child: WishlistContent()),
             ),
     );
   }

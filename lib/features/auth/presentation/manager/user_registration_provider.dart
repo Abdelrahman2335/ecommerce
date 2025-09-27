@@ -1,12 +1,12 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/error/firebase_failure.dart';
-import 'package:ecommerce/data/models/customer_model.dart';
+import 'package:ecommerce/core/models/customer_model.dart';
 import 'package:ecommerce/core/models/user_model.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/address_model.dart';
+import '../../../../core/models/address_model.dart';
 
 class UserRegistrationProvider extends ChangeNotifier {
   UserRegistrationProvider(this._userDataRepository);

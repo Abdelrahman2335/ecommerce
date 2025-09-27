@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/features/home/presentation/view/widgets/cart_quantity_control.dart';
+import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/cart_quantity_control.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,10 @@ import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 
 class ProductActionButtons extends StatelessWidget {
-  const ProductActionButtons({super.key, required this.selectedItem});
+  const ProductActionButtons({
+    super.key,
+    required this.selectedItem,
+  });
 
   final Product selectedItem;
 

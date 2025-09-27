@@ -1,4 +1,4 @@
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 import 'package:ecommerce/core/models/user_model.dart';
 
 class CustomerModel extends UserEntity {

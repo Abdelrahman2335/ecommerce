@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import '../../domain/repositories/payment_repository.dart';
-import '../../main.dart';
-import '../screens/payment/payment_web_view.dart';
+import '../../data/repository/payment_repository.dart';
+import '../../../../main.dart';
+import '../view/screens/payment_web_view.dart';
 
 enum PaymentMethod {
   cashOnDelivery("Cash on delivery"),

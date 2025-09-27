@@ -1,4 +1,4 @@
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 import 'package:ecommerce/features/auth/presentation/manager/address_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

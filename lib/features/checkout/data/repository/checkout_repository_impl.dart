@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 
 import 'checkout_repository.dart';
 import '../models/checkout_summary.dart';

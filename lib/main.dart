@@ -14,13 +14,13 @@ import 'package:ecommerce/firebase_options.dart';
 import 'package:ecommerce/features/auth/presentation/manager/create_user_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
-import 'package:ecommerce/presentation/provider/payment_provider.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'features/cart/data/repository/cart_repository_impl.dart';
-import 'data/repositories/paymob_repository_impl.dart';
+import 'features/payment/data/repository/paymob_repository_impl.dart';
 import 'features/wishlist/data/repository/wishlist_repository_impl.dart';
 import 'features/auth/presentation/manager/auth_provider.dart';
 import 'features/auth/presentation/manager/address_provider.dart';

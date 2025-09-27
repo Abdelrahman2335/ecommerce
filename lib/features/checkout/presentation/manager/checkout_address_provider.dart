@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/address_model.dart';
+import '../../../../core/models/address_model.dart';
 import '../../../auth/presentation/manager/address_provider.dart';
 
 /// Simple AddressProvider for checkout feature

@@ -28,7 +28,6 @@ class HomeRepoImpl implements ItemRepository {
               .map((i) => Product.fromMap(i))
               .toList();
 
-      log("Products loaded: $products");
       return Right(products);
     } catch (error) {
       if (error is DioException) {

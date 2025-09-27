@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/error/firebase_failure.dart';
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo.dart';
 import 'package:flutter/material.dart';
 

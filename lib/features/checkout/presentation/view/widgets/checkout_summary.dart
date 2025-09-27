@@ -29,7 +29,8 @@ class CheckoutSummary extends StatelessWidget {
             Text(
                 "Total items (${checkoutSummary?.totalQuantity ?? cartProvider.totalQuantity}):"),
             const Spacer(),
-            Text("\$${checkoutSummary?.itemsPrice ?? itemsPrice}"),
+            Text(
+                "\$${(checkoutSummary?.itemsPrice ?? itemsPrice).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}"),
           ],
         ),
         const Gap(12),
@@ -37,7 +38,7 @@ class CheckoutSummary extends StatelessWidget {
           children: [
             const Text("Shipping:"),
             const Spacer(),
-            Text("\$${checkoutSummary?.shippingFee ?? 10}"),
+            Text("\$${(checkoutSummary?.shippingFee ?? 10)}"),
           ],
         ),
         const Gap(12),
@@ -46,7 +47,7 @@ class CheckoutSummary extends StatelessWidget {
             const Text("Discount:"),
             const Spacer(),
             Text(
-              "\$${checkoutSummary?.discount ?? 0}",
+              "\$${(checkoutSummary?.discount ?? 0).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}",
               style: TextStyle(
                 color: (checkoutSummary?.discount ?? 0) > 0
                     ? Colors.green
@@ -64,7 +65,7 @@ class CheckoutSummary extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "\$${checkoutSummary?.totalPrice ?? itemsPrice + 10}",
+              "\$${(checkoutSummary?.totalPrice ?? itemsPrice + 10).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: (checkoutSummary?.discount ?? 0) > 0

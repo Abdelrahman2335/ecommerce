@@ -1,6 +1,6 @@
 
 
-import 'package:ecommerce/data/models/address_model.dart';
+import 'package:ecommerce/core/models/address_model.dart';
 
 import '../models/checkout_summary.dart';
 import '../models/promo_code_model.dart';

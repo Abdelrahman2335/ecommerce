@@ -2,8 +2,8 @@ import 'package:ecommerce/features/checkout/presentation/manager/checkout_provid
 import 'package:ecommerce/features/checkout/presentation/view/widgets/checkout_summary.dart';
 import 'package:ecommerce/features/checkout/presentation/view/widgets/order_confirmation_button.dart';
 import 'package:ecommerce/features/checkout/presentation/view/widgets/promo_code_widget.dart';
-import 'package:ecommerce/presentation/provider/payment_provider.dart';
-import 'package:ecommerce/presentation/screens/payment/payment_method.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
+import 'package:ecommerce/features/payment/presentation/view/widgets/payment_method.dart';
 import 'package:ecommerce/features/checkout/presentation/view/widgets/shipping_address.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
