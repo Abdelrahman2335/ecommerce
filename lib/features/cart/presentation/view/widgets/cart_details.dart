@@ -50,8 +50,8 @@ class CartDetails extends StatelessWidget {
                   Text("Total items ($itemCount):"),
                   const Spacer(),
                   TextButton(
-                    onPressed: () async {
-                      await context
+                    onPressed: ()  {
+                       context
                           .read<CartProvider>()
                           .removeFromCart(selectedCartItem.product, true);
                     },

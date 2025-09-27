@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce/core/widgets/custom_icon_button.dart';
 import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
-import 'package:ecommerce/presentation/provider/wishlist_viewmodel.dart';
+import 'package:ecommerce/features/wishlist/presentation/manager/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -39,7 +40,7 @@ class _HomeContentState extends State<HomeContent> {
             final Product data =
                 context.read<HomeProvider>().receivedData[index];
             bool isWished = context
-                .watch<WishListViewModel>()
+                .watch<WishlistProvider>()
                 .productIds
                 .contains((data.id));
 
@@ -132,51 +133,50 @@ class _HomeContentState extends State<HomeContent> {
                             ),
                             Row(
                               children: [
-                                isInCart
-                                    ? IconButton(
-                                        onPressed: value2.isLoading
-                                            ? null
-                                            : () async {
-                                                await value2.removeFromCart(
-                                                    data, false);
-                                              },
-                                        icon: Icon(
-                                          PhosphorIcons.minusCircle(),
-                                          color: value2.isLoading
-                                              ? Colors.blueGrey
-                                              : Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                        ))
-                                    : IconButton(
-                                        onPressed: () async {
-                                          await context
-                                              .read<WishListViewModel>()
-                                              .addAndRemoveWish(data);
-                                        },
-                                        icon: isWished
-                                            ? Icon(PhosphorIcons.heart(
-                                                PhosphorIconsStyle.fill))
-                                            : Icon(PhosphorIcons.heart()),
-                                        color: isWished
-                                            ? Theme.of(context).primaryColor
-                                            : Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                isInCart
-                                    ? Text(
-                                        itemCount.toString(),
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
-                                      )
-                                    : Container(),
+                                  CustomIconButton(
+                                    onPressed: value2.isLoading
+                                        ? null
+                                        : () {
+                                            value2.removeFromCart(data, false);
+                                          },
+                                    icon: Icon(
+                                      PhosphorIcons.minusCircle(),
+                                      color: value2.isLoading
+                                          ? Colors.blueGrey
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                    ),
+                                    isInCart: isInCart,
+                                    onBoolean: () {
+                                      context
+                                          .read<WishlistProvider>()
+                                          .addAndRemoveWish(data);
+                                    },
+                                    onBooleanIcon: isWished
+                                          ? Icon(PhosphorIcons.heart(
+                                              PhosphorIconsStyle.fill))
+                                          : Icon(PhosphorIcons.heart()),
+                                      color: isWished
+                                          ? Theme.of(context).primaryColor
+                                          : Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                  ),
+                               
+                                if (isInCart)
+                                  Text(
+                                    itemCount.toString(),
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary),
+                                  ),
                                 IconButton(
                                     onPressed: value2.isLoading
                                         ? null
-                                        : () async {
-                                            await value2.addToCart(data);
+                                        : () {
+                                            value2.addToCart(data);
                                           },
                                     icon: isInCart
                                         ? Icon(

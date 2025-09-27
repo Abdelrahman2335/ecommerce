@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/domain/repositories/wishlist_repository.dart';
+import 'package:ecommerce/features/wishlist/data/repository/wishlist_repository.dart';
 
 class WishListRepositoryImpl implements WishListRepository {
   static final WishListRepositoryImpl _instance =

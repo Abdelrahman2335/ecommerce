@@ -1,29 +1,30 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/data/repositories/wishlist_repository_impl.dart';
+import 'package:ecommerce/features/wishlist/data/repository/wishlist_repository_impl.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../domain/repositories/wishlist_repository.dart';
+import '../../data/repository/wishlist_repository.dart';
 
 /// TODO:
 /// there is an issue with loved items when we create it for the first time we can't remove the loved items
 
-class WishListViewModel extends ChangeNotifier {
+class WishlistProvider extends ChangeNotifier {
   final WishListRepository _wishListRepository;
   final WishListRepositoryImpl wishListRepositoryImpl =
       WishListRepositoryImpl();
 
-  WishListViewModel(this._wishListRepository) {
+  WishlistProvider(this._wishListRepository) {
     Future.microtask(() => initializeWishList());
   }
 
   bool _noItemsInWishList = true;
   bool _isLoading = false;
+
   List _productIds = [];
   List _items = [];
 
-  bool get noItemsInWishList => _noItemsInWishList;
+  bool get isWishlistEmpty => _noItemsInWishList;
 
   bool get isLoading => _isLoading;
 
@@ -44,7 +45,8 @@ class WishListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addAndRemoveWish(Product product) async {
+
+  void addAndRemoveWish(Product product) async {
     try {
       _isLoading = true;
       notifyListeners();

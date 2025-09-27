@@ -10,7 +10,7 @@ class CartProvider extends ChangeNotifier {
   final CartRepositoryImpl cartRepositoryImpl = CartRepositoryImpl();
 
   CartProvider(this._cartProvider) {
-    Future.microtask(initializeCart());
+    Future.microtask(() => initializeCart());
   }
 
   List<CartModel> _fetchedItems = [];
@@ -39,7 +39,7 @@ class CartProvider extends ChangeNotifier {
   }
 
   // Initialize cart
-  initializeCart() async {
+  void initializeCart() async {
     _isLoading = true;
 
     try {
@@ -53,14 +53,14 @@ class CartProvider extends ChangeNotifier {
       errorMessage = "Failed to load cart: $e";
       rethrow;
     } finally {
-      _isLoading = false; 
+      _isLoading = false;
       notifyListeners();
     }
   }
 
   // Add to cart
-  Future<void> addToCart(Product product) async {
-    _isLoading = true; 
+  void addToCart(Product product) async {
+    _isLoading = true;
     notifyListeners();
 
     try {
@@ -83,8 +83,8 @@ class CartProvider extends ChangeNotifier {
   }
 
   // Remove from cart
-  Future<void> removeFromCart(Product product, bool deleteItem) async {
-    _isLoading = true; 
+  void removeFromCart(Product product, bool deleteItem) async {
+    _isLoading = true;
     notifyListeners();
 
     try {

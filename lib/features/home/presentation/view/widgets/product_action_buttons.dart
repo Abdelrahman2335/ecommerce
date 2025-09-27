@@ -29,9 +29,8 @@ class ProductActionButtons extends StatelessWidget {
                 GoRouter.of(context).push(AppRouter.kCheckoutScreen);
               }
 
-              cartProvider.addToCart(selectedItem).then((value) =>
-                  GoRouter.of(context)
-                      .pushReplacement(AppRouter.kCheckoutScreen));
+              cartProvider.addToCart(selectedItem);
+              GoRouter.of(context).pushReplacement(AppRouter.kCheckoutScreen);
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: theme.primary,
@@ -45,7 +44,7 @@ class ProductActionButtons extends StatelessWidget {
             ),
           ),
         ),
-       CartQuantityControl(selectedItem: selectedItem)
+        CartQuantityControl(selectedItem: selectedItem)
       ],
     );
   }

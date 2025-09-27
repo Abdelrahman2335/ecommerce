@@ -21,13 +21,13 @@ import 'package:provider/provider.dart';
 
 import 'features/cart/data/repository/cart_repository_impl.dart';
 import 'data/repositories/paymob_repository_impl.dart';
-import 'data/repositories/wishlist_repository_impl.dart';
+import 'features/wishlist/data/repository/wishlist_repository_impl.dart';
 import 'features/auth/presentation/manager/auth_provider.dart';
 import 'features/auth/presentation/manager/address_provider.dart';
 import 'features/auth/presentation/manager/user_registration_provider.dart';
 import 'features/cart/presentation/manager/cart_provider.dart';
 import 'presentation/provider/location_viewmodel.dart';
-import 'presentation/provider/wishlist_viewmodel.dart';
+import 'features/wishlist/presentation/manager/wishlist_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +60,7 @@ void main() async {
 
       ChangeNotifierProvider(create: (_) => CartProvider(CartRepositoryImpl())),
       ChangeNotifierProvider(
-          create: (_) => WishListViewModel(WishListRepositoryImpl())),
+          create: (_) => WishlistProvider(WishListRepositoryImpl())),
       // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => PaymentProvider(PaymentRepositoryImpl()),

@@ -27,8 +27,7 @@ class CartQuantityControl extends StatelessWidget {
             IconButton(
                 onPressed: () async {
                   if (cartProvider.isLoading) {
-                    return await cartProvider.removeFromCart(
-                        selectedItem, false);
+                    return cartProvider.removeFromCart(selectedItem, false);
                   } else {
                     return;
                   }
@@ -49,7 +48,7 @@ class CartQuantityControl extends StatelessWidget {
             IconButton(
                 onPressed: () async {
                   if (cartProvider.isLoading) {
-                    return await cartProvider.addToCart(selectedItem);
+                    return cartProvider.addToCart(selectedItem);
                   } else {
                     return;
                   }
@@ -68,8 +67,8 @@ class CartQuantityControl extends StatelessWidget {
       return ElevatedButton(
         onPressed: cartProvider.isLoading
             ? null
-            : () async {
-                await cartProvider.addToCart(selectedItem);
+            : () {
+                cartProvider.addToCart(selectedItem);
               },
         style: ElevatedButton.styleFrom(
             backgroundColor: theme.secondary,
