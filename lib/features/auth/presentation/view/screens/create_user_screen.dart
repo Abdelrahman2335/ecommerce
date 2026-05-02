@@ -1,4 +1,4 @@
-import 'package:ecommerce/features/auth/presentation/view/widgets/create_user_screen_body.dart';
+import 'package:ecommerce/features/auth/presentation/view/widgets/create_user/create_user_screen_body.dart';
 import 'package:flutter/material.dart';
 
 class CreateUser extends StatefulWidget {

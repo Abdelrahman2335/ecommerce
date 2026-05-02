@@ -68,10 +68,11 @@ class _CustomFieldState extends State<CustomField> {
       controller: _controller,
       validator: widget.isValid ??
           (String? value) {
-            if (value == null || value.trim().isEmpty) {
-              return "Field is Required";
+            if (value != null && value.isNotEmpty) {
+              return null;
             }
-            return null;
+            AutovalidateMode.always;
+            return "Field is required";
           },
       onChanged: widget.onChanged,
       onSaved: widget.onSaved,

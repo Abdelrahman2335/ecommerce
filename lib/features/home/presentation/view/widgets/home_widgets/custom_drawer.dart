@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/auth/presentation/manager/auth_provider.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/auth_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';

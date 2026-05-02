@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../core/models/address_model.dart';
-import '../../../features/auth/presentation/manager/auth_provider.dart';
+import '../../../features/auth/presentation/manager/cubits/login_logout_cubit/auth_provider.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../widgets/new_address.dart';
 

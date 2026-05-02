@@ -1,0 +1,6 @@
+targets:
+  $default:
+    builders:
+      injectable_generator:injectable_builder:
+        options:
+          use_analyzer: false # This triggers the lean parsing strategy!

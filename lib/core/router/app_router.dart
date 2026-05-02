@@ -30,7 +30,7 @@ abstract class AppRouter {
     if (currentUser != null) {
       return kLayoutScreen;
     } else {
-      return kLoginScreen;
+      return kCreateUserScreen;
     }
   }
 

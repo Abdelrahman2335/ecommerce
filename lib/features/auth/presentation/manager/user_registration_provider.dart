@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ecommerce/core/error/firebase_failure.dart';
+import 'package:ecommerce/core/error/firebase_auth_failure.dart';
 import 'package:ecommerce/core/models/customer_model.dart';
 import 'package:ecommerce/core/models/user_model.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo.dart';
@@ -89,7 +89,7 @@ class UserRegistrationProvider extends ChangeNotifier {
     final result = await _userDataRepository.userRegistration(currentCustomer);
 
     result.fold((error) {
-      _errMessage = FirebaseFailure(error.errorMessage).errorMessage;
+      _errMessage = FirebaseAuthFailure(error.errorMessage).errorMessage;
       log("User registration failed: $_errMessage");
     }, (success) {
       _isUserRegistered = true;
@@ -109,7 +109,7 @@ class UserRegistrationProvider extends ChangeNotifier {
     final result = await _userDataRepository.updateAddressDetails(address);
 
     result.fold((error) {
-      _errMessage = FirebaseFailure(error.errorMessage).errorMessage;
+      _errMessage = FirebaseAuthFailure(error.errorMessage).errorMessage;
       log("Address update failed: $_errMessage");
     }, (success) {
       _isAddressCompleted = true;

@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/failure.dart';
-import 'package:ecommerce/core/error/firebase_failure.dart';
+import 'package:ecommerce/core/error/firebase_auth_failure.dart';
 import 'package:ecommerce/core/models/address_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -21,7 +21,7 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
 
       if (currentUser == null) {
         log("No authenticated user found");
-        return Left(FirebaseFailure("User not authenticated"));
+        return Left(FirebaseAuthFailure("User not authenticated"));
       }
 
       // Create updated user model
@@ -51,11 +51,11 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Right(null);
     } on FirebaseAuthException catch (error) {
       log("Firebase Auth error in updateUserProfile: $error");
-      return Left(FirebaseFailure.fromFirebaseAuthException(error));
+      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in updateUserProfile: $error");
       return Left(
-          FirebaseFailure("Failed to update profile, please try again later"));
+          FirebaseAuthFailure("Failed to update profile, please try again later"));
     }
   }
 
@@ -68,7 +68,7 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
 
       if (currentUser == null) {
         log("No authenticated user found");
-        return Left(FirebaseFailure("User not authenticated"));
+        return Left(FirebaseAuthFailure("User not authenticated"));
       }
 
       // Update the user's address in Firestore
@@ -84,11 +84,11 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Right(null);
     } on FirebaseAuthException catch (error) {
       log("Firebase Auth error in addressInfo: $error");
-      return Left(FirebaseFailure.fromFirebaseAuthException(error));
+      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in addressInfo: $error");
       return Left(
-          FirebaseFailure("Failed to update address, please try again later"));
+          FirebaseAuthFailure("Failed to update address, please try again later"));
     }
   }
 
@@ -100,7 +100,7 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
 
       if (currentUser == null) {
         log("No authenticated user found");
-        return Left(FirebaseFailure("User not authenticated"));
+        return Left(FirebaseAuthFailure("User not authenticated"));
       }
 
       final doc = await _firebaseService.firestore
@@ -125,10 +125,10 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Right(address);
     } on FirebaseAuthException catch (error) {
       log("Firebase Auth error in getUserAddress: $error");
-      return Left(FirebaseFailure.fromFirebaseAuthException(error));
+      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in getUserAddress: $error");
-      return Left(FirebaseFailure(
+      return Left(FirebaseAuthFailure(
           "Failed to retrieve address, please try again later"));
     }
   }
@@ -141,7 +141,7 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
 
       if (currentUser == null) {
         log("No authenticated user found");
-        return Left(FirebaseFailure("User not authenticated"));
+        return Left(FirebaseAuthFailure("User not authenticated"));
       }
 
       await _firebaseService.firestore
@@ -156,11 +156,11 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Right(null);
     } on FirebaseAuthException catch (error) {
       log("Firebase Auth error in deleteUserAddress: $error");
-      return Left(FirebaseFailure.fromFirebaseAuthException(error));
+      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in deleteUserAddress: $error");
       return Left(
-          FirebaseFailure("Failed to delete address, please try again later"));
+          FirebaseAuthFailure("Failed to delete address, please try again later"));
     }
   }
 }

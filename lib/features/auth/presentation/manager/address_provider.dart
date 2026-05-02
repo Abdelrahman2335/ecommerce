@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:ecommerce/core/error/firebase_failure.dart';
+import 'package:ecommerce/core/error/firebase_auth_failure.dart';
 import 'package:ecommerce/core/models/address_model.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class AddressProvider extends ChangeNotifier {
     final result = await _userDataRepository.updateAddressDetails(address);
 
     result.fold((error) {
-      _errMessage = FirebaseFailure(error.errorMessage).errorMessage;
+      _errMessage = FirebaseAuthFailure(error.errorMessage).errorMessage;
       log("Error saving address: $_errMessage");
     }, (success) {
       _currentAddress = address;
@@ -55,7 +55,7 @@ class AddressProvider extends ChangeNotifier {
     final result = await _userDataRepository.getUserAddress();
 
     result.fold((error) {
-      _errMessage = FirebaseFailure(error.errorMessage).errorMessage;
+      _errMessage = FirebaseAuthFailure(error.errorMessage).errorMessage;
       log("Error loading address: $_errMessage");
     }, (address) {
       _currentAddress = address;
@@ -75,7 +75,7 @@ class AddressProvider extends ChangeNotifier {
     final result = await _userDataRepository.deleteUserAddress();
 
     result.fold((error) {
-      _errMessage = FirebaseFailure(error.errorMessage).errorMessage;
+      _errMessage = FirebaseAuthFailure(error.errorMessage).errorMessage;
       log("Error deleting address: $_errMessage");
     }, (success) {
       _currentAddress = null;

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecommerce/core/models/address_model.dart';
+import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart' as geo;
@@ -14,7 +15,7 @@ class LocationProvider extends ChangeNotifier {
   bool isGettingLocation = false;
   LatLng? userLocation;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseService().auth.currentUser;
 
   /// will be used to show the user location on the map
   LocationData? locationData;
