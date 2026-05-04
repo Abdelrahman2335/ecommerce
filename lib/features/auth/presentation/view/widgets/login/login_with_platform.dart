@@ -22,7 +22,7 @@ class LoginWithPlatform extends StatelessWidget {
             backgroundColor: theme.primaryColor.withAlpha(37),
             side: BorderSide(color: theme.primaryColor),
           ),
-          onPressed: () async {},
+          onPressed: onLoginPressed,
           child: const Image(
             image: AssetImage(
               "assets/google.png",

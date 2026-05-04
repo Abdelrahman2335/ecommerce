@@ -54,15 +54,18 @@ class LoginLogoutCubit extends Cubit<LoginLogoutState> {
 
   /// Login with Google
   void loginWithGoogle() async {
+    log('loginWithGoogle called in Cubit');
     emit(state.copyWith(status: LoginStatus.loading));
 
     final result = await _loginRepository.loginWithGoogle();
 
     result.fold((error) {
+      log('loginWithGoogle failed in Cubit: ${error.errorMessage}');
       emit(state.copyWith(
           status: LoginStatus.error,
           errorMessage: FirebaseAuthFailure(error.errorMessage).errorMessage));
     }, (userCredential) {
+      log('loginWithGoogle succeeded in Cubit: ${userCredential.user?.email}');
       emit(state.copyWith(
         status: LoginStatus.success,
         userEmail: _firebaseService.auth.currentUser?.email,

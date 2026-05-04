@@ -67,7 +67,7 @@ Widget setupAddress(
                   )),
                 ),
             ],
-            value: selectedCity,
+            initialValue: selectedCity,
             onChanged: (value) {
               selectedCity = value!;
             },

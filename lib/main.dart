@@ -5,6 +5,7 @@ import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo_impl.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_cubit/create_user_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
 import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo_impl.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
@@ -92,6 +93,8 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => getIt<SignupCubit>(),
           ),
+          BlocProvider(create: (context) => getIt<LoginLogoutCubit>(),
+          )
         ],
         child: MaterialApp.router(
           routerConfig: AppRouter.router,

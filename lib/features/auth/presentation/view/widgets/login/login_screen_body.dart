@@ -28,6 +28,12 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
       listener: (context, state) {
         if (state.status == LoginStatus.error) {
           SnackBarHelper.show(message: state.errorMessage!);
+        } else if (state.status == LoginStatus.success) {
+          if (state.isNewUser) {
+            GoRouter.of(context).pushReplacement(AppRouter.kUserSetupScreen);
+          } else {
+            GoRouter.of(context).pushReplacement(AppRouter.kLayoutScreen);
+          }
         }
       },
       builder: (context, state) {
@@ -58,15 +64,6 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                       onLoginPressed: () {
                         if (_formKey.currentState!.validate()) {
                           context.read<LoginLogoutCubit>().onSubmit();
-                          if (state.status == LoginStatus.success) {
-                            if (state.isNewUser) {
-                              GoRouter.of(context)
-                                  .pushReplacement(AppRouter.kUserSetupScreen);
-                            } else {
-                              GoRouter.of(context)
-                                  .pushReplacement(AppRouter.kLayoutScreen);
-                            }
-                          }
                         }
                       },
                       isLoading: isLoading,
@@ -76,18 +73,7 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                     const Gap(24),
                     LoginWithPlatform(
                       onLoginPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          context.read<LoginLogoutCubit>().loginWithGoogle();
-                          if (state.status == LoginStatus.success) {
-                            if (state.isNewUser) {
-                              GoRouter.of(context)
-                                  .pushReplacement(AppRouter.kUserSetupScreen);
-                            } else {
-                              GoRouter.of(context)
-                                  .pushReplacement(AppRouter.kLayoutScreen);
-                            }
-                          }
-                        }
+                        context.read<LoginLogoutCubit>().loginWithGoogle();
                       },
                     ),
                     const SizedBox(height: 14),

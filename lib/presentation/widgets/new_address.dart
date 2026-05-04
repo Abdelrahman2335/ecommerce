@@ -62,7 +62,7 @@ class _NewAddressState extends State<NewAddress> {
                             overflow: TextOverflow.ellipsis,
                           )),
                   ],
-                  value: selectedCity,
+                  initialValue: selectedCity,
                   onChanged: (value) {
                     selectedCity = value!;
                   },
