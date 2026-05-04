@@ -71,9 +71,9 @@ class _CustomFieldState extends State<CustomField> {
             if (value != null && value.isNotEmpty) {
               return null;
             }
-            AutovalidateMode.always;
             return "Field is required";
           },
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       onChanged: widget.onChanged,
       onSaved: widget.onSaved,
       decoration: InputDecoration(

@@ -27,12 +27,15 @@ class CreateUserWithPlatform extends StatelessWidget {
               ),
               onPressed: () async {
                 await context.read<SignupCubit>().signUpWithGoogle();
-               
-                if (!state.isNewUser) {
-                  GoRouter.of(context).pushReplacement(AppRouter.kLayoutScreen);
-                } else {
-                  GoRouter.of(context)
-                      .pushReplacement(AppRouter.kUserSetupScreen);
+
+                if (state.status == SignupStatus.success) {
+                  if (!state.isNewUser) {
+                    GoRouter.of(context)
+                        .pushReplacement(AppRouter.kLayoutScreen);
+                  } else {
+                    GoRouter.of(context)
+                        .pushReplacement(AppRouter.kUserSetupScreen);
+                  }
                 }
               },
               child: const Image(

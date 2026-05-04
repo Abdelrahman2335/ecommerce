@@ -38,7 +38,6 @@ void main() async {
       name: 'e-commerce-2699c',
     );
 
-    await Firebase.initializeApp();
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
           create: (_) => UserRegistrationProvider(UserRegistrationRepoImpl())),
