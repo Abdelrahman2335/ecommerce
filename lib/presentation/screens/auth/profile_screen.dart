@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<LoginLogoutCubit>(context, listen: false);
+    final authProvider = Provider.of<LoginLogoutBloc>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -41,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-               authProvider.signOut();
+               authProvider.add(LogoutRequested());
               // Will handle the error later
                 GoRouter.of(context).pushReplacement(AppRouter.kLoginScreen);
               
@@ -162,3 +162,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
+

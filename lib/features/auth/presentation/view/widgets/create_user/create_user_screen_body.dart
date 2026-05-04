@@ -1,6 +1,6 @@
 import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/core/widgets/snackbar_helper.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_cubit/create_user_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/create_user/create_user_fields.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/create_user/create_user_with_platform.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +25,7 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocConsumer<SignupCubit, SignupCubitState>(
+    return BlocConsumer<SignupBloc, SignupBlocState>(
       listener: (context, state) {
         if (state.status == SignupStatus.error) {
           SnackBarHelper.show(message: state.errorMessage!);
@@ -56,7 +56,7 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
                             bottomWidth: 0.5,
                             pressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                context.read<SignupCubit>().onSubmit();
+                                context.read<SignupBloc>().add(SignupSubmitted());
                               }
                               if (state.status == SignupStatus.success) {
                                 GoRouter.of(context).pushReplacement(
@@ -101,3 +101,4 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
     );
   }
 }
+

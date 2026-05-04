@@ -1,4 +1,4 @@
-import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:ecommerce/presentation/widgets/setup_address.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -32,7 +32,7 @@ class _UserLocationState extends State<UserLocation> {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<LoginLogoutCubit>(context, listen: false).signOut();
+              Provider.of<LoginLogoutBloc>(context, listen: false).add(LogoutRequested());
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),
@@ -44,3 +44,6 @@ class _UserLocationState extends State<UserLocation> {
     );
   }
 }
+
+
+

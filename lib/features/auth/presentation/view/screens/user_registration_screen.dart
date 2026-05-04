@@ -1,4 +1,4 @@
-import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/user_registration/user_registration_screen_body.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -16,7 +16,7 @@ class UserRegistrationScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<LoginLogoutCubit>(context, listen: false).signOut();
+              Provider.of<LoginLogoutBloc>(context, listen: false).add(LogoutRequested());
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),
@@ -26,3 +26,6 @@ class UserRegistrationScreen extends StatelessWidget {
     );
   }
 }
+
+
+

@@ -1,4 +1,4 @@
-part of 'login_logout_cubit.dart';
+part of 'login_logout_bloc.dart';
 
 enum LoginStatus { initial, loading, success, error }
 

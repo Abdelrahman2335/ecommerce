@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_cubit/create_user_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
@@ -11,7 +11,7 @@ class CreateUserWithPlatform extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<SignupCubit, SignupCubitState>(
+    return BlocBuilder<SignupBloc, SignupBlocState>(
       builder: (context, state) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -26,7 +26,7 @@ class CreateUserWithPlatform extends StatelessWidget {
                 side: BorderSide(color: theme.primaryColor),
               ),
               onPressed: () async {
-                await context.read<SignupCubit>().signUpWithGoogle();
+                context.read<SignupBloc>().add(SignupWithGoogleRequested());
 
                 if (state.status == SignupStatus.success) {
                   if (!state.isNewUser) {
@@ -73,3 +73,4 @@ class CreateUserWithPlatform extends StatelessWidget {
     );
   }
 }
+

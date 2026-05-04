@@ -19,10 +19,10 @@ import '../../features/auth/data/auth_repo/create_user_repo/create_user_repo_imp
 import '../../features/auth/data/auth_repo/login_logout_repo/repo.dart' as _i1;
 import '../../features/auth/data/auth_repo/login_logout_repo/repo_impl.dart'
     as _i622;
-import '../../features/auth/presentation/manager/cubits/create_user_cubit/create_user_cubit.dart'
-    as _i279;
-import '../../features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart'
-    as _i251;
+import '../../features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart'
+    as _i699;
+import '../../features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart'
+    as _i85;
 import '../services/firebase_service.dart' as _i758;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -39,11 +39,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i758.FirebaseService>(() => _i758.FirebaseService());
     gh.factory<_i237.SignupRepository>(() => _i131.SignupRepositoryImpl());
     gh.factory<_i1.LoginRepository>(() => _i622.LoginRepositoryImpl());
-    gh.factory<_i279.SignupCubit>(() => _i279.SignupCubit(
+    gh.factory<_i699.SignupBloc>(() => _i699.SignupBloc(
           gh<_i237.SignupRepository>(),
           gh<_i758.FirebaseService>(),
         ));
-    gh.factory<_i251.LoginLogoutCubit>(() => _i251.LoginLogoutCubit(
+    gh.factory<_i85.LoginLogoutBloc>(() => _i85.LoginLogoutBloc(
           gh<_i1.LoginRepository>(),
           gh<_i758.FirebaseService>(),
         ));

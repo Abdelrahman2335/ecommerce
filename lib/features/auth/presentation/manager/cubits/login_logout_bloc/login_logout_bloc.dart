@@ -7,34 +7,50 @@ import 'package:ecommerce/features/auth/data/auth_repo/login_logout_repo/repo.da
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
+part 'login_logout_event.dart';
 part 'login_logout_state.dart';
 
 @injectable
-class LoginLogoutCubit extends Cubit<LoginLogoutState> {
-  LoginLogoutCubit(
+class LoginLogoutBloc extends Bloc<LoginLogoutEvent, LoginLogoutState> {
+  LoginLogoutBloc(
     this._loginRepository,
     this._firebaseService,
-  ) : super(const LoginLogoutState());
+  ) : super(const LoginLogoutState()) {
+    on<LoginEmailChanged>(_onEmailChanged);
+    on<LoginPasswordChanged>(_onPasswordChanged);
+    on<LoginSubmitted>(_onSubmit);
+    on<LoginWithGoogleRequested>(_onLoginWithGoogle);
+    on<LogoutRequested>(_onSignOut);
+    on<PasswordResetRequested>(_onRequestPasswordReset);
+  }
 
   final LoginRepository _loginRepository;
-
   final FirebaseService _firebaseService;
 
-  void emailChange(String email) {
+  void _onEmailChanged(
+    LoginEmailChanged event,
+    Emitter<LoginLogoutState> emit,
+  ) {
     emit(state.copyWith(
-      email: email,
+      email: event.email,
       status: LoginStatus.initial,
     ));
   }
 
-  void passwordChange(String password) {
+  void _onPasswordChanged(
+    LoginPasswordChanged event,
+    Emitter<LoginLogoutState> emit,
+  ) {
     emit(state.copyWith(
-      password: password,
+      password: event.password,
       status: LoginStatus.initial,
     ));
   }
 
-  void onSubmit() async {
+  Future<void> _onSubmit(
+    LoginSubmitted event,
+    Emitter<LoginLogoutState> emit,
+  ) async {
     emit(state.copyWith(status: LoginStatus.loading));
     final result =
         await _loginRepository.loginWithEmail(state.password, state.email);
@@ -52,20 +68,22 @@ class LoginLogoutCubit extends Cubit<LoginLogoutState> {
     });
   }
 
-  /// Login with Google
-  void loginWithGoogle() async {
-    log('loginWithGoogle called in Cubit');
+  Future<void> _onLoginWithGoogle(
+    LoginWithGoogleRequested event,
+    Emitter<LoginLogoutState> emit,
+  ) async {
+    log('loginWithGoogle called in Bloc');
     emit(state.copyWith(status: LoginStatus.loading));
 
     final result = await _loginRepository.loginWithGoogle();
 
     result.fold((error) {
-      log('loginWithGoogle failed in Cubit: ${error.errorMessage}');
+      log('loginWithGoogle failed in Bloc: ${error.errorMessage}');
       emit(state.copyWith(
           status: LoginStatus.error,
           errorMessage: FirebaseAuthFailure(error.errorMessage).errorMessage));
     }, (userCredential) {
-      log('loginWithGoogle succeeded in Cubit: ${userCredential.user?.email}');
+      log('loginWithGoogle succeeded in Bloc: ${userCredential.user?.email}');
       emit(state.copyWith(
         status: LoginStatus.success,
         userEmail: _firebaseService.auth.currentUser?.email,
@@ -75,8 +93,10 @@ class LoginLogoutCubit extends Cubit<LoginLogoutState> {
     });
   }
 
-  /// Sign out user
-  void signOut() async {
+  Future<void> _onSignOut(
+    LogoutRequested event,
+    Emitter<LoginLogoutState> emit,
+  ) async {
     emit(state.copyWith(status: LoginStatus.loading));
 
     final result = await _loginRepository.signOut();
@@ -94,11 +114,14 @@ class LoginLogoutCubit extends Cubit<LoginLogoutState> {
     });
   }
 
-  /// Request password reset
-  Future<void> requestPasswordReset(String email) async {
+  Future<void> _onRequestPasswordReset(
+    PasswordResetRequested event,
+    Emitter<LoginLogoutState> emit,
+  ) async {
     emit(state.copyWith(status: LoginStatus.loading));
 
-    final result = await _loginRepository.requestPasswordReset(email);
+    final result =
+        await _loginRepository.requestPasswordReset(event.email);
 
     result.fold(
       (error) {

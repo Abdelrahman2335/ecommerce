@@ -2,7 +2,7 @@ import 'package:ecommerce/core/theme/app_text_styles.dart';
 import 'package:ecommerce/core/widgets/snackbar_helper.dart';
 import 'package:ecommerce/core/widgets/custom_button.dart';
 import 'package:ecommerce/core/widgets/custom_field.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -35,10 +35,10 @@ class ForgetPasswordBody extends StatelessWidget {
                 label: "Email address",
                 icon: Icon(PhosphorIcons.envelopeSimple()),
                 isSecure: false,
-                onSaved: (value) async {
-                  await context
-                      .read<LoginLogoutCubit>()
-                      .requestPasswordReset(value!);
+                onSaved: (value) {
+                  context
+                      .read<LoginLogoutBloc>()
+                      .add(PasswordResetRequested(value!));
                   SnackBarHelper.show(message: "Please check your email");
                 },
               ),

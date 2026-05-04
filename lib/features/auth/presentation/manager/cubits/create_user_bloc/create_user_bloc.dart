@@ -7,14 +7,21 @@ import 'package:ecommerce/features/auth/data/auth_repo/create_user_repo/create_u
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
+part 'create_user_event.dart';
 part 'create_user_state.dart';
 
 @injectable
-class SignupCubit extends Cubit<SignupCubitState> {
-  SignupCubit(
+class SignupBloc extends Bloc<SignupEvent, SignupBlocState> {
+  SignupBloc(
     this._signupRepository,
     this._firebaseService,
-  ) : super(const SignupCubitState());
+  ) : super(const SignupBlocState()) {
+    on<SignupEmailChanged>(_onEmailChanged);
+    on<SignupPasswordChanged>(_onPasswordChanged);
+    on<SignupConfirmPasswordChanged>(_onConfirmPasswordChanged);
+    on<SignupSubmitted>(_onSubmit);
+    on<SignupWithGoogleRequested>(_onSignUpWithGoogle);
+  }
 
   final SignupRepository _signupRepository;
   final FirebaseService _firebaseService;
@@ -25,64 +32,80 @@ class SignupCubit extends Cubit<SignupCubitState> {
     return isValid;
   }
 
-  void emailChange(String email) {
-    final isValid = _validForm(email, state.password, state.confirmPassword);
-    AppLogger.log("emailChange: '$email' -> isValid=$isValid",
-        name: "SignupCubit");
+  void _onEmailChanged(
+    SignupEmailChanged event,
+    Emitter<SignupBlocState> emit,
+  ) {
+    final isValid =
+        _validForm(event.email, state.password, state.confirmPassword);
+    AppLogger.log("emailChange: '${event.email}' -> isValid=$isValid",
+        name: "SignupBloc");
     emit(state.copyWith(
-      email: email,
+      email: event.email,
       isValid: isValid,
       status: SignupStatus.initial, // clear previous errors
     ));
   }
 
-  void passwordChange(String password) {
-    final isValid = _validForm(state.email, password, state.confirmPassword);
-    AppLogger.log("passwordChange: '$password' -> isValid=$isValid",
-        name: "SignupCubit");
+  void _onPasswordChanged(
+    SignupPasswordChanged event,
+    Emitter<SignupBlocState> emit,
+  ) {
+    final isValid =
+        _validForm(state.email, event.password, state.confirmPassword);
+    AppLogger.log("passwordChange: '${event.password}' -> isValid=$isValid",
+        name: "SignupBloc");
     emit(state.copyWith(
-      password: password,
+      password: event.password,
       isValid: isValid,
       status: SignupStatus.initial, // clear previous errors
     ));
   }
 
-  void confirmPasswordChange(String password) {
-    final isValid = _validForm(state.email, state.password, password);
-    AppLogger.log("confirmPasswordChange: '$password' -> isValid=$isValid",
-        name: "SignupCubit");
+  void _onConfirmPasswordChanged(
+    SignupConfirmPasswordChanged event,
+    Emitter<SignupBlocState> emit,
+  ) {
+    final isValid = _validForm(state.email, state.password, event.password);
+    AppLogger.log(
+        "confirmPasswordChange: '${event.password}' -> isValid=$isValid",
+        name: "SignupBloc");
     emit(state.copyWith(
-      confirmPassword: password,
+      confirmPassword: event.password,
       isValid: isValid,
       status: SignupStatus.initial, // clear previous errors
     ));
   }
 
-  void onSubmit() {
-    AppLogger.log("onSubmit called");
+  Future<void> _onSubmit(
+    SignupSubmitted event,
+    Emitter<SignupBlocState> emit,
+  ) async {
+    AppLogger.log("onSubmit called", name: "SignupBloc");
     AppLogger.log(
         "onSubmit: 'email: ${state.email}', 'password: ${state.password}'",
-        name: "SignupCubit");
+        name: "SignupBloc");
 
     if (!state.isValid) {
-      AppLogger.log("onSubmit result: Validation Failed", name: "SignupCubit");
+      AppLogger.log("onSubmit result: Validation Failed", name: "SignupBloc");
       return;
     }
 
     if (state.password != state.confirmPassword) {
       AppLogger.log("onSubmit result: Passwords mismatched",
-          name: "SignupCubit");
+          name: "SignupBloc");
       emit(state.copyWith(
           status: SignupStatus.error, errorMessage: "Password not match"));
       return;
     }
 
     AppLogger.log("onSubmit result: Validation Passed. Creating user...",
-        name: "SignupCubit");
-    _createUser(state.email, state.password);
+        name: "SignupBloc");
+    await _createUser(state.email, state.password, emit);
   }
 
-  Future<void> _createUser(String email, String password) async {
+  Future<void> _createUser(
+      String email, String password, Emitter<SignupBlocState> emit) async {
     emit(state.copyWith(status: SignupStatus.loading));
 
     final result =
@@ -90,14 +113,14 @@ class SignupCubit extends Cubit<SignupCubitState> {
 
     result.fold((error) {
       AppLogger.log("_createUser result: Error - ${error.errorMessage}",
-          name: "SignupCubit");
+          name: "SignupBloc");
       emit(state.copyWith(
           status: SignupStatus.error,
           errorMessage: FirebaseAuthFailure(error.errorMessage).errorMessage));
     }, (userCredential) {
       AppLogger.log(
           "_createUser result: Success. isNewUser: ${userCredential.additionalUserInfo?.isNewUser}",
-          name: "SignupCubit");
+          name: "SignupBloc");
       emit(state.copyWith(
         status: SignupStatus.success,
         userEmail: _firebaseService.auth.currentUser?.email,
@@ -107,22 +130,24 @@ class SignupCubit extends Cubit<SignupCubitState> {
     });
   }
 
-  /// Create user account with Google
-  Future<void> signUpWithGoogle() async {
-    AppLogger.log("signUpWithGoogle called", name: "SignupCubit");
+  Future<void> _onSignUpWithGoogle(
+    SignupWithGoogleRequested event,
+    Emitter<SignupBlocState> emit,
+  ) async {
+    AppLogger.log("signUpWithGoogle called", name: "SignupBloc");
     emit(state.copyWith(status: SignupStatus.loading));
 
     final result = await _signupRepository.createAccountWithGoogle();
 
     result.fold((error) {
       AppLogger.log("signUpWithGoogle result: Error - ${error.errorMessage}",
-          name: "SignupCubit");
+          name: "SignupBloc");
       emit(state.copyWith(
           status: SignupStatus.error,
           errorMessage: FirebaseAuthFailure(error.errorMessage).errorMessage));
       return;
     }, (userCredential) {
-      AppLogger.log("signUpWithGoogle result: Success", name: "SignupCubit");
+      AppLogger.log("signUpWithGoogle result: Success", name: "SignupBloc");
       emit(state.copyWith(
         status: SignupStatus.success,
         userEmail: _firebaseService.auth.currentUser?.email,

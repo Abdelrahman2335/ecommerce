@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/widgets/custom_field.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -27,7 +27,7 @@ class LoginFields extends StatelessWidget {
             return null;
           },
           onChanged: (value) {
-            context.read<LoginLogoutCubit>().emailChange(value);
+            context.read<LoginLogoutBloc>().add(LoginEmailChanged(value));
           },
         ),
         const Gap(
@@ -39,10 +39,13 @@ class LoginFields extends StatelessWidget {
           isSecure: true,
           
           onChanged: (value) {
-            context.read<LoginLogoutCubit>().passwordChange(value);
+            context.read<LoginLogoutBloc>().add(LoginPasswordChanged(value));
           },
         ),
       ],
     );
   }
 }
+
+
+

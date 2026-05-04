@@ -1,9 +1,9 @@
-part of 'create_user_cubit.dart';
+part of 'create_user_bloc.dart';
 
 // The badges we will use to tell the UI what is happening right now
 enum SignupStatus { initial, loading, success, error }
 
-class SignupCubitState extends Equatable {
+class SignupBlocState extends Equatable {
   // 1. Form Data
   final String email;
   final String password;
@@ -19,7 +19,7 @@ class SignupCubitState extends Equatable {
   final String? displayName;
   final bool isNewUser;
 
-  const SignupCubitState({
+  const SignupBlocState({
     this.email = '',
     this.password = '',
     this.confirmPassword = '',
@@ -33,7 +33,7 @@ class SignupCubitState extends Equatable {
 
   // copyWith acts like a cloner: it copies the current state but
   // lets you replace specific parts with new values.
-  SignupCubitState copyWith({
+  SignupBlocState copyWith({
     String? email,
     String? password,
     String? confirmPassword,
@@ -44,7 +44,7 @@ class SignupCubitState extends Equatable {
     String? displayName,
     bool? isNewUser,
   }) {
-    return SignupCubitState(
+    return SignupBlocState(
       email: email ?? this.email,
       password: password ?? this.password,
       confirmPassword: confirmPassword ?? this.confirmPassword,

@@ -1,5 +1,5 @@
 import 'package:ecommerce/core/widgets/custom_field.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_cubit/create_user_cubit.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -9,7 +9,7 @@ class CreateUserFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SignupCubit, SignupCubitState>(
+    return BlocBuilder<SignupBloc, SignupBlocState>(
       builder: (context, state) {
         return Column(
           spacing: 16,
@@ -20,7 +20,7 @@ class CreateUserFields extends StatelessWidget {
               icon: Icon(PhosphorIcons.user()),
               isSecure: false,
               onChanged: (email) {
-                context.read<SignupCubit>().emailChange(email);
+                context.read<SignupBloc>().add(SignupEmailChanged(email));
               },
             ),
             CustomField(
@@ -29,7 +29,7 @@ class CreateUserFields extends StatelessWidget {
               icon: Icon(PhosphorIcons.lock()),
               isSecure: true,
               onChanged: (password) {
-                context.read<SignupCubit>().passwordChange(password);
+                context.read<SignupBloc>().add(SignupPasswordChanged(password));
               },
             ),
             CustomField(
@@ -38,7 +38,9 @@ class CreateUserFields extends StatelessWidget {
               icon: Icon(PhosphorIcons.lock()),
               isSecure: true,
               onChanged: (password) {
-                context.read<SignupCubit>().confirmPasswordChange(password);
+                context
+                    .read<SignupBloc>()
+                    .add(SignupConfirmPasswordChanged(password));
               },
             ),
           ],
