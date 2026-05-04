@@ -30,7 +30,7 @@ abstract class AppRouter {
     if (currentUser != null) {
       return kLayoutScreen;
     } else {
-      return kCreateUserScreen;
+      return kLoginScreen;
     }
   }
 
@@ -69,7 +69,9 @@ abstract class AppRouter {
         path: kItemDetails,
         builder: (context, state) {
           final itemDetails = state.extra as Product;
-          return  ItemDetails(itemDetails: itemDetails,);
+          return ItemDetails(
+            itemDetails: itemDetails,
+          );
         },
       ),
       GoRoute(

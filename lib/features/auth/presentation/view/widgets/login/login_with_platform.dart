@@ -1,18 +1,15 @@
-import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 class LoginWithPlatform extends StatelessWidget {
   const LoginWithPlatform({
     super.key,
+    required this.onLoginPressed,
   });
+  final VoidCallback onLoginPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final authProvider = context.read<AuthProvider>();
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -25,17 +22,7 @@ class LoginWithPlatform extends StatelessWidget {
             backgroundColor: theme.primaryColor.withAlpha(37),
             side: BorderSide(color: theme.primaryColor),
           ),
-          onPressed: () async {
-            await authProvider.loginWithGoogle();
-            if (!authProvider.hasError) {
-              if (authProvider.isNewUser) {
-                GoRouter.of(context)
-                    .pushReplacement(AppRouter.kUserSetupScreen);
-              } else {
-                GoRouter.of(context).pushReplacement(AppRouter.kLayoutScreen);
-              }
-            }
-          },
+          onPressed: () async {},
           child: const Image(
             image: AssetImage(
               "assets/google.png",
@@ -56,7 +43,7 @@ class LoginWithPlatform extends StatelessWidget {
             padding: const EdgeInsets.all(13),
             side: BorderSide(color: theme.primaryColor),
           ),
-          onPressed: () {},
+          onPressed: onLoginPressed,
           child: const Image(
             image: AssetImage(
               "assets/facebook.png",

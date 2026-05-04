@@ -7,18 +7,23 @@ import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/features/auth/data/auth_repo/login_logout_repo/repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:injectable/injectable.dart';
 
+@Injectable(as: LoginRepository)
 class LoginRepositoryImpl implements LoginRepository {
   final FirebaseService _firebaseService = FirebaseService();
 
   @override
-  Future<Either<Failure, void>> loginWithEmail(
+  Future<Either<Failure, UserCredential>> loginWithEmail(
       String password, String email) async {
     try {
-      await _firebaseService.auth
-          .signInWithEmailAndPassword(email: email, password: password);
+      final userCredential =
+          await _firebaseService.auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-      return Right(null);
+      return Right(userCredential);
     } on FirebaseAuthException catch (error) {
       log("loginWithEmail error: $error");
       return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
@@ -141,6 +146,22 @@ class LoginRepositoryImpl implements LoginRepository {
         return Left(
             FirebaseAuthFailure("Failed to sign out. Please try again."));
       }
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> requestPasswordReset(String email) async {
+    try {
+      await _firebaseService.auth.sendPasswordResetEmail(email: email);
+      log("Password reset email sent to: $email");
+      return const Right(null);
+    } on FirebaseAuthException catch (error) {
+      log("Password reset error: ${error.code}");
+      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
+    } catch (error) {
+      log("Unexpected error during password reset: $error");
+      return Left(
+          FirebaseAuthFailure("Unexpected error, please try again later"));
     }
   }
 }

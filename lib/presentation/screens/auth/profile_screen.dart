@@ -1,11 +1,11 @@
 import 'package:ecommerce/core/router/app_router.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_cubit/login_logout_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../core/models/address_model.dart';
-import '../../../features/auth/presentation/manager/cubits/login_logout_cubit/auth_provider.dart';
 import '../../../core/widgets/custom_button.dart';
 import '../../widgets/new_address.dart';
 
@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final authProvider = Provider.of<LoginLogoutCubit>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Padding(
@@ -41,10 +41,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-              await authProvider.signOut();
-              if (!authProvider.hasError) {
+               authProvider.signOut();
+              // Will handle the error later
                 GoRouter.of(context).pushReplacement(AppRouter.kLoginScreen);
-              }
+              
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),

@@ -1,4 +1,5 @@
 import 'package:ecommerce/core/router/app_router.dart';
+import 'package:ecommerce/core/widgets/snackbar_helper.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_cubit/create_user_cubit.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/create_user/create_user_fields.dart';
 import 'package:ecommerce/features/auth/presentation/view/widgets/create_user/create_user_with_platform.dart';
@@ -27,13 +28,7 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
     return BlocConsumer<SignupCubit, SignupCubitState>(
       listener: (context, state) {
         if (state.status == SignupStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              // You can also add color to make it look like an error!
-              backgroundColor: theme.colorScheme.primary,
-            ),
-          );
+          SnackBarHelper.show(message: state.errorMessage!);
         }
       },
       builder: (context, state) {
