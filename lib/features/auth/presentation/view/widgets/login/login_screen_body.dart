@@ -103,6 +103,3 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
     );
   }
 }
-
-
-

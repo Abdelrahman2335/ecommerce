@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/di/injection.dart';
 import 'package:ecommerce/core/router/app_router.dart';
+import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo_impl.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
@@ -41,7 +42,12 @@ void main() async {
 
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
-          create: (_) => AddressProvider(UserRegistrationRepoImpl())),
+        create: (_) => AddressProvider(
+          UserRegistrationRepoImpl(
+            FirebaseService(),
+          ),
+        ),
+      ),
       ChangeNotifierProxyProvider<AddressProvider, CheckoutAddressProvider>(
         create: (context) => CheckoutAddressProvider(
           Provider.of<AddressProvider>(context, listen: false),

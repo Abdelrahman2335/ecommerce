@@ -30,6 +30,9 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
         if (state.status == SignupStatus.error) {
           SnackBarHelper.show(message: state.errorMessage!);
         }
+        if (state.status == SignupStatus.success) {
+          GoRouter.of(context).pushReplacement(AppRouter.kUserSetupScreen);
+        }
       },
       builder: (context, state) {
         final isLoading = state.status == SignupStatus.loading;
@@ -54,13 +57,11 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
                     !isLoading
                         ? CustomButton(
                             bottomWidth: 0.5,
-                            pressed: () async {
+                            pressed: () {
                               if (_formKey.currentState!.validate()) {
-                                context.read<SignupBloc>().add(SignupSubmitted());
-                              }
-                              if (state.status == SignupStatus.success) {
-                                GoRouter.of(context).pushReplacement(
-                                    AppRouter.kUserSetupScreen);
+                                context
+                                    .read<SignupBloc>()
+                                    .add(SignupSubmitted());
                               }
                             },
                             text: "Create Account",
@@ -101,4 +102,3 @@ class _CreateUserScreenBodyState extends State<CreateUserScreenBody> {
     );
   }
 }
-

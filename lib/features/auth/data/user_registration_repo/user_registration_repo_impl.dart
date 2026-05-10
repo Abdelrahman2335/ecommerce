@@ -5,13 +5,17 @@ import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/error/firebase_auth_failure.dart';
 import 'package:ecommerce/core/models/address_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../../core/services/firebase_service.dart';
 import 'user_registration_repo.dart';
 import '../../../../core/models/customer_model.dart';
 
+@LazySingleton(as: UserRegistrationRepo)
 class UserRegistrationRepoImpl implements UserRegistrationRepo {
-  final FirebaseService _firebaseService = FirebaseService();
+  UserRegistrationRepoImpl(this._firebaseService);
+
+  final FirebaseService _firebaseService;
 
   @override
   Future<Either<Failure, void>> userRegistration(CustomerModel user) async {
@@ -54,8 +58,8 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in updateUserProfile: $error");
-      return Left(
-          FirebaseAuthFailure("Failed to update profile, please try again later"));
+      return Left(FirebaseAuthFailure(
+          "Failed to update profile, please try again later"));
     }
   }
 
@@ -87,8 +91,8 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in addressInfo: $error");
-      return Left(
-          FirebaseAuthFailure("Failed to update address, please try again later"));
+      return Left(FirebaseAuthFailure(
+          "Failed to update address, please try again later"));
     }
   }
 
@@ -159,8 +163,8 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
     } catch (error) {
       log("Unknown error in deleteUserAddress: $error");
-      return Left(
-          FirebaseAuthFailure("Failed to delete address, please try again later"));
+      return Left(FirebaseAuthFailure(
+          "Failed to delete address, please try again later"));
     }
   }
 }
