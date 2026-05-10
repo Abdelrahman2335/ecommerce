@@ -3,17 +3,25 @@ import 'package:ecommerce/features/auth/presentation/view/widgets/user_registrat
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../manager/user_registration_provider.dart';
+import '../../../manager/cubits/user_registration/user_registration_bloc.dart';
 import '../../../../../../core/widgets/custom_button.dart';
 
-class UserRegistrationScreenBody extends StatelessWidget {
+class UserRegistrationScreenBody extends StatefulWidget {
   const UserRegistrationScreenBody({super.key});
 
   @override
+  State<UserRegistrationScreenBody> createState() =>
+      _UserRegistrationScreenBodyState();
+}
+
+class _UserRegistrationScreenBodyState
+    extends State<UserRegistrationScreenBody> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
-    final registrationProvider = context.read<UserRegistrationProvider>();
     return Animate(
       effects: [
         FadeEffect(
@@ -26,26 +34,32 @@ class UserRegistrationScreenBody extends StatelessWidget {
           child: Column(
             children: [
               const Gap(70),
-              const RegistrationFields(),
+              RegistrationFields(formKey: _formKey),
               const Gap(21),
               const SelectGender(),
               const Gap(26),
-              Selector<UserRegistrationProvider, bool>(
-                  selector: (_, selectedValue) => selectedValue.isLoading,
-                  builder: (context, loading, child) {
-                    return !loading
-                        ? CustomButton(
-                            pressed: () {
-                              if (registrationProvider.validationForm()) {
-                                registrationProvider.userRegistration();
-                              }
-                            },
-                            text: "Continue",
-                          )
-                        : Center(
-                            child: const CircularProgressIndicator(),
-                          );
-                  }),
+              BlocBuilder<UserRegistrationBloc, UserRegistrationState>(
+                builder: (context, state) {
+                  final isLoading =
+                      state.status == UserRegistrationStatus.loading;
+                  return !isLoading
+                      ? CustomButton(
+                          pressed: () {
+                            final valid =
+                                _formKey.currentState?.validate() ?? false;
+                            if (valid) {
+                              context
+                                  .read<UserRegistrationBloc>()
+                                  .add(UserRegistrationSubmitted());
+                            }
+                          },
+                          text: "Continue",
+                        )
+                      : Center(
+                          child: const CircularProgressIndicator(),
+                        );
+                },
+              ),
             ],
           ),
         ),

@@ -51,14 +51,13 @@ class SignupBlocState extends Equatable {
       isValid: isValid ?? this.isValid,
       status: status ?? this.status,
       errorMessage:
-          errorMessage, // We don't use ?? here so we can clear errors by passing null
+          errorMessage,
       userEmail: userEmail ?? this.userEmail,
       displayName: displayName ?? this.displayName,
       isNewUser: isNewUser ?? this.isNewUser,
     );
   }
 
-  // The X-ray glasses for Bloc! So it knows when data has changed.
   @override
   List<Object?> get props => [
         email,

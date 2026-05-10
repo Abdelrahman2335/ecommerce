@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/models/address_model.dart';
-import '../../../auth/presentation/manager/address_provider.dart';
+import '../../../auth/presentation/manager/cubits/user_registration/address_provider.dart';
 
 /// Simple AddressProvider for checkout feature
 /// Uses the existing AddressProvider to get user's saved address and allows field-by-field updates

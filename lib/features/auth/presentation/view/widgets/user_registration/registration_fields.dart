@@ -1,19 +1,21 @@
-import 'package:ecommerce/features/auth/presentation/manager/user_registration_provider.dart';
 import 'package:ecommerce/core/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../manager/cubits/user_registration/user_registration_bloc.dart';
 
 class RegistrationFields extends StatelessWidget {
-  const RegistrationFields({super.key});
+  const RegistrationFields({super.key, required this.formKey});
+
+  final GlobalKey<FormState> formKey;
 
   @override
   Widget build(BuildContext context) {
     RegExp regex = RegExp(r'^[0-9+]+$');
-    final registrationProvider = context.read<UserRegistrationProvider>();
 
     return Form(
-        key: registrationProvider.formKey,
+        key: formKey,
         child: Column(
           spacing: 21,
           children: [
@@ -28,7 +30,10 @@ class RegistrationFields extends StatelessWidget {
                 }
                 return null;
               },
-              onChanged: (name) => registrationProvider.changeName(name),
+              onChanged: (name) =>
+                  context.read<UserRegistrationBloc>().add(
+                        RegistrationNameChanged(name),
+                      ),
             ),
             CustomField(
               keyboardType: TextInputType.phone,
@@ -50,7 +55,10 @@ class RegistrationFields extends StatelessWidget {
                 }
                 return null;
               },
-              onChanged: (phone) => registrationProvider.changePhone(phone),
+              onChanged: (phone) =>
+                  context.read<UserRegistrationBloc>().add(
+                        RegistrationPhoneChanged(phone),
+                      ),
             ),
             CustomField(
               keyboardType: TextInputType.phone,
@@ -70,7 +78,10 @@ class RegistrationFields extends StatelessWidget {
                 }
                 return null;
               },
-              onChanged: (age) => registrationProvider.changeAge(age),
+              onChanged: (age) =>
+                  context.read<UserRegistrationBloc>().add(
+                        RegistrationAgeChanged(age),
+                      ),
             ),
           ],
         ));

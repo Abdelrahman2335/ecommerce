@@ -6,6 +6,7 @@ import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/auth/data/user_registration_repo/user_registration_repo_impl.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
+import 'package:ecommerce/features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart';
 import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo_impl.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
@@ -23,8 +24,7 @@ import 'package:provider/provider.dart';
 import 'features/cart/data/repository/cart_repository_impl.dart';
 import 'features/payment/data/repository/paymob_repository_impl.dart';
 import 'features/wishlist/data/repository/wishlist_repository_impl.dart';
-import 'features/auth/presentation/manager/address_provider.dart';
-import 'features/auth/presentation/manager/user_registration_provider.dart';
+import 'features/auth/presentation/manager/cubits/user_registration/address_provider.dart';
 import 'features/cart/presentation/manager/cart_provider.dart';
 import 'presentation/provider/location_viewmodel.dart';
 import 'features/wishlist/presentation/manager/wishlist_provider.dart';
@@ -40,8 +40,6 @@ void main() async {
     );
 
     runApp(MultiProvider(providers: [
-      ChangeNotifierProvider(
-          create: (_) => UserRegistrationProvider(UserRegistrationRepoImpl())),
       ChangeNotifierProvider(
           create: (_) => AddressProvider(UserRegistrationRepoImpl())),
       ChangeNotifierProxyProvider<AddressProvider, CheckoutAddressProvider>(
@@ -93,8 +91,12 @@ class MyApp extends StatelessWidget {
           BlocProvider(
             create: (context) => getIt<SignupBloc>(),
           ),
-          BlocProvider(create: (context) => getIt<LoginLogoutBloc>(),
-          )
+          BlocProvider(
+            create: (context) => getIt<LoginLogoutBloc>(),
+          ),
+          BlocProvider(
+            create: (context) => getIt<UserRegistrationBloc>(),
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: AppRouter.router,
@@ -104,4 +106,3 @@ class MyApp extends StatelessWidget {
         ));
   }
 }
-

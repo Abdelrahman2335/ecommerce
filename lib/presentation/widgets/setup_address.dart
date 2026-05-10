@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import '../../data/cities.dart';
 import '../../core/models/address_model.dart';
 import '../provider/location_viewmodel.dart';
-import '../../features/auth/presentation/manager/user_registration_provider.dart';
 
 String selectedCity = egyptCities[0];
 
@@ -134,9 +133,9 @@ Widget setupAddress(
                     );
 
                     ///  Here we are going to update the address information
-                    context
-                        .read<UserRegistrationProvider>()
-                        .updateAddressDetails(address);
+                    // context
+                    //     .read<UserRegistrationProvider>()
+                    //     .updateAddressDetails(address);
                     firstCon.clear();
                     secondCon.clear();
                   }
