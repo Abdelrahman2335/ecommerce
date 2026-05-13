@@ -44,7 +44,8 @@ Checkpoints:
 - [ ] Create separate blocs for signup, login/session, registration, and address.
 - [ ] Add explicit field-change events (email/password/name/phone/age/gender).
 - [ ] Replace provider form mutations with event-driven state updates.
-- [ ] Migrate create user, login, registration screens to BlocBuilder/BlocListener.
+- [x] Migrate registration screens to BlocBuilder/BlocListener.
+- [ ] Migrate create user and login screens to BlocBuilder/BlocListener.
 - [ ] Preserve repository contracts and normalize error handling paths.
 - [ ] Verify navigation outcomes for success/failure states.
 - [ ] Remove legacy auth providers after parity confirmation.

@@ -28,7 +28,7 @@ abstract class AppRouter {
   static String get _initialRoute {
     final currentUser = _firebaseService.auth.currentUser;
     if (currentUser != null) {
-      return kUserSetupScreen;
+      return kUserLocationScreen;
     } else {
       return kLoginScreen;
     }

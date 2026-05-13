@@ -16,7 +16,9 @@ class UserRegistrationScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<LoginLogoutBloc>(context, listen: false).add(LogoutRequested());
+              context
+                  .read<LoginLogoutBloc>()
+                  .add(LogoutRequested());
             },
             icon: Icon(PhosphorIcons.signOut()),
           ),

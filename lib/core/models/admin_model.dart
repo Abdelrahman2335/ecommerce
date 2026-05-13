@@ -34,7 +34,9 @@ class AdminModel implements UserEntity {
         phone: json['phone'],
         createdAt: json['createdAt'],
         age: json['age'],
-        gender: json['gender'],
+        gender: json['gender'] != null
+            ? Genders.values.firstWhere((e) => e.name == json['gender'] || e.string == json['gender'], orElse: () => Genders.male)
+            : null,
       );
 
   Map<String, dynamic> toJson() {
@@ -44,7 +46,7 @@ class AdminModel implements UserEntity {
       if (phone != null) 'phone': phone!.trim(),
       if (createdAt != null) 'createdAt': createdAt,
       if (age != null) 'age': age!.trim(),
-      if (gender != null) 'gender': gender,
+      if (gender != null) 'gender': gender!.name,
     };
   }
 

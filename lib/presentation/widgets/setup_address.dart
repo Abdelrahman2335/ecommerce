@@ -200,6 +200,7 @@ Widget setupAddress(
                   TileLayer(
                     urlTemplate:
                         "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    userAgentPackageName: 'com.example.ecommerce',
                   ),
                   MarkerLayer(markers: [
                     Marker(

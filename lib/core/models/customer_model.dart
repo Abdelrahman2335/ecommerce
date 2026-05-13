@@ -34,7 +34,9 @@ class CustomerModel extends UserEntity {
       createdAt: json['createdAt'],
       address: json['address'],
       age: json['age'],
-      gender: json['gender'],
+      gender: json['gender'] != null 
+          ? Genders.values.firstWhere((e) => e.name == json['gender'] || e.string == json['gender'], orElse: () => Genders.male) 
+          : null,
     );
   }
 
@@ -46,7 +48,7 @@ class CustomerModel extends UserEntity {
       if (createdAt != null) 'createdAt': createdAt,
       if (address != null) 'address': address!.map((a) => a.toJson()).toList(),
       if (age != null) 'age': age!.trim(),
-      if (gender != null) 'gender': gender,
+      if (gender != null) 'gender': gender!.name,
     };
   }
 
