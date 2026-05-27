@@ -44,19 +44,16 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
       log("Error getting current location: ${state.errMessage}");
     }, (coordinates) {
       if (coordinates != null) {
-        if (coordinates.latitude != null && coordinates.longitude != null) {
-          emit(
-            state.copyWith(
-              userLocation:
-                  LatLng(coordinates.latitude!, coordinates.longitude!),
-              status: AddressStatus.success,
-            ),
-          );
-        } else {
-          emit(state.copyWith(status: AddressStatus.success));
-        }
+        emit(
+          state.copyWith(
+            userLocation: LatLng(coordinates.latitude!, coordinates.longitude!),
+            status: AddressStatus.success,
+          ),
+        );
       } else {
-        emit(state.copyWith(status: AddressStatus.success));
+        emit(state.copyWith(
+            status: AddressStatus.error,
+            errMessage: "Unable to obtain current location"));
       }
       log("Current location obtained successfully");
     });

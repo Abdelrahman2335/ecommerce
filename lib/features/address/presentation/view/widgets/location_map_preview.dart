@@ -2,6 +2,8 @@ import 'package:ecommerce/features/address/presentation/manager/address_bloc.dar
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gap/gap.dart';
+import 'package:ecommerce/core/di/injection.dart';
+import 'package:ecommerce/core/network/api_config.dart';
 
 class LocationMapPreview extends StatelessWidget {
   const LocationMapPreview({
@@ -19,6 +21,7 @@ class LocationMapPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tileUrl = getIt<ApiConfig>().osmTileUrl;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
@@ -55,10 +58,8 @@ class LocationMapPreview extends StatelessWidget {
                   // minZoom: 16,
                 ),
                 children: [
-                  /// OSM does not track your location, it just provides the map images
                   TileLayer(
-                    urlTemplate:
-                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    urlTemplate: tileUrl,
                     userAgentPackageName: 'com.example.ecommerce',
                   ),
                   MarkerLayer(markers: [
