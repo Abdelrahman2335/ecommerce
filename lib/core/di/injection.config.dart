@@ -12,6 +12,9 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/address/data/repo/AddressRepo.dart' as _i736;
+import '../../features/address/data/repo/AddressRepoImpl.dart' as _i510;
+import '../../features/address/presentation/manager/address_bloc.dart' as _i244;
 import '../../features/auth/data/auth_repo/create_user_repo/create_user_repo.dart'
     as _i237;
 import '../../features/auth/data/auth_repo/create_user_repo/create_user_repo_impl.dart'
@@ -29,6 +32,8 @@ import '../../features/auth/presentation/manager/cubits/login_logout_bloc/login_
     as _i85;
 import '../../features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart'
     as _i710;
+import '../network/api_config.dart' as _i995;
+import '../network/api_service.dart' as _i921;
 import '../services/firebase_service.dart' as _i758;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -42,12 +47,19 @@ extension GetItInjectableX on _i174.GetIt {
       environment,
       environmentFilter,
     );
+    gh.lazySingleton<_i995.ApiConfig>(() => _i995.ApiConfig.create());
     gh.lazySingleton<_i758.FirebaseService>(() => _i758.FirebaseService());
+    gh.lazySingleton<_i921.ApiService>(
+        () => _i921.ApiService(gh<_i995.ApiConfig>()));
     gh.factory<_i237.SignupRepository>(() => _i131.SignupRepositoryImpl());
     gh.factory<_i1.LoginRepository>(() => _i622.LoginRepositoryImpl());
     gh.factory<_i699.SignupBloc>(() => _i699.SignupBloc(
           gh<_i237.SignupRepository>(),
           gh<_i758.FirebaseService>(),
+        ));
+    gh.lazySingleton<_i736.AddressRepo>(() => _i510.AddressRepoImpl(
+          gh<_i758.FirebaseService>(),
+          gh<_i921.ApiService>(),
         ));
     gh.lazySingleton<_i499.UserRegistrationRepo>(
         () => _i763.UserRegistrationRepoImpl(gh<_i758.FirebaseService>()));
@@ -57,6 +69,8 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i710.UserRegistrationBloc>(
         () => _i710.UserRegistrationBloc(gh<_i499.UserRegistrationRepo>()));
+    gh.factory<_i244.AddressBloc>(
+        () => _i244.AddressBloc(gh<_i736.AddressRepo>()));
     return this;
   }
 }

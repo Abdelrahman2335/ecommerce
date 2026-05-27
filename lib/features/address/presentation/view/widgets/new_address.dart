@@ -2,8 +2,10 @@ import 'package:ecommerce/data/cities.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-import '../../core/models/address_model.dart';
+import '../../../../../core/models/address_model.dart';
 
+// This is for the checkout screen, when the user wants to add a new address, this widget will be shown in a bottom sheet.
+// Will be modified later
 class NewAddress extends StatefulWidget {
   const NewAddress({super.key, required this.addAddress});
 
@@ -51,8 +53,10 @@ class _NewAddressState extends State<NewAddress> {
               ),
               Expanded(
                 child: DropdownButtonFormField(
-                  isDense: true, // Make the dropdown more compact
-                  isExpanded: true, // Force the dropdown to fill its container
+                  isDense: true,
+                  // Make the dropdown more compact
+                  isExpanded: true,
+                  // Force the dropdown to fill its container
                   items: [
                     for (String city in egyptCities)
                       DropdownMenuItem(

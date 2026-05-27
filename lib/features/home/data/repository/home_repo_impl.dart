@@ -2,10 +2,11 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:ecommerce/core/di/injection.dart';
 import 'package:ecommerce/core/error/dio_failure.dart';
 import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/core/utils/api_service.dart';
+import 'package:ecommerce/core/network/api_service.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo.dart';
 
 class HomeRepoImpl implements ItemRepository {
@@ -13,7 +14,7 @@ class HomeRepoImpl implements ItemRepository {
 
   HomeRepoImpl._(this.apiService);
 
-  static final HomeRepoImpl _instance = HomeRepoImpl._(ApiService());
+  static final HomeRepoImpl _instance = HomeRepoImpl._(getIt<ApiService>());
 
   factory HomeRepoImpl() => _instance;
 
@@ -23,10 +24,9 @@ class HomeRepoImpl implements ItemRepository {
       final response = await apiService.get();
       // log("Response for getData is: $response");
 
-      List<Product> products =
-          (response["products"] as List<dynamic>)
-              .map((i) => Product.fromMap(i))
-              .toList();
+      List<Product> products = (response["products"] as List<dynamic>)
+          .map((i) => Product.fromMap(i))
+          .toList();
 
       return Right(products);
     } catch (error) {

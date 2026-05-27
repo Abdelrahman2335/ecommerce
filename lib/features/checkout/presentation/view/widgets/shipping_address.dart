@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../core/models/address_model.dart';
-import '../../../../../presentation/widgets/new_address.dart';
+import 'package:ecommerce/features/address/presentation/view/widgets/new_address.dart';
 import '../../manager/checkout_address_provider.dart';
 
 class ShippingAddress extends StatefulWidget {

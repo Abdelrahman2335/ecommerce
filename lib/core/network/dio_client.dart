@@ -7,6 +7,8 @@ class DioClient {
         baseUrl: url,
         connectTimeout: Duration(seconds: 10),
         receiveTimeout: Duration(seconds: 10),
+        responseType: ResponseType.json,
+
       ),
     );
   }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../../core/models/address_model.dart';
-import '../../../auth/presentation/manager/cubits/user_registration/address_provider.dart';
 
 /// Simple AddressProvider for checkout feature
 /// Uses the existing AddressProvider to get user's saved address and allows field-by-field updates
 class CheckoutAddressProvider extends ChangeNotifier {
-  final AddressProvider _addressProvider;
+  // final AddressProvider _addressProvider;
 
-  CheckoutAddressProvider(this._addressProvider);
+  // CheckoutAddressProvider(this._addressProvider);
 
   // Current address being edited (starts with saved address or empty)
   AddressModel _currentAddress = AddressModel();
@@ -23,25 +22,25 @@ class CheckoutAddressProvider extends ChangeNotifier {
 
   /// Initialize with saved address from AddressProvider
   Future<void> initializeAddress() async {
-    if (_isInitialized) return;
+    // if (_isInitialized) return;
 
     // Load the user's saved address
-    await _addressProvider.loadAddress();
+    // await _addressProvider.loadAddress();
 
-    if (_addressProvider.currentAddress != null) {
-      _currentAddress = AddressModel(
-        city: _addressProvider.currentAddress!.city,
-        area: _addressProvider.currentAddress!.area,
-        street: _addressProvider.currentAddress!.street,
-        country: _addressProvider.currentAddress!.country,
-      );
-    } else {
-      // No saved address, start with empty
-      _currentAddress = AddressModel();
-    }
+    // if (_addressProvider.currentAddress != null) {
+    //   _currentAddress = AddressModel(
+    //     city: _addressProvider.currentAddress!.city,
+    //     area: _addressProvider.currentAddress!.area,
+    //     street: _addressProvider.currentAddress!.street,
+    //     country: _addressProvider.currentAddress!.country,
+    //   );
+    // } else {
+    //   // No saved address, start with empty
+    //   _currentAddress = AddressModel();
+    // }
 
-    _isInitialized = true;
-    notifyListeners();
+    // _isInitialized = true;
+    // notifyListeners();
   }
 
   /// Update city field

@@ -73,7 +73,9 @@ class _LoginScreenBodyState extends State<LoginScreenBody> {
                     const Gap(24),
                     LoginWithPlatform(
                       onLoginPressed: () {
-                        context.read<LoginLogoutBloc>().add(LoginWithGoogleRequested());
+                        context
+                            .read<LoginLogoutBloc>()
+                            .add(LoginWithGoogleRequested());
                       },
                     ),
                     const SizedBox(height: 14),

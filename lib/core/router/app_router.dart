@@ -9,7 +9,7 @@ import 'package:ecommerce/features/auth/presentation/view/screens/forgot_passwor
 import 'package:ecommerce/features/checkout/presentation/view/screens/check_out.dart';
 import 'package:ecommerce/features/cart/presentation/view/screen/cart_view.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/user_registration_screen.dart';
-import 'package:ecommerce/features/auth/presentation/view/screens/user_location.dart';
+import 'package:ecommerce/features/address/presentation/view/screens/user_location.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {

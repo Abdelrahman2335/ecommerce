@@ -1,4 +1,5 @@
 import 'package:ecommerce/core/router/app_router.dart';
+import 'package:ecommerce/features/address/presentation/view/widgets/new_address.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:gap/gap.dart';
 import '../../../core/models/address_model.dart';
 import '../../../core/widgets/custom_button.dart';
-import '../../widgets/new_address.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

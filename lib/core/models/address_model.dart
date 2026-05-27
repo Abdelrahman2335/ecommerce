@@ -18,6 +18,28 @@ class AddressModel {
       this.longitude,
       this.defaultAddress = false});
 
+  AddressModel copyWith({
+    String? fullAddress,
+    String? country,
+    String? city,
+    String? area,
+    String? street,
+    double? latitude,
+    double? longitude,
+    bool? defaultAddress,
+  }) {
+    return AddressModel(
+      fullAddress: fullAddress ?? this.fullAddress,
+      country: country ?? this.country,
+      city: city ?? this.city,
+      area: area ?? this.area,
+      street: street ?? this.street,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      defaultAddress: defaultAddress ?? this.defaultAddress,
+    );
+  }
+
   /// Optionally, create a fromJson() method for deserialization
   factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(

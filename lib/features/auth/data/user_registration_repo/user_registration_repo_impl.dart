@@ -3,13 +3,12 @@ import 'dart:developer';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/error/firebase_auth_failure.dart';
-import 'package:ecommerce/core/models/address_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/models/customer_model.dart';
 import '../../../../core/services/firebase_service.dart';
 import 'user_registration_repo.dart';
-import '../../../../core/models/customer_model.dart';
 
 @LazySingleton(as: UserRegistrationRepo)
 class UserRegistrationRepoImpl implements UserRegistrationRepo {
@@ -60,111 +59,6 @@ class UserRegistrationRepoImpl implements UserRegistrationRepo {
       log("Unknown error in updateUserProfile: $error");
       return Left(FirebaseAuthFailure(
           "Failed to update profile, please try again later"));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> updateAddressDetails(
-      AddressModel address) async {
-    try {
-      // Get current user
-      final User? currentUser = _firebaseService.auth.currentUser;
-
-      if (currentUser == null) {
-        log("No authenticated user found");
-        return Left(FirebaseAuthFailure("User not authenticated"));
-      }
-
-      // Update the user's address in Firestore
-      await _firebaseService.firestore
-          .collection("customers")
-          .doc(currentUser.uid)
-          .update({
-        'address': address.toJson(),
-        'updatedAt': DateTime.now().toIso8601String(),
-      });
-
-      log("Address updated successfully for user: ${currentUser.uid}");
-      return Right(null);
-    } on FirebaseAuthException catch (error) {
-      log("Firebase Auth error in addressInfo: $error");
-      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
-    } catch (error) {
-      log("Unknown error in addressInfo: $error");
-      return Left(FirebaseAuthFailure(
-          "Failed to update address, please try again later"));
-    }
-  }
-
-  /// Get user's current address information
-  @override
-  Future<Either<Failure, AddressModel?>> getUserAddress() async {
-    try {
-      final User? currentUser = _firebaseService.auth.currentUser;
-
-      if (currentUser == null) {
-        log("No authenticated user found");
-        return Left(FirebaseAuthFailure("User not authenticated"));
-      }
-
-      final doc = await _firebaseService.firestore
-          .collection("customers")
-          .doc(currentUser.uid)
-          .get();
-
-      if (!doc.exists) {
-        log("User document not found");
-        return Right(null);
-      }
-
-      final data = doc.data();
-      if (data == null || data['address'] == null) {
-        log("No address found for user");
-        return Right(null);
-      }
-
-      final address =
-          AddressModel.fromJson(data['address'] as Map<String, dynamic>);
-      log("Address retrieved successfully for user: ${currentUser.uid}");
-      return Right(address);
-    } on FirebaseAuthException catch (error) {
-      log("Firebase Auth error in getUserAddress: $error");
-      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
-    } catch (error) {
-      log("Unknown error in getUserAddress: $error");
-      return Left(FirebaseAuthFailure(
-          "Failed to retrieve address, please try again later"));
-    }
-  }
-
-  /// Delete user's address information
-  @override
-  Future<Either<Failure, void>> deleteUserAddress() async {
-    try {
-      final User? currentUser = _firebaseService.auth.currentUser;
-
-      if (currentUser == null) {
-        log("No authenticated user found");
-        return Left(FirebaseAuthFailure("User not authenticated"));
-      }
-
-      await _firebaseService.firestore
-          .collection("customers")
-          .doc(currentUser.uid)
-          .update({
-        'address': null,
-        'updatedAt': DateTime.now().toIso8601String(),
-      });
-
-      log("Address deleted successfully for user: ${currentUser.uid}");
-      return Right(null);
-    } on FirebaseAuthException catch (error) {
-      log("Firebase Auth error in deleteUserAddress: $error");
-      return Left(FirebaseAuthFailure.fromFirebaseAuthException(error));
-    } catch (error) {
-      log("Unknown error in deleteUserAddress: $error");
-      return Left(FirebaseAuthFailure(
-          "Failed to delete address, please try again later"));
     }
   }
 }
