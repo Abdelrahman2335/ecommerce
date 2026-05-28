@@ -9,8 +9,7 @@ import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout
 import 'package:ecommerce/features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
-import 'package:ecommerce/features/home/data/repository/home_repo_impl.dart';
-import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
+import 'package:ecommerce/features/home/presentation/manager/home_bloc.dart';
 import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
 import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
@@ -37,10 +36,6 @@ void main() async {
     );
 
     runApp(MultiProvider(providers: [
-      ChangeNotifierProvider(
-        create: (_) => HomeProvider(HomeRepoImpl()),
-      ),
-
       ChangeNotifierProvider(create: (_) => CartProvider(CartRepositoryImpl())),
       ChangeNotifierProvider(
           create: (_) => WishlistProvider(WishListRepositoryImpl())),
@@ -84,6 +79,7 @@ class MyApp extends StatelessWidget {
             create: (context) => getIt<UserRegistrationBloc>(),
           ),
           BlocProvider(create: (context) => getIt<AddressBloc>()),
+          BlocProvider(create: (context) => getIt<HomeBloc>()),
         ],
         child: MaterialApp.router(
           routerConfig: AppRouter.router,

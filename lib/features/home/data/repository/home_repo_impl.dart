@@ -8,8 +8,10 @@ import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/network/api_service.dart';
 import 'package:ecommerce/features/home/data/repository/home_repo.dart';
+import 'package:injectable/injectable.dart';
 
-class HomeRepoImpl implements ItemRepository {
+@LazySingleton(as: HomeRepo)
+class HomeRepoImpl implements HomeRepo {
   final ApiService apiService;
 
   HomeRepoImpl._(this.apiService);

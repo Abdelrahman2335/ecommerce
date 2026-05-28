@@ -32,6 +32,9 @@ import '../../features/auth/presentation/manager/cubits/login_logout_bloc/login_
     as _i85;
 import '../../features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart'
     as _i710;
+import '../../features/home/data/repository/home_repo.dart' as _i930;
+import '../../features/home/data/repository/home_repo_impl.dart' as _i1013;
+import '../../features/home/presentation/manager/home_bloc.dart' as _i801;
 import '../network/api_config.dart' as _i995;
 import '../network/api_service.dart' as _i921;
 import '../services/firebase_service.dart' as _i758;
@@ -52,7 +55,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i921.ApiService>(
         () => _i921.ApiService(gh<_i995.ApiConfig>()));
     gh.factory<_i237.SignupRepository>(() => _i131.SignupRepositoryImpl());
+    gh.lazySingleton<_i930.HomeRepo>(() => _i1013.HomeRepoImpl());
     gh.factory<_i1.LoginRepository>(() => _i622.LoginRepositoryImpl());
+    gh.factory<_i801.HomeBloc>(() => _i801.HomeBloc(gh<_i930.HomeRepo>()));
     gh.factory<_i699.SignupBloc>(() => _i699.SignupBloc(
           gh<_i237.SignupRepository>(),
           gh<_i758.FirebaseService>(),

@@ -1,94 +1,90 @@
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({
     super.key,
   });
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context).colorScheme.secondary;
-    return Consumer<HomeProvider>(
-        builder: (BuildContext context, provider, Widget? child) {
-      return Drawer(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          child: ListView(
-            children: [
-              UserAccountsDrawerHeader(
-                currentAccountPictureSize: Size.square(59),
-                accountName: Text(
-                  // authProvider.name ??
+    final user = FirebaseAuth.instance.currentUser;
 
-                  "No Name",
-                  style: TextStyle(fontSize: 19),
-                ),
-                accountEmail: Text(
-                  // authProvider.getEmail ??
-                  "No Email",
-                  style: TextStyle(fontSize: 12),
-                ),
-                currentAccountPicture: CircleAvatar(
-                  child: Opacity(
-                      opacity: 0.5,
-                      child: Icon(
-                        PhosphorIcons.user(),
-                        size: 29,
-                      )),
-                ),
+    return Drawer(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPictureSize: const Size.square(59),
+              accountName: Text(
+                user?.displayName ?? "No Name",
+                style: const TextStyle(fontSize: 19),
               ),
-              ListTile(
-                textColor: theme,
-                iconColor: theme,
-                titleTextStyle: const TextStyle(fontSize: 16),
-                contentPadding:
-                    const EdgeInsets.only(left: 19, right: 30, bottom: 9),
-                title: const Text("Profile"),
-                leading: Icon(PhosphorIcons.user()),
-                onTap: () {
-                  GoRouter.of(context).push(AppRouter.kProfileScreen);
-                },
-                trailing: Icon(PhosphorIcons.arrowRight()),
+              accountEmail: Text(
+                user?.email ?? "No Email",
+                style: const TextStyle(fontSize: 12),
               ),
-              Divider(
-                height: 2,
+              currentAccountPicture: CircleAvatar(
+                child: Opacity(
+                    opacity: 0.5,
+                    child: Icon(
+                      PhosphorIcons.user(),
+                      size: 29,
+                    )),
               ),
-              ListTile(
-                textColor: theme,
-                iconColor: theme,
-                titleTextStyle: const TextStyle(
-                  fontSize: 16,
-                ),
-                contentPadding: const EdgeInsets.only(
-                    left: 19, right: 30, top: 9, bottom: 9),
-                title: const Text("Orders"),
-                leading: Icon(PhosphorIcons.package()),
-                trailing: Icon(PhosphorIcons.arrowRight()),
-                onTap: () {
-                  // Navigator.of(context).pushNamed("/cart");
-                },
+            ),
+            ListTile(
+              textColor: theme,
+              iconColor: theme,
+              titleTextStyle: const TextStyle(fontSize: 16),
+              contentPadding:
+                  const EdgeInsets.only(left: 19, right: 30, bottom: 9),
+              title: const Text("Profile"),
+              leading: Icon(PhosphorIcons.user()),
+              onTap: () {
+                GoRouter.of(context).push(AppRouter.kProfileScreen);
+              },
+              trailing: Icon(PhosphorIcons.arrowRight()),
+            ),
+            Divider(
+              height: 2,
+            ),
+            ListTile(
+              textColor: theme,
+              iconColor: theme,
+              titleTextStyle: const TextStyle(
+                fontSize: 16,
               ),
-              Divider(
-                height: 2,
-              ),
-              ListTile(
-                textColor: theme,
-                iconColor: theme,
-                titleTextStyle: const TextStyle(fontSize: 16),
-                contentPadding: const EdgeInsets.only(
-                    left: 19, right: 30, top: 9, bottom: 9),
-                title: const Text("Settings"),
-                leading: Icon(PhosphorIcons.gearSix()),
-                trailing: Icon(PhosphorIcons.arrowRight()),
-                onTap: () {
-                  // Navigator.of(context).pushNamed("/settings");
-                },
-              ),
-            ],
-          ));
-    });
+              contentPadding:
+                  const EdgeInsets.only(left: 19, right: 30, top: 9, bottom: 9),
+              title: const Text("Orders"),
+              leading: Icon(PhosphorIcons.package()),
+              trailing: Icon(PhosphorIcons.arrowRight()),
+              onTap: () {
+                // Navigator.of(context).pushNamed("/cart");
+              },
+            ),
+            Divider(
+              height: 2,
+            ),
+            ListTile(
+              textColor: theme,
+              iconColor: theme,
+              titleTextStyle: const TextStyle(fontSize: 16),
+              contentPadding:
+                  const EdgeInsets.only(left: 19, right: 30, top: 9, bottom: 9),
+              title: const Text("Settings"),
+              leading: Icon(PhosphorIcons.gearSix()),
+              trailing: Icon(PhosphorIcons.arrowRight()),
+              onTap: () {
+                // Navigator.of(context).pushNamed("/settings");
+              },
+            ),
+          ],
+        ));
   }
 }

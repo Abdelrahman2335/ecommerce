@@ -1,33 +1,31 @@
-import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CategoryWidget extends StatelessWidget {
   const CategoryWidget({
+    required this.categories,
+    required this.onCategorySelected,
     super.key,
   });
 
+  final List<String> categories;
+  final void Function(String category) onCategorySelected;
+
   @override
   Widget build(BuildContext context) {
-    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
-    final categories = homeProvider.categoryList;
+    if (categories.isEmpty) return const SizedBox.shrink();
+
     return SizedBox(
       height: 100,
       width: double.infinity,
-      child: ListView.builder(
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
-          return Row(
-            spacing: 8,
-            children: List.generate(categories.length, (index) {
-              return TextButton(
-                onPressed: () {
-                  homeProvider.categoryProducts(category: categories[index]);
-                },
-                child: Text(categories[index]),
-              );
-            }),
+          final category = categories[index];
+          return TextButton(
+            onPressed: () => onCategorySelected(category),
+            child: Text(category),
           );
         },
       ),

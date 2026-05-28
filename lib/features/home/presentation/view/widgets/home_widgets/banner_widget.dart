@@ -1,8 +1,5 @@
 import 'package:ecommerce/core/theme/app_text_styles.dart';
-import 'package:ecommerce/features/home/presentation/manager/home_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
 
 class BannerWidget extends StatelessWidget {
   const BannerWidget({
@@ -29,19 +26,6 @@ class BannerWidget extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 19,
                   fontWeight: FontWeight.bold),
-            ),
-          ),
-          Positioned(
-            top: 4,
-            right: 4,
-            child: IconButton(
-              onPressed: () {
-                context.read<HomeProvider>().toggleRemoveAdd();
-              },
-              icon: Icon(
-                PhosphorIcons.xCircle(),
-                color: Colors.white70,
-              ),
             ),
           ),
           Positioned(

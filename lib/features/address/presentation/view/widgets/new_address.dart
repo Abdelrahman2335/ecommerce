@@ -1,4 +1,4 @@
-import 'package:ecommerce/data/cities.dart';
+import 'package:ecommerce/core/utils/cities.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

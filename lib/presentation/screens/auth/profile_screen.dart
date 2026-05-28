@@ -3,12 +3,14 @@ import 'package:ecommerce/features/address/presentation/view/widgets/new_address
 import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:gap/gap.dart';
+
 import '../../../core/models/address_model.dart';
 import '../../../core/widgets/custom_button.dart';
 
+// Will be moved to the profile feature later
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -20,6 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool hidePass = true;
   AddressModel address =
       AddressModel(city: 'City', area: 'Area', street: 'Street');
+
   void getAddress(AddressModel newAddress) {
     /// Change the setState later
     setState(() {
@@ -41,10 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           IconButton(
             onPressed: () async {
-               authProvider.add(LogoutRequested());
+              authProvider.add(LogoutRequested());
               // Will handle the error later
-                GoRouter.of(context).pushReplacement(AppRouter.kLoginScreen);
-              
+              GoRouter.of(context).pushReplacement(AppRouter.kLoginScreen);
             },
             icon: const Icon(Icons.exit_to_app_outlined),
           ),
@@ -162,4 +164,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 }
-

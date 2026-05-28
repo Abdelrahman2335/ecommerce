@@ -1,15 +1,15 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:ecommerce/features/address/presentation/view/screens/user_location.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/create_user_screen.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/forgot_password.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/login_screen.dart';
+import 'package:ecommerce/features/auth/presentation/view/screens/user_registration_screen.dart';
+import 'package:ecommerce/features/cart/presentation/view/screen/cart_view.dart';
+import 'package:ecommerce/features/checkout/presentation/view/screens/check_out.dart';
 import 'package:ecommerce/features/home/presentation/view/screens/item_details.dart';
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/presentation/screens/auth/profile_screen.dart';
-import 'package:ecommerce/features/auth/presentation/view/screens/create_user_screen.dart';
-import 'package:ecommerce/features/auth/presentation/view/screens/forgot_password.dart';
-import 'package:ecommerce/features/checkout/presentation/view/screens/check_out.dart';
-import 'package:ecommerce/features/cart/presentation/view/screen/cart_view.dart';
-import 'package:ecommerce/features/auth/presentation/view/screens/user_registration_screen.dart';
-import 'package:ecommerce/features/address/presentation/view/screens/user_location.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {
@@ -28,7 +28,7 @@ abstract class AppRouter {
   static String get _initialRoute {
     final currentUser = _firebaseService.auth.currentUser;
     if (currentUser != null) {
-      return kUserLocationScreen;
+      return kLayoutScreen;
     } else {
       return kLoginScreen;
     }

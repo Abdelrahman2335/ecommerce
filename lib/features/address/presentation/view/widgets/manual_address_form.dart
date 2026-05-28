@@ -1,5 +1,5 @@
+import 'package:ecommerce/core/utils/cities.dart';
 import 'package:ecommerce/core/widgets/custom_field.dart';
-import 'package:ecommerce/data/cities.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
