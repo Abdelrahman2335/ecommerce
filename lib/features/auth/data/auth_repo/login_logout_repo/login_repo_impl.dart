@@ -4,14 +4,16 @@ import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/error/firebase_auth_failure.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/features/auth/data/auth_repo/login_logout_repo/repo.dart';
+import 'package:ecommerce/features/auth/data/auth_repo/login_logout_repo/login_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 
 @Injectable(as: LoginRepository)
 class LoginRepositoryImpl implements LoginRepository {
-  final FirebaseService _firebaseService = FirebaseService();
+  final FirebaseService _firebaseService;
+
+  LoginRepositoryImpl(this._firebaseService);
 
   @override
   Future<Either<Failure, UserCredential>> loginWithEmail(

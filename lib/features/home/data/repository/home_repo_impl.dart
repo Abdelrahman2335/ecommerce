@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:ecommerce/core/di/injection.dart';
 import 'package:ecommerce/core/error/dio_failure.dart';
 import 'package:ecommerce/core/error/failure.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
@@ -14,11 +13,7 @@ import 'package:injectable/injectable.dart';
 class HomeRepoImpl implements HomeRepo {
   final ApiService apiService;
 
-  HomeRepoImpl._(this.apiService);
-
-  static final HomeRepoImpl _instance = HomeRepoImpl._(getIt<ApiService>());
-
-  factory HomeRepoImpl() => _instance;
+  HomeRepoImpl(this.apiService);
 
   @override
   Future<Either<Failure, List<Product>>> getData() async {

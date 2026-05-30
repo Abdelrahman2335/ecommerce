@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:bloc/bloc.dart';
 import 'package:ecommerce/core/error/firebase_auth_failure.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
-import 'package:ecommerce/features/auth/data/auth_repo/login_logout_repo/repo.dart';
+import 'package:ecommerce/features/auth/data/auth_repo/login_logout_repo/login_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 
@@ -120,8 +120,7 @@ class LoginLogoutBloc extends Bloc<LoginLogoutEvent, LoginLogoutState> {
   ) async {
     emit(state.copyWith(status: LoginStatus.loading));
 
-    final result =
-        await _loginRepository.requestPasswordReset(event.email);
+    final result = await _loginRepository.requestPasswordReset(event.email);
 
     result.fold(
       (error) {

@@ -1,128 +1,118 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ecommerce/core/error/failure.dart';
+import 'package:ecommerce/core/error/firestore_failure.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/features/wishlist/data/repository/wishlist_repository.dart';
+import 'package:injectable/injectable.dart';
 
+@LazySingleton(as: WishListRepository)
 class WishListRepositoryImpl implements WishListRepository {
-  static final WishListRepositoryImpl _instance =
-      WishListRepositoryImpl._internal();
+  final FirebaseService firebaseService;
 
-  /// Singleton
-  factory WishListRepositoryImpl() => _instance;
+  WishListRepositoryImpl(this.firebaseService);
 
-  /// Named constructor
-  WishListRepositoryImpl._internal();
-
-  FirebaseService firebaseService = FirebaseService();
-
-  String? _userId;
-  static CollectionReference<Map<String, dynamic>>? mainListRef;
-  static CollectionReference<Map<String, dynamic>>? wishListRef;
-  Map<String, dynamic>? wishData;
-  final List<Product> items = [];
-  List productIds = [];
-  bool itemExist = false;
-  bool noItemsInWishList = true;
-
-  /// We are calling [fetchData] inside the Constructor of the class to initialize it as soon as we call the class
-
-  /// This function is used to get the data from the database,
-  /// also it's used to filter the data to get only the wished items
   @override
-  fetchData() async {
-    _userId = firebaseService.auth.currentUser?.uid;
-    mainListRef = firebaseService.firestore.collection("mainData");
-    wishListRef = firebaseService.firestore.collection("wishList");
+  Future<Either<Failure, List<Product>>> loadWishlist() async {
+    final userId = firebaseService.auth.currentUser?.uid;
+    if (userId == null) return Left(FirestoreFailure("User not logged in"));
+
+    final mainListRef = firebaseService.firestore.collection("mainData");
+    final wishListRef = firebaseService.firestore.collection("wishList");
 
     try {
-      wishData =
-          await wishListRef?.doc(_userId).get().then((value) => value.data());
+      final wishDoc = await wishListRef.doc(userId).get();
+      final wishData = wishDoc.data();
 
-      productIds = wishData?["productId"] ?? [];
+      final List productIds = wishData?["productId"] ?? [];
 
-      /// You have to check if the [wishData] is not null and not empty or you will catch an error
-      if (wishData != null && !wishData?["productId"].isEmpty) {
-        /// Important to know that whereIn is limited with only 10 elements.
-        /// this variable is used to get the data from the database
-        /// [where] and [whereIn] go inside the document. Note: doc id is the same as the product id
-        QuerySnapshot<Map<String, dynamic>> docSnapshot =
-            await mainListRef!.where("id", whereIn: productIds).get();
+      if (productIds.isEmpty) {
+        return const Right([]);
+      }
 
+      // Firestore whereIn has a limit of 10. For production, chunking is needed if > 10.
+      List<Product> fetchedItems = [];
+
+      // Basic chunking to bypass 10-item limit
+      for (var i = 0; i < productIds.length; i += 10) {
+        final end = (i + 10 < productIds.length) ? i + 10 : productIds.length;
+        final chunk = productIds.sublist(i, end);
+
+        final docSnapshot = await mainListRef.where("id", whereIn: chunk).get();
         if (docSnapshot.docs.isNotEmpty) {
-          items.addAll(docSnapshot.docs
+          fetchedItems.addAll(docSnapshot.docs
               .map((element) => Product.fromJson(element.data().toString())));
-          noItemsInWishList = false;
         }
-      } else {
-        return;
       }
+
+      return Right(fetchedItems);
+    } on FirebaseException catch (error) {
+      log("Error loadWishlist: $error");
+      return Left(FirestoreFailure.fromFirestoreException(error));
     } catch (error) {
-      log("Error fetchData: $error");
+      log("Error loadWishlist: $error");
+      return Left(FirestoreFailure(error.toString()));
     }
   }
 
   @override
-  Future addAndRemoveWish(Product product) async {
-    itemExist = productIds.contains(product.id);
+  Future<Either<Failure, void>> addWish(Product product) async {
+    final userId = firebaseService.auth.currentUser?.uid;
+    if (userId == null) return Left(FirestoreFailure("User not logged in"));
+
+    final wishListRef = firebaseService.firestore.collection("wishList");
+
     try {
-      log("itemExist: ${itemExist.toString()}");
-      log("productId: ${product.id}");
-      if (wishData != null && wishData!.isNotEmpty) {
-        if (itemExist) {
-          await wishListRef?.doc(_userId).update({
-            "productId": FieldValue.arrayRemove([product.id])
-          });
-
-          productIds.remove(product.id);
-          items.remove(product);
-          items.isEmpty ? noItemsInWishList = true : noItemsInWishList = false;
-        } else {
-          await wishListRef?.doc(_userId).update({
-            "productId": FieldValue.arrayUnion([product.id])
-          });
-          productIds.add(product.id);
-          items.add(product);
-          noItemsInWishList = false;
-        }
+      log("Adding product ${product.id} to wishlist for user $userId");
+      final wishDoc = await wishListRef.doc(userId).get();
+      if (!wishDoc.exists) {
+        await wishListRef.doc(userId).set({
+          "productId": [product.id]
+        });
+        log("Created wishlist and added product ${product.id}");
       } else {
-        await wishListRef?.doc(_userId).set(
-          {
-            "productId": [product.id]
-          },
-        );
-
-        productIds.add(product.id);
-        items.add(product);
-        noItemsInWishList = false;
+        await wishListRef.doc(userId).update({
+          "productId": FieldValue.arrayUnion([product.id])
+        });
+        log("Added product ${product.id} to existing wishlist");
       }
-      log("Last call of the Ids: in the wish list ${productIds.toString()}");
 
-      // log("After the function is called: ${productIds.toString()}");
-      // log("wishData content?: ${wishData.toString()}");
-      // log("wishData is empty?: ${wishData?["productId"].isEmpty}");
-      // log("docSnapshot is null?: ${docSnapshot?["id"]}");
+      return const Right(null); // Return void on success
+    } on FirebaseException catch (error) {
+      log("Error addWish: $error");
+      return Left(FirestoreFailure.fromFirestoreException(error));
     } catch (error) {
-      log("addWish error: ${error.toString()}");
+      log("Error addWish: $error");
+      return Left(FirestoreFailure(error.toString()));
     }
   }
 
-//
-// /// This function is used to fetch the wished items by give the items the data in List of Product
-//   /// I think we can make this simple.
-// fetchWishedItems(BuildContext context) {
-//   /// Important to know that we don't listen to [ItemProvider], because there is no changes will happen, at least for now
-//   final allItems = Provider.of<ItemProvider>(context, listen: false);
-//
-//   for (Product element in allItems.mainData) {
-//     if (productIds.contains(element.id)) {
-//       items.add(element);
-//     }
-//   }
-//   // allItems.mainData.firstWhere((element) => element.id == productIds[0]);
-//
-// }
+  @override
+  Future<Either<Failure, void>> removeWish(Product product) async {
+    final userId = firebaseService.auth.currentUser?.uid;
+    if (userId == null) return Left(FirestoreFailure("User not logged in"));
 
-  get receivedWish => productIds;
+    final wishListRef = firebaseService.firestore.collection("wishList");
+
+    try {
+      log("Removing product ${product.id} from wishlist for user $userId");
+      final wishDoc = await wishListRef.doc(userId).get();
+      if (wishDoc.exists) {
+        await wishListRef.doc(userId).update({
+          "productId": FieldValue.arrayRemove([product.id])
+        });
+        log("Removed product ${product.id} from wishlist");
+      }
+      return Right(null); // Return void on success
+    } on FirebaseException catch (error) {
+      log("Error removeWish: $error");
+      return Left(FirestoreFailure.fromFirestoreException(error));
+    } catch (error) {
+      log("Error removeWish: $error");
+      return Left(FirestoreFailure(error.toString()));
+    }
+  }
 }

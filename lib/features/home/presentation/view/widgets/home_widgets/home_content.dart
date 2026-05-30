@@ -11,9 +11,14 @@ import 'package:provider/provider.dart';
 import '../../../../../../core/models/product_model/product.dart';
 
 class HomeContent extends StatefulWidget {
-  const HomeContent({super.key, required this.products});
+  const HomeContent({
+    super.key,
+    required this.products,
+    required this.onAddToCart,
+  });
 
   final List<Product> products;
+  final void Function(Product)? onAddToCart;
 
   @override
   State<HomeContent> createState() => _HomeContentState();
@@ -32,8 +37,8 @@ class _HomeContentState extends State<HomeContent> {
       ),
       delegate: SliverChildBuilderDelegate(childCount: widget.products.length,
           (BuildContext context, int index) {
-        final Product data = widget.products[index];
-        bool isInCart = cartProductIds.contains((data.id));
+        final Product item = widget.products[index];
+        bool isInCart = cartProductIds.contains((item.id));
 
         return Animate(
           effects: const [
@@ -59,7 +64,7 @@ class _HomeContentState extends State<HomeContent> {
             child: InkWell(
               borderRadius: BorderRadius.circular(17),
               onTap: () {
-                GoRouter.of(context).push(AppRouter.kItemDetails, extra: data);
+                GoRouter.of(context).push(AppRouter.kItemDetails, extra: item);
               },
 
               /// if you want to control the child size you can use [ConstrainedBox]
@@ -89,13 +94,13 @@ class _HomeContentState extends State<HomeContent> {
                         Icons.error,
                         color: Colors.red,
                       ),
-                      imageUrl: data.thumbnail!,
+                      imageUrl: item.thumbnail!,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 6, top: 20, bottom: 2),
                     child: Text(
-                      data.title!,
+                      item.title!,
                       style: Theme.of(context).textTheme.bodyMedium,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -109,13 +114,19 @@ class _HomeContentState extends State<HomeContent> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "\$${data.price}",
+                          "\$${item.price}",
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         if (isInCart)
-                          CartQuantityControls(data: data)
+                          CartQuantityControls(item: item)
                         else
-                          ProductActionControls(data: data),
+                          ProductActionControls(
+                            item: item,
+                            onAddToCart: (Product p) =>
+                                widget.onAddToCart == null
+                                    ? null
+                                    : widget.onAddToCart!(p),
+                          ),
                       ],
                     ),
                   ),

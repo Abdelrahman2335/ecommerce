@@ -7,23 +7,23 @@ import 'package:provider/provider.dart';
 class CartQuantityControls extends StatelessWidget {
   const CartQuantityControls({
     super.key,
-    required this.data,
+    required this.item,
   });
 
-  final Product data;
+  final Product item;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
       builder: (BuildContext context, provider, child) {
-        int itemCount = provider.getProductQuantity(data.id!);
+        int itemCount = provider.getProductQuantity(item.id!);
         return Row(
           children: [
             IconButton(
               onPressed: provider.isLoading
                   ? null
                   : () {
-                      provider.removeFromCart(data, false);
+                      provider.removeFromCart(item, false);
                     },
               icon: Icon(
                 PhosphorIcons.minusCircle(),
@@ -40,7 +40,7 @@ class CartQuantityControls extends StatelessWidget {
               onPressed: provider.isLoading
                   ? null
                   : () {
-                      provider.addToCart(data);
+                      provider.addToCart(item);
                     },
               icon: Icon(
                 PhosphorIcons.plusCircle(),

@@ -14,7 +14,9 @@ import '../../../../../core/models/customer_model.dart';
 
 @Injectable(as: SignupRepository)
 class SignupRepositoryImpl implements SignupRepository {
-  final FirebaseService _firebaseService = FirebaseService();
+  final FirebaseService _firebaseService;
+
+  SignupRepositoryImpl(this._firebaseService);
 
   @override
   Future<Either<Failure, UserCredential>> createAccountWithGoogle() async {
@@ -70,10 +72,10 @@ class SignupRepositoryImpl implements SignupRepository {
           log("Error creating customer document: $firestoreError");
           return Left(FirestoreFailure.fromFirestoreException(firestoreError));
           // Continue since authentication succeeded
-        }
-       catch (error) {
+        } catch (error) {
           log("Error creating customer document: $error");
-          return Left(FirestoreFailure("Unknown error, please try again later."));
+          return Left(
+              FirestoreFailure("Unknown error, please try again later."));
           // Continue since authentication succeeded
         }
       } else {

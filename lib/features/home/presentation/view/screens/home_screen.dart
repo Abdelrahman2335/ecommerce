@@ -1,3 +1,4 @@
+import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_bloc.dart';
 import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/banner_widget.dart';
 import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/category_widget.dart';
@@ -50,7 +51,10 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                HomeContent(products: state.receivedData ?? []),
+                HomeContent(
+                  products: state.receivedData ?? [],
+                  onAddToCart: (p) => context.read<CartProvider>().addToCart(p),
+                ),
               ],
             ),
           );
