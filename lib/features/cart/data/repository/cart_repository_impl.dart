@@ -1,169 +1,177 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dartz/dartz.dart';
+import 'package:ecommerce/core/error/failure.dart';
+import 'package:ecommerce/core/error/firestore_failure.dart';
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:injectable/injectable.dart';
 
-import 'cart_repository.dart';
 import '../model/cart_model.dart';
+import 'cart_repository.dart';
 
+@LazySingleton(as: CartRepository)
 class CartRepositoryImpl implements CartRepository {
-  static final CartRepositoryImpl _instance = CartRepositoryImpl._internal();
+  CartRepositoryImpl(this._firebaseService);
 
-  factory CartRepositoryImpl() => _instance;
-
-  CartRepositoryImpl._internal();
-
-  bool itemExist = false;
-  FirebaseService firebaseService = FirebaseService();
-  static String _userId = "";
-  static CollectionReference<Map<String, dynamic>>? cartRef;
-  static QuerySnapshot<Map<String, dynamic>>? cartData;
-
-  List<CartModel> fetchedProducts = [];
-  List productIds = [];
-  bool noItemsInCart = true;
-  int totalQuantity = 0;
+  final FirebaseService _firebaseService;
 
   @override
-  Future<void> initializeCart() async {
-    productIds.clear();
-    fetchedProducts.clear();
-    totalQuantity = 0;
+  Future<Either<Failure, List<CartModel>>> initializeCart() async {
+    final userId = _firebaseService.auth.currentUser?.uid;
+    if (userId == null) {
+      return Left(FirestoreFailure("User not logged in"));
+    }
+
+    final cartRef = _firebaseService.firestore.collection("cartData");
 
     try {
-      _userId = firebaseService.auth.currentUser!.uid;
-      cartRef = FirebaseFirestore.instance.collection("cartData");
-
-      /// Get the data from the database where the userId is equal to the current userId
-      cartData = await cartRef?.where("userId", isEqualTo: _userId).get();
-
-      if (cartData?.docs.isNotEmpty ?? false) {
-        log("cartData is not null");
-
-        /// Get the cart items from the cartData
-        fetchedProducts.addAll(cartData!.docs
-            .map((element) => CartModel.fromJson(element.data())));
-
-        /// Update product IDs list from fetched products
-        for (CartModel item in fetchedProducts) {
-          productIds.add(item.product.id);
-        }
-        totalItemCount();
-
-        /// Now check if we have items in cart
-        if (fetchedProducts.isNotEmpty) {
-          noItemsInCart = false;
-        } else {
-          noItemsInCart = true;
-        }
-
-        /// Update total quantity based on fetched items
-        for (CartModel item in fetchedProducts) {
-          totalQuantity += item.quantity;
-        }
-      } else {
-        log("nothing in the cartData: $cartData");
-        noItemsInCart = true;
-      }
+      final items = await _fetchItems(cartRef, userId);
+      return Right(items);
+    } on FirebaseException catch (error) {
+      log("Error in the Cart: $error");
+      return Left(FirestoreFailure.fromFirestoreException(error));
     } catch (error) {
       log("Error in the Cart: $error");
+      return Left(FirestoreFailure(error.toString()));
     }
   }
 
   @override
-  Map<int, int> totalItemCount() {
-    Map<int, int> productQuantities = {};
-
-    productQuantities.clear();
-    for (var item in fetchedProducts) {
-      productQuantities[item.product.id!] = item.quantity;
+  Future<Either<Failure, void>> addToCart(Product product) async {
+    final userId = _firebaseService.auth.currentUser?.uid;
+    if (userId == null) {
+      return Left(FirestoreFailure("User not logged in"));
     }
-    return productQuantities;
-  }
-
-  @override
-  Future<void> addToCart(Product product) async {
-    String docId = "${_userId}_${product.id}";
-    bool itemExist = productIds.contains(product.id);
+    final productId = product.id;
+    if (productId == null) {
+      return Left(FirestoreFailure("Product id missing"));
+    }
+    final cartRef = _firebaseService.firestore.collection("cartData");
+    final docId = "${userId}_$productId";
+    final docRef = cartRef.doc(docId);
 
     try {
+      final existingDoc = await docRef.get();
+      final itemExist = existingDoc.exists;
+
       log("itemExist: $itemExist");
-      log("userId: $_userId");
+      log("userId: $userId");
       log("productId: ${product.id}");
       log("Quantity for the main data: ${product.stock}");
 
       if (itemExist) {
         /// If the item is already in the cart, increment the quantity
-        await cartRef?.doc(docId).update({
+        await docRef.update({
           "quantity": FieldValue.increment(1),
         });
-
-        /// Update fetchedItems immediately
-        for (var item in fetchedProducts) {
-          if (item.product.id == product.id) {
-            item.quantity++;
-            log("Item quantity updated: ${item.product.id}: ${item.quantity}");
-            break;
-          }
-        }
       } else {
-        await cartRef!.doc(docId).set(
-            CartModel(userId: _userId, product: product, quantity: 1).toJson());
-
-        fetchedProducts
-            .add(CartModel(userId: _userId, product: product, quantity: 1));
-        productIds.add(product.id);
+        await docRef
+            .set(CartModel(userId: userId, product: product, quantity: 1).toJson());
       }
 
-      noItemsInCart = fetchedProducts.isEmpty;
-      totalQuantity++;
+      return const Right(null);
+    } on FirebaseException catch (error) {
+      log("addToCart error: ${error.toString()}");
+      return Left(FirestoreFailure.fromFirestoreException(error));
     } catch (error) {
       log("addToCart error: ${error.toString()}");
+      return Left(FirestoreFailure(error.toString()));
     }
   }
 
   @override
-  Future<void> removeFromCart(Product? product, bool deleteItem) async {
-    if (product == null) return;
-    String docId = "${_userId}_${product.id}";
+  Future<Either<Failure, void>> removeItem(Product product) async {
+    final userId = _firebaseService.auth.currentUser?.uid;
+    if (userId == null) {
+      return Left(FirestoreFailure("User not logged in"));
+    }
+    final productId = product.id;
+    if (productId == null) {
+      return Left(FirestoreFailure("Product id missing"));
+    }
+    final cartRef = _firebaseService.firestore.collection("cartData");
+    final docId = "${userId}_$productId";
 
     try {
-      /// Get the document from the database with this ID
-
-      if (fetchedProducts.isEmpty) return;
-
-      CartModel selectedProduct = fetchedProducts
-          .firstWhere((cartItem) => cartItem.product.id == product.id);
-      int currentQuantity = selectedProduct.quantity;
-      log("Current quantity: $currentQuantity");
-
-      if (currentQuantity > 1 && !deleteItem) {
-        await cartRef!.doc(docId).update({
-          "quantity": FieldValue.increment(-1),
-        });
-
-        /// Update fetchedItems immediately
-
-        selectedProduct.quantity--;
-        log("Item quantity updated: ${selectedProduct.product.id}: ${selectedProduct.quantity}");
-
-        totalQuantity--;
-      } else {
-        await cartRef!.doc(docId).delete();
-        CartModel item = fetchedProducts
-            .firstWhere((element) => element.product.id == product.id);
-
-        fetchedProducts
-            .removeWhere((element) => element.product.id == product.id);
-        productIds.remove(product.id);
-
-        totalQuantity -= item.quantity;
-      }
-
-      noItemsInCart = fetchedProducts.isEmpty;
+      await cartRef.doc(docId).delete();
+      return const Right(null);
+    } on FirebaseException catch (error) {
+      log("removeItem error: ${error.toString()}");
+      return Left(FirestoreFailure.fromFirestoreException(error));
     } catch (error) {
-      log("removeFromCart error: ${error.toString()}");
+      log("removeItem error: ${error.toString()}");
+      return Left(FirestoreFailure(error.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> decreaseItem(Product product) async {
+    final userId = _firebaseService.auth.currentUser?.uid;
+    if (userId == null) {
+      return Left(FirestoreFailure("User not logged in"));
+    }
+    final productId = product.id;
+    if (productId == null) {
+      return Left(FirestoreFailure("Product id missing"));
+    }
+    final cartRef = _firebaseService.firestore.collection("cartData");
+    final docId = "${userId}_$productId";
+
+    try {
+      final docRef = cartRef.doc(docId);
+      final docSnapshot = await docRef.get();
+      if (!docSnapshot.exists) {
+        log("decreaseItem skipped: cart item not found for $docId");
+        return const Right(null);
+      }
+
+      final data = docSnapshot.data();
+      if (data == null) {
+        log("decreaseItem skipped: cart item data missing for $docId");
+        return const Right(null);
+      }
+
+      final quantity = data["quantity"];
+      if (quantity is! int) {
+        log("decreaseItem error: invalid quantity for $docId");
+        return Left(FirestoreFailure("Invalid cart item quantity"));
+      }
+
+      final currentQuantity = quantity;
+      log("Current quantity: $currentQuantity");
+
+      if (currentQuantity > 1) {
+        await docRef.update({
+          "quantity": FieldValue.increment(-1),
+        });
+      } else {
+        await docRef.delete();
+      }
+
+      return const Right(null);
+    } on FirebaseException catch (error) {
+      log("decreaseItem error: ${error.toString()}");
+      return Left(FirestoreFailure.fromFirestoreException(error));
+    } catch (error) {
+      log("decreaseItem error: ${error.toString()}");
+      return Left(FirestoreFailure(error.toString()));
+    }
+  }
+
+  Future<List<CartModel>> _fetchItems(
+    CollectionReference<Map<String, dynamic>> cartRef,
+    String userId,
+  ) async {
+    final cartData = await cartRef.where("userId", isEqualTo: userId).get();
+    if (cartData.docs.isEmpty) {
+      return [];
+    }
+
+    return cartData.docs
+        .map((element) => CartModel.fromJson(element.data()))
+        .toList();
+  }
+
 }

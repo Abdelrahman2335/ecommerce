@@ -7,6 +7,7 @@ import 'package:ecommerce/features/address/presentation/manager/address_bloc.dar
 import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_bloc.dart';
@@ -19,9 +20,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import 'features/cart/data/repository/cart_repository_impl.dart';
-import 'features/cart/presentation/manager/cart_provider.dart';
 import 'features/payment/data/repository/paymob_repository_impl.dart';
 
 void main() async {
@@ -35,7 +33,6 @@ void main() async {
     );
 
     runApp(MultiProvider(providers: [
-      ChangeNotifierProvider(create: (_) => CartProvider(CartRepositoryImpl())),
       // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => PaymentProvider(PaymentRepositoryImpl()),
@@ -78,6 +75,10 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => getIt<AddressBloc>()),
           BlocProvider(create: (context) => getIt<HomeBloc>()),
           BlocProvider(create: (context) => getIt<WishlistBloc>()),
+          BlocProvider(
+            create: (context) =>
+                getIt<CartBloc>(),
+          ),
         ],
         child: MaterialApp.router(
           routerConfig: AppRouter.router,

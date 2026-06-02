@@ -1,8 +1,11 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
+
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_event.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_state.dart';
 
 class CartQuantityControl extends StatelessWidget {
   const CartQuantityControl({super.key, required this.selectedItem});
@@ -10,77 +13,84 @@ class CartQuantityControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int itemCount = 0;
     ColorScheme theme = Theme.of(context).colorScheme;
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        final itemId = selectedItem.id;
+        final itemCount =
+            itemId == null ? 0 : (state.productQuantities[itemId] ?? 0);
+        final isInCart = itemId != null && state.productIds.contains(itemId);
+        final isLoading = state.status == CartStatus.loading;
 
-    CartProvider cartProvider =
-        Provider.of<CartProvider>(context, listen: true);
-
-    itemCount = cartProvider.getProductQuantity(selectedItem.id!);
-
-    if (cartProvider.itemInCart) {
-      return Padding(
-        padding: const EdgeInsets.all(5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-                onPressed: () async {
-                  if (cartProvider.isLoading) {
-                    return cartProvider.removeFromCart(selectedItem, false);
-                  } else {
-                    return;
-                  }
-                },
-                icon: Icon(
-                  PhosphorIcons.minusCircle(),
-                  color: cartProvider.isLoading
-                      ? Colors.blueGrey
-                      : theme.secondary,
-                  size: 26,
-                )),
-            Text(
-              itemCount.toString(),
-              style: TextStyle(
-                color: theme.primary,
-              ),
+        if (isInCart) {
+          return Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          context.read<CartBloc>().add(
+                                CartQuantityUpdated(
+                                  product: selectedItem,
+                                  quantity: itemCount - 1,
+                                ),
+                              );
+                        },
+                  icon: Icon(
+                    PhosphorIcons.minusCircle(),
+                    color: isLoading ? Colors.blueGrey : theme.secondary,
+                    size: 26,
+                  ),
+                ),
+                Text(
+                  itemCount.toString(),
+                  style: TextStyle(
+                    color: theme.primary,
+                  ),
+                ),
+                IconButton(
+                  onPressed: isLoading
+                      ? null
+                      : () {
+                          context.read<CartBloc>().add(
+                                CartQuantityUpdated(
+                                  product: selectedItem,
+                                  quantity: itemCount + 1,
+                                ),
+                              );
+                        },
+                  icon: Icon(
+                    PhosphorIcons.plusCircle(),
+                    color: isLoading ? Colors.blueGrey : theme.secondary,
+                    size: 26,
+                  ),
+                ),
+              ],
             ),
-            IconButton(
-                onPressed: () async {
-                  if (cartProvider.isLoading) {
-                    return cartProvider.addToCart(selectedItem);
-                  } else {
-                    return;
-                  }
+          );
+        }
+
+        return ElevatedButton(
+          onPressed: isLoading
+              ? null
+              : () {
+                  context.read<CartBloc>().add(CartItemAdded(selectedItem));
                 },
-                icon: Icon(
-                  PhosphorIcons.plusCircle(),
-                  color: cartProvider.isLoading
-                      ? Colors.blueGrey
-                      : theme.secondary,
-                  size: 26,
-                )),
-          ],
-        ),
-      );
-    } else {
-      return ElevatedButton(
-        onPressed: cartProvider.isLoading
-            ? null
-            : () {
-                cartProvider.addToCart(selectedItem);
-              },
-        style: ElevatedButton.styleFrom(
-            backgroundColor: theme.secondary,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(19))),
-        child: Text(
-          "Add To Cart",
-          style: TextStyle(
-            color: Colors.white,
+          style: ElevatedButton.styleFrom(
+              backgroundColor: theme.secondary,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(19))),
+          child: Text(
+            "Add To Cart",
+            style: TextStyle(
+              color: Colors.white,
+            ),
           ),
-        ),
-      );
-    }
+        );
+      },
+    );
   }
 }

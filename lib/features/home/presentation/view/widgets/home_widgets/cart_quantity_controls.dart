@@ -1,8 +1,11 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
-import 'package:provider/provider.dart';
+
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_event.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_state.dart';
 
 class CartQuantityControls extends StatelessWidget {
   const CartQuantityControls({
@@ -14,20 +17,27 @@ class CartQuantityControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CartProvider>(
-      builder: (BuildContext context, provider, child) {
-        int itemCount = provider.getProductQuantity(item.id!);
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (BuildContext context, state) {
+        final itemCount = state.productQuantities[item.id] ?? 0;
+        final isLoading = state.status == CartStatus.loading;
+
         return Row(
           children: [
             IconButton(
-              onPressed: provider.isLoading
+              onPressed: isLoading
                   ? null
                   : () {
-                      provider.removeFromCart(item, false);
+                      context.read<CartBloc>().add(
+                            CartQuantityUpdated(
+                              product: item,
+                              quantity: itemCount - 1,
+                            ),
+                          );
                     },
               icon: Icon(
                 PhosphorIcons.minusCircle(),
-                color: provider.isLoading
+                color: isLoading
                     ? Colors.blueGrey
                     : Theme.of(context).colorScheme.secondary,
               ),
@@ -37,14 +47,19 @@ class CartQuantityControls extends StatelessWidget {
               style: TextStyle(color: Theme.of(context).colorScheme.primary),
             ),
             IconButton(
-              onPressed: provider.isLoading
+              onPressed: isLoading
                   ? null
                   : () {
-                      provider.addToCart(item);
+                      context.read<CartBloc>().add(
+                            CartQuantityUpdated(
+                              product: item,
+                              quantity: itemCount + 1,
+                            ),
+                          );
                     },
               icon: Icon(
                 PhosphorIcons.plusCircle(),
-                color: provider.isLoading
+                color: isLoading
                     ? Colors.blueGrey
                     : Theme.of(context).colorScheme.secondary,
               ),

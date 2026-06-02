@@ -1,21 +1,22 @@
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
+
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 
 class CheckoutSummary extends StatelessWidget {
   const CheckoutSummary({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final cartProvider = context.watch<CartProvider>();
     final checkoutProvider = context.watch<CheckoutProvider>();
     final checkoutSummary = checkoutProvider.checkoutSummary;
+    final cartState = context.watch<CartBloc>().state;
 
     // Calculate items price manually for backward compatibility
     num itemsPrice = 0;
-    for (var cartItem in cartProvider.fetchedItems) {
+    for (var cartItem in cartState.items) {
       itemsPrice += cartItem.quantity * cartItem.product.price!;
     }
     return Column(
@@ -27,7 +28,7 @@ class CheckoutSummary extends StatelessWidget {
         Row(
           children: [
             Text(
-                "Total items (${checkoutSummary?.totalQuantity ?? cartProvider.totalQuantity}):"),
+                "Total items (${checkoutSummary?.totalQuantity ?? cartState.totalQuantity}):"),
             const Spacer(),
             Text(
                 "\$${(checkoutSummary?.itemsPrice ?? itemsPrice).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}"),

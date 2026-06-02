@@ -1,8 +1,8 @@
-
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 
 class PromoCodeWidget extends StatelessWidget {
   const PromoCodeWidget({
@@ -13,10 +13,10 @@ class PromoCodeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController promoController = TextEditingController();
 
-    final cartProvider = context.watch<CartProvider>();
     final checkoutProvider = context.watch<CheckoutProvider>();
     final appliedPromo = checkoutProvider.appliedPromoCode;
     final isPromoApplied = appliedPromo != null && appliedPromo.isValid;
+    final cartItems = context.select((CartBloc bloc) => bloc.state.items);
 
     return Row(
       children: [
@@ -39,7 +39,7 @@ class PromoCodeWidget extends StatelessWidget {
               : () {
                   checkoutProvider.applyPromoCode(
                     promoController.text.trim(),
-                    cartProvider.fetchedItems,
+                    cartItems,
                   );
                   if (isPromoApplied) {
                     promoController.clear();

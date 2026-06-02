@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/cart_quantity_controls.dart';
 import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/product_action_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../../core/models/product_model/product.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({
@@ -27,7 +27,8 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
-    final cartProductIds = Provider.of<CartProvider>(context).productIds;
+    final cartProductIds =
+        context.select((CartBloc bloc) => bloc.state.productIds);
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

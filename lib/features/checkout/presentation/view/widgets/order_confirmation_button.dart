@@ -1,12 +1,14 @@
 import 'dart:developer';
 
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_address_provider.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
 import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 
 class OrderConfirmationButton extends StatelessWidget {
   const OrderConfirmationButton({
@@ -15,17 +17,19 @@ class OrderConfirmationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<CheckoutProvider, CartProvider, CheckoutAddressProvider,
+    final cartItems = context.select((CartBloc bloc) => bloc.state.items);
+
+    return Consumer3<CheckoutProvider, CheckoutAddressProvider,
         PaymentProvider>(
-      builder: (context, checkoutProvider, cartProvider, addressProvider,
-          paymentProvider, child) {
+      builder:
+          (context, checkoutProvider, addressProvider, paymentProvider, child) {
         return ElevatedButton(
           onPressed: checkoutProvider.isLoading
               ? null
               : () async {
                   // Use the new confirmOrder method from CheckoutProvider
                   final order = await checkoutProvider.confirmOrder(
-                    cartItems: cartProvider.fetchedItems,
+                    cartItems: cartItems,
                     shippingAddress: addressProvider.currentAddress,
                     paymentMethod: paymentProvider.getPaymentMethod,
                   );

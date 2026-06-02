@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 import 'package:ecommerce/features/wishlist/presentation/view/widgets/wishlist_cart_quantity_controls.dart';
 import 'package:ecommerce/features/wishlist/presentation/view/widgets/wishlist_product_action_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 import '../../../../../core/models/product_model/product.dart';
 import '../../../../../core/router/app_router.dart';
@@ -23,7 +23,8 @@ class WishlistContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cartProductIds = Provider.of<CartProvider>(context).productIds;
+    final cartProductIds =
+        context.select((CartBloc bloc) => bloc.state.productIds);
 
     return CustomScrollView(
         shrinkWrap: true,

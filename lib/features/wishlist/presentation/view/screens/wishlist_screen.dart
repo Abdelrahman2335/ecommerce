@@ -1,4 +1,3 @@
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
 import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/custom_drawer.dart';
 import 'package:ecommerce/features/wishlist/presentation/manager/wishlist_bloc.dart';
 import 'package:ecommerce/features/wishlist/presentation/view/widgets/app_bar.dart';
@@ -6,6 +5,9 @@ import 'package:ecommerce/features/wishlist/presentation/view/widgets/wishlist_c
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_event.dart';
 
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
@@ -33,7 +35,7 @@ class WishlistScreen extends StatelessWidget {
                 onRemoveFromWishlist: (p) =>
                     context.read<WishlistBloc>().add(RemoveWishEvent(p)),
                 onAddToCart: (p) {
-                  context.read<CartProvider>().addToCart(p);
+                  context.read<CartBloc>().add(CartItemAdded(p));
                 },
               )),
             );

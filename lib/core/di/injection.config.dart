@@ -33,6 +33,10 @@ import '../../features/auth/presentation/manager/cubits/login_logout_bloc/login_
     as _i85;
 import '../../features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart'
     as _i710;
+import '../../features/cart/data/repository/cart_repository.dart' as _i323;
+import '../../features/cart/data/repository/cart_repository_impl.dart'
+    as _i1063;
+import '../../features/cart/presentation/manager/cart_bloc.dart' as _i474;
 import '../../features/home/data/repository/home_repo.dart' as _i930;
 import '../../features/home/data/repository/home_repo_impl.dart' as _i1013;
 import '../../features/home/presentation/manager/home_bloc.dart' as _i801;
@@ -70,6 +74,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i237.SignupRepository>(
         () => _i131.SignupRepositoryImpl(gh<_i758.FirebaseService>()));
     gh.factory<_i801.HomeBloc>(() => _i801.HomeBloc(gh<_i930.HomeRepo>()));
+    gh.lazySingleton<_i323.CartRepository>(
+        () => _i1063.CartRepositoryImpl(gh<_i758.FirebaseService>()));
     gh.factory<_i699.SignupBloc>(() => _i699.SignupBloc(
           gh<_i237.SignupRepository>(),
           gh<_i758.FirebaseService>(),
@@ -82,6 +88,8 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i570.LoginRepository>(),
           gh<_i758.FirebaseService>(),
         ));
+    gh.factory<_i474.CartBloc>(
+        () => _i474.CartBloc(gh<_i323.CartRepository>()));
     gh.lazySingleton<_i499.UserRegistrationRepo>(
         () => _i763.UserRegistrationRepoImpl(gh<_i758.FirebaseService>()));
     gh.factory<_i17.WishlistBloc>(

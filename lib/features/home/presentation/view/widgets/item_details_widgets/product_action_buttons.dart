@@ -1,11 +1,12 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
 import 'package:ecommerce/features/home/presentation/view/widgets/home_widgets/cart_quantity_control.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:ecommerce/core/router/app_router.dart';
-import 'package:ecommerce/features/cart/presentation/manager/cart_provider.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_event.dart';
 
 class ProductActionButtons extends StatelessWidget {
   const ProductActionButtons({
@@ -18,9 +19,9 @@ class ProductActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ColorScheme theme = Theme.of(context).colorScheme;
-
-    CartProvider cartProvider =
-        Provider.of<CartProvider>(context, listen: true);
+    final cartState = context.watch<CartBloc>().state;
+    final isInCart = selectedItem.id != null &&
+        cartState.productIds.contains(selectedItem.id);
 
     return Row(
       children: [
@@ -28,11 +29,12 @@ class ProductActionButtons extends StatelessWidget {
           padding: const EdgeInsets.all(5),
           child: ElevatedButton(
             onPressed: () {
-              if (cartProvider.productIds.contains(selectedItem.id)) {
+              if (isInCart) {
                 GoRouter.of(context).push(AppRouter.kCheckoutScreen);
+                return;
               }
 
-              cartProvider.addToCart(selectedItem);
+              context.read<CartBloc>().add(CartItemAdded(selectedItem));
               GoRouter.of(context).pushReplacement(AppRouter.kCheckoutScreen);
             },
             style: ElevatedButton.styleFrom(

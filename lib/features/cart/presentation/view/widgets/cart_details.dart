@@ -1,9 +1,10 @@
 import 'package:ecommerce/features/cart/data/model/cart_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 
-import '../../manager/cart_provider.dart';
+import '../../manager/cart_bloc.dart';
+import '../../manager/cart_event.dart';
 
 class CartDetails extends StatelessWidget {
   const CartDetails({
@@ -50,10 +51,13 @@ class CartDetails extends StatelessWidget {
                   Text("Total items ($itemCount):"),
                   const Spacer(),
                   TextButton(
-                    onPressed: ()  {
-                       context
-                          .read<CartProvider>()
-                          .removeFromCart(selectedCartItem.product, true);
+                    onPressed: () {
+                      context.read<CartBloc>().add(
+                            CartItemRemoved(
+                              selectedCartItem.product,
+                              deleteItem: true,
+                            ),
+                          );
                     },
                     child: const Text("Remove"),
                   ),
