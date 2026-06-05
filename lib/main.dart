@@ -8,19 +8,19 @@ import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_
 import 'package:ecommerce/features/auth/presentation/manager/cubits/login_logout_bloc/login_logout_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/user_registration/user_registration_bloc.dart';
 import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
-import 'package:ecommerce/features/checkout/data/repository/checkout_repository_impl.dart';
-import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
+import 'package:ecommerce/features/checkout/presentation/manager/checkout_bloc.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_bloc.dart';
 import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
+import 'package:ecommerce/features/payment/data/repository/paymob_repository_impl.dart';
 import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:ecommerce/features/wishlist/presentation/manager/wishlist_bloc.dart';
+import 'package:ecommerce/core/services/remote_config_service.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'features/payment/data/repository/paymob_repository_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,17 +32,15 @@ void main() async {
       name: 'e-commerce-2699c',
     );
 
+    // Initialize Remote Config
+    await RemoteConfigService().initRemoteConfig();
+
     runApp(MultiProvider(providers: [
-      // ChangeNotifierProvider(create: (_) => UnsplashViewModel(UnsplashRepositoryImpl())),
       ChangeNotifierProvider(
         create: (_) => PaymentProvider(PaymentRepositoryImpl()),
       ),
-
       ChangeNotifierProvider(
         create: (_) => OrderProvider(OrderRepositoryImpl()),
-      ),
-      ChangeNotifierProvider(
-        create: (_) => CheckoutProvider(CheckoutRepositoryImpl()),
       ),
     ], child: const MyApp()));
   } catch (error) {
@@ -75,9 +73,9 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (context) => getIt<AddressBloc>()),
           BlocProvider(create: (context) => getIt<HomeBloc>()),
           BlocProvider(create: (context) => getIt<WishlistBloc>()),
+          BlocProvider(create: (context) => getIt<CheckoutBloc>()),
           BlocProvider(
-            create: (context) =>
-                getIt<CartBloc>(),
+            create: (context) => getIt<CartBloc>(),
           ),
         ],
         child: MaterialApp.router(

@@ -108,6 +108,9 @@ class LoginLogoutBloc extends Bloc<LoginLogoutEvent, LoginLogoutState> {
     }, (success) {
       emit(state.copyWith(
         status: LoginStatus.success,
+        userEmail: null,
+        displayName: null,
+        isNewUser: false,
       ));
 
       log("User signed out successfully");

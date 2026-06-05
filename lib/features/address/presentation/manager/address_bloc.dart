@@ -15,18 +15,21 @@ part 'address_state.dart';
 @injectable
 class AddressBloc extends Bloc<AddressEvent, AddressState> {
   AddressBloc(this._addressRepo) : super(const AddressState()) {
-    on<LoadAddressEvent>(loadAddress);
-    on<SaveAddressEvent>(saveAddress);
-    on<DeleteAddressEvent>(deleteAddress);
-    on<GetCurrentLocation>(getCurrentLocation);
-    on<UpdateSelectedCityEvent>(updateSelectedCity);
-    on<AddressAreaChanged>(updateArea);
-    on<AddressStreetChanged>(updateStreet);
+    on<LoadAddressEvent>(_loadAddress);
+    on<SaveAddressEvent>(_saveAddress);
+    on<DeleteAddressEvent>(_deleteAddress);
+    on<GetCurrentLocation>(_getCurrentLocation);
+    on<UpdateSelectedCityEvent>(_updateSelectedCity);
+    on<AddressAreaChanged>(_updateArea);
+    on<AddressStreetChanged>(_updateStreet);
+    on<TriggerManualAddressEvent>(_manualAddressTriggered);
+
+    add(const LoadAddressEvent());
   }
 
   final AddressRepo _addressRepo;
 
-  Future<void> getCurrentLocation(
+  Future<void> _getCurrentLocation(
     GetCurrentLocation event,
     Emitter<AddressState> emit,
   ) async {
@@ -39,6 +42,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         state.copyWith(
           errMessage: FirestoreFailure(error.errorMessage).errorMessage,
           status: AddressStatus.error,
+          triggerManualAddress: true,
         ),
       );
       log("Error getting current location: ${state.errMessage}");
@@ -48,19 +52,22 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
           state.copyWith(
             userLocation: LatLng(coordinates.latitude!, coordinates.longitude!),
             status: AddressStatus.success,
+            triggerManualAddress: false,
           ),
         );
       } else {
         emit(state.copyWith(
-            status: AddressStatus.error,
-            errMessage: "Unable to obtain current location"));
+          status: AddressStatus.error,
+          errMessage: "Unable to obtain current location",
+          triggerManualAddress: true,
+        ));
       }
       log("Current location obtained successfully");
     });
   }
 
   /// Load user's current address
-  Future<void> loadAddress(
+  Future<void> _loadAddress(
     LoadAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -94,7 +101,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
   }
 
   /// Save or update user's address
-  Future<void> saveAddress(
+  Future<void> _saveAddress(
     SaveAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -123,7 +130,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     });
   }
 
-  Future<void> deleteAddress(
+  Future<void> _deleteAddress(
     DeleteAddressEvent event,
     Emitter<AddressState> emit,
   ) async {
@@ -142,7 +149,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
     });
   }
 
-  void updateSelectedCity(
+  void _updateSelectedCity(
     UpdateSelectedCityEvent event,
     Emitter<AddressState> emit,
   ) {
@@ -150,7 +157,7 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         currentAddress: state.currentAddress?.copyWith(city: event.city)));
   }
 
-  void updateArea(
+  void _updateArea(
     AddressAreaChanged event,
     Emitter<AddressState> emit,
   ) {
@@ -159,12 +166,19 @@ class AddressBloc extends Bloc<AddressEvent, AddressState> {
         currentAddress: currentAddress.copyWith(area: event.area.trim())));
   }
 
-  void updateStreet(
+  void _updateStreet(
     AddressStreetChanged event,
     Emitter<AddressState> emit,
   ) {
     final currentAddress = state.currentAddress ?? AddressModel();
     emit(state.copyWith(
         currentAddress: currentAddress.copyWith(street: event.street.trim())));
+  }
+
+  void _manualAddressTriggered(
+    TriggerManualAddressEvent event,
+    Emitter<AddressState> emit,
+  ) {
+    emit(state.copyWith(triggerManualAddress: event.triggerManualAddress));
   }
 }

@@ -1,8 +1,7 @@
-import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
+import 'package:ecommerce/features/checkout/presentation/manager/checkout_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 
 class PromoCodeWidget extends StatelessWidget {
   const PromoCodeWidget({
@@ -11,55 +10,65 @@ class PromoCodeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController promoController = TextEditingController();
-
-    final checkoutProvider = context.watch<CheckoutProvider>();
-    final appliedPromo = checkoutProvider.appliedPromoCode;
-    final isPromoApplied = appliedPromo != null && appliedPromo.isValid;
     final cartItems = context.select((CartBloc bloc) => bloc.state.items);
 
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-              enabled: !isPromoApplied && !checkoutProvider.isValidatingPromo,
-              controller: promoController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide:
-                        BorderSide(color: Theme.of(context).primaryColor)),
-                labelText: 'Promo Code',
-                errorText: checkoutProvider.errorMessage,
-              )),
-        ),
-        const Spacer(),
-        InkWell(
-          onTap: checkoutProvider.isValidatingPromo
-              ? null
-              : () {
-                  checkoutProvider.applyPromoCode(
-                    promoController.text.trim(),
-                    cartItems,
-                  );
-                  if (isPromoApplied) {
-                    promoController.clear();
-                  }
-                },
-          child: checkoutProvider.isValidatingPromo
-              ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : Text(
-                  isPromoApplied ? "Remove" : "Apply",
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
+    return BlocBuilder<CheckoutBloc, CheckoutState>(
+      builder: (context, state) {
+        final isPromoApplied =
+            state.appliedPromoCode != null && state.appliedPromoCode!.isValid;
+        final isValidatingPromo =
+            state.status == CheckoutStatus.promoValidating;
+        return Row(
+          children: [
+            Expanded(
+              child: TextField(
+                enabled: !isPromoApplied && !isValidatingPromo,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor)),
+                  labelText: 'Promo Code',
+                  errorText: state.errorMessage,
                 ),
-        ),
-      ],
+                onChanged: (value) => context
+                    .read<CheckoutBloc>()
+                    .add(CheckoutPromoCodeUpdated(value)),
+              ),
+            ),
+            const Spacer(),
+            InkWell(
+              onTap: isValidatingPromo
+                  ? null
+                  : () {
+                      if (isPromoApplied) {
+                        context
+                            .read<CheckoutBloc>()
+                            .add(CheckoutPromoCodeRemoved(cartItems));
+                        return;
+                      } else {
+                        context.read<CheckoutBloc>().add(
+                            CheckoutPromoCodeApplied(
+                                cartItems: cartItems,
+                                promoCode: state.promoValue ?? ""));
+                      }
+                    },
+              child: isValidatingPromo
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : Text(
+                      isPromoApplied ? "Remove" : "Apply",
+                      style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

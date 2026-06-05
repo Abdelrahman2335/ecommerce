@@ -20,6 +20,7 @@ enum OrderStatus {
   final String displayName;
 
   const OrderStatus(this.displayName);
+
   String getName() => displayName;
 }
 
@@ -61,33 +62,35 @@ class OrderModel {
         'totalPrice': totalPrice,
         'deliveryFee': deliveryFee,
         'discount': discount,
-        'paymentMethod': paymentMethod,
+        'paymentMethod': paymentMethod.displayName,
         'products': products.map((p) => p.toJson()).toList(),
         'createdAt': createdAt.toIso8601String(),
         'shippingAddress': shippingAddress.toJson(),
       };
-      OrderModel copyWith({
-        String? id,
-        List<CartModel>? products,
-        AddressModel? shippingAddress,
-        DateTime? createdAt,
-        num? totalPrice,
-        num? deliveryFee,
-        num? discount,
-        PaymentMethod? paymentMethod,
-        OrderStatus? orderStatus,
-      }) {
-        return OrderModel(
-          totalPrice: totalPrice ?? this.totalPrice,
-          deliveryFee: deliveryFee ?? this.deliveryFee,
-          discount: discount ?? this.discount,
-          paymentMethod: paymentMethod ?? this.paymentMethod,
-          products: products ?? this.products,
-          createdAt: createdAt ?? this.createdAt,
-          shippingAddress: shippingAddress ?? this.shippingAddress,
-          orderStatus: orderStatus ?? this.orderStatus,
-        );
-      }
+
+  OrderModel copyWith({
+    String? id,
+    List<CartModel>? products,
+    AddressModel? shippingAddress,
+    DateTime? createdAt,
+    num? totalPrice,
+    num? deliveryFee,
+    num? discount,
+    PaymentMethod? paymentMethod,
+    OrderStatus? orderStatus,
+  }) {
+    return OrderModel(
+      totalPrice: totalPrice ?? this.totalPrice,
+      deliveryFee: deliveryFee ?? this.deliveryFee,
+      discount: discount ?? this.discount,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      products: products ?? this.products,
+      createdAt: createdAt ?? this.createdAt,
+      shippingAddress: shippingAddress ?? this.shippingAddress,
+      orderStatus: orderStatus ?? this.orderStatus,
+    );
+  }
+
 // TODO Make sure the order id is unique
   static String generateOrderId() {
     var rng = Random();

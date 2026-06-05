@@ -7,13 +7,14 @@ class AddressState extends Equatable {
   final String? errMessage;
   final AddressModel? currentAddress;
   final LatLng? userLocation;
+  final bool triggerManualAddress;
 
-  const AddressState({
-    this.status = AddressStatus.initial,
-    this.errMessage = '',
-    this.userLocation,
-    this.currentAddress,
-  });
+  const AddressState(
+      {this.status = AddressStatus.initial,
+      this.errMessage = '',
+      this.userLocation,
+      this.currentAddress,
+      this.triggerManualAddress = false});
 
   AddressState copyWith({
     AddressStatus? status,
@@ -21,13 +22,15 @@ class AddressState extends Equatable {
     AddressModel? currentAddress,
     LatLng? userLocation,
     String? selectedCity,
+    bool? triggerManualAddress,
   }) {
     return AddressState(
-      status: status ?? this.status,
-      errMessage: errMessage ?? this.errMessage,
-      currentAddress: currentAddress ?? this.currentAddress,
-      userLocation: userLocation ?? this.userLocation,
-    );
+        status: status ?? this.status,
+        errMessage: errMessage ?? this.errMessage,
+        currentAddress: currentAddress ?? this.currentAddress,
+        userLocation: userLocation ?? this.userLocation,
+        triggerManualAddress:
+            triggerManualAddress ?? this.triggerManualAddress);
   }
 
   AddressState clearAddress() {
@@ -36,6 +39,7 @@ class AddressState extends Equatable {
       errMessage: errMessage,
       userLocation: userLocation,
       currentAddress: null,
+      triggerManualAddress: true,
     );
   }
 
@@ -50,5 +54,6 @@ class AddressState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, errMessage, currentAddress, userLocation];
+  List<Object?> get props =>
+      [status, errMessage, currentAddress, userLocation, triggerManualAddress];
 }

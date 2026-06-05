@@ -1,34 +1,34 @@
-import 'package:ecommerce/features/address/presentation/manager/address_bloc.dart';
+import 'package:ecommerce/core/di/injection.dart';
+import 'package:ecommerce/core/network/api_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:gap/gap.dart';
-import 'package:ecommerce/core/di/injection.dart';
-import 'package:ecommerce/core/network/api_config.dart';
+import 'package:latlong2/latlong.dart';
 
 class LocationMapPreview extends StatelessWidget {
   const LocationMapPreview({
     super.key,
-    required this.mediaQuery,
-    required this.theme,
-    required this.state,
+    required this.userLocation,
     required this.onContinue,
+    required this.onNewAddress,
   });
 
-  final AddressState state;
+  final LatLng userLocation;
   final VoidCallback onContinue;
-  final Size mediaQuery;
-  final Color theme;
+  final VoidCallback onNewAddress;
 
   @override
   Widget build(BuildContext context) {
     final tileUrl = getIt<ApiConfig>().osmTileUrl;
+    final mediaQuery = MediaQuery.of(context).size;
+    final theme = Theme.of(context).primaryColor;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
-          const Gap(70),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 7, vertical: 7),
+            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 7),
             height: mediaQuery.height * 0.27,
             width: double.infinity,
             alignment: Alignment.center,
@@ -49,13 +49,8 @@ class LocationMapPreview extends StatelessWidget {
                 )),
             child: FlutterMap(
                 options: MapOptions(
-                  /// The initial center is the user location
-                  initialCenter: state.userLocation!,
+                  initialCenter: userLocation,
                   initialZoom: 16,
-
-                  /// making the map fixed
-                  // maxZoom: 16,
-                  // minZoom: 16,
                 ),
                 children: [
                   TileLayer(
@@ -64,7 +59,7 @@ class LocationMapPreview extends StatelessWidget {
                   ),
                   MarkerLayer(markers: [
                     Marker(
-                        point: state.userLocation!,
+                        point: userLocation,
                         width: 40,
                         height: 40,
                         child: const Icon(
@@ -74,23 +69,40 @@ class LocationMapPreview extends StatelessWidget {
                   ])
                 ]),
           ),
-          Container(
-            height: mediaQuery.height * 0.1,
-            width: mediaQuery.width * 0.8,
-            padding: EdgeInsets.only(right: 20, top: 34),
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  backgroundColor: theme,
-                  foregroundColor: Colors.white,
+          const Gap(16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            spacing: 12,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: theme,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8))),
-              onPressed: onContinue,
-              child: const Text(
-                "Continue",
+                      borderRadius: BorderRadius.circular(12)),
+                  // minimumSize: Size(100, 40), /// Change the size of the button,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+
+                  /// Change the padding of the button (the space inside the button)
+                  /// Don't forget to change other buttons as well
+                ),
+                onPressed: onNewAddress,
+                child: const Text("New Address"),
               ),
-            ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: theme,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size(120, 45),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8))),
+                onPressed: onContinue,
+                child: const Text(
+                  "Continue",
+                ),
+              ),
+            ],
           ),
         ],
       ),

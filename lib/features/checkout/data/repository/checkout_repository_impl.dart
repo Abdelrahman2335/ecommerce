@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:ecommerce/core/models/address_model.dart';
+import 'package:injectable/injectable.dart';
 
-import 'checkout_repository.dart';
+import '../../../../features/cart/data/model/cart_model.dart';
 import '../models/checkout_summary.dart';
 import '../models/promo_code_model.dart';
-import '../../../../features/cart/data/model/cart_model.dart';
+import 'checkout_repository.dart';
 
+@LazySingleton(as: CheckoutRepository)
 class CheckoutRepositoryImpl implements CheckoutRepository {
   // Static promo codes - in a real app, this would come from an API
   static const Map<String, num> _promoCodes = {

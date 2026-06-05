@@ -22,13 +22,15 @@ class LoginScreenBody extends StatefulWidget {
 
 class _LoginScreenBodyState extends State<LoginScreenBody> {
   final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginLogoutBloc, LoginLogoutState>(
       listener: (context, state) {
         if (state.status == LoginStatus.error) {
           SnackBarHelper.show(message: state.errorMessage!);
-        } else if (state.status == LoginStatus.success) {
+        } else if (state.status == LoginStatus.success &&
+            state.userEmail != null) {
           if (state.isNewUser) {
             GoRouter.of(context).pushReplacement(AppRouter.kUserSetupScreen);
           } else {

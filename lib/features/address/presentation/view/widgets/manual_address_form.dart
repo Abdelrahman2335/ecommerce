@@ -1,7 +1,6 @@
 import 'package:ecommerce/core/utils/cities.dart';
 import 'package:ecommerce/core/widgets/custom_field.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class ManualAddressForm extends StatelessWidget {
@@ -34,8 +33,6 @@ class ManualAddressForm extends StatelessWidget {
           spacing: 19,
           children: [
             /// The dropdown button for the cities.
-            /// using Expanded to make the dropdown button take the remaining space (Important)
-            const Gap(90),
             DropdownButtonFormField(
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.all(20),

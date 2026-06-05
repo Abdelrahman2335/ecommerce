@@ -1,24 +1,14 @@
-import 'package:ecommerce/features/checkout/presentation/manager/checkout_provider.dart';
+import 'package:ecommerce/features/checkout/data/models/checkout_summary.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
-import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
-
 class CheckoutSummary extends StatelessWidget {
-  const CheckoutSummary({super.key});
+  const CheckoutSummary({super.key, required this.checkoutSummary});
+
+  final CheckoutModel checkoutSummary;
 
   @override
   Widget build(BuildContext context) {
-    final checkoutProvider = context.watch<CheckoutProvider>();
-    final checkoutSummary = checkoutProvider.checkoutSummary;
-    final cartState = context.watch<CartBloc>().state;
-
-    // Calculate items price manually for backward compatibility
-    num itemsPrice = 0;
-    for (var cartItem in cartState.items) {
-      itemsPrice += cartItem.quantity * cartItem.product.price!;
-    }
     return Column(
       children: [
         Text("Order Summary", style: TextStyle(fontStyle: FontStyle.italic)),
@@ -27,11 +17,10 @@ class CheckoutSummary extends StatelessWidget {
         const Gap(13),
         Row(
           children: [
-            Text(
-                "Total items (${checkoutSummary?.totalQuantity ?? cartState.totalQuantity}):"),
+            Text("Total items (${checkoutSummary.totalQuantity}):"),
             const Spacer(),
             Text(
-                "\$${(checkoutSummary?.itemsPrice ?? itemsPrice).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}"),
+                "\$${(checkoutSummary.itemsPrice).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}"),
           ],
         ),
         const Gap(12),
@@ -39,7 +28,7 @@ class CheckoutSummary extends StatelessWidget {
           children: [
             const Text("Shipping:"),
             const Spacer(),
-            Text("\$${(checkoutSummary?.shippingFee ?? 10)}"),
+            Text("\$${(checkoutSummary.shippingFee)}"),
           ],
         ),
         const Gap(12),
@@ -48,9 +37,9 @@ class CheckoutSummary extends StatelessWidget {
             const Text("Discount:"),
             const Spacer(),
             Text(
-              "\$${(checkoutSummary?.discount ?? 0).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}",
+              "\$${(checkoutSummary.discount).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}",
               style: TextStyle(
-                color: (checkoutSummary?.discount ?? 0) > 0
+                color: (checkoutSummary.discount) > 0
                     ? Colors.green
                     : Colors.black,
               ),
@@ -66,10 +55,10 @@ class CheckoutSummary extends StatelessWidget {
             ),
             const Spacer(),
             Text(
-              "\$${(checkoutSummary?.totalPrice ?? itemsPrice + 10).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}",
+              "\$${(checkoutSummary.totalPrice).toStringAsFixed(2).replaceAll(RegExp(r'\.?0*$'), '')}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: (checkoutSummary?.discount ?? 0) > 0
+                  color: (checkoutSummary.discount) > 0
                       ? Colors.green
                       : Colors.black),
             ),

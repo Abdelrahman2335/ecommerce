@@ -1,36 +1,37 @@
+import 'package:ecommerce/features/address/presentation/manager/address_bloc.dart';
+import 'package:ecommerce/features/address/presentation/view/widgets/address_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/models/address_model.dart';
-import 'package:ecommerce/features/address/presentation/view/widgets/new_address.dart';
-import '../../manager/checkout_address_provider.dart';
-
-class ShippingAddress extends StatefulWidget {
+class ShippingAddress extends StatelessWidget {
   const ShippingAddress({super.key});
 
   @override
-  State<ShippingAddress> createState() => _ShippingAddressState();
-}
-
-class _ShippingAddressState extends State<ShippingAddress> {
-  @override
-  void initState() {
-    super.initState();
-    // Initialize address when widget loads
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CheckoutAddressProvider>().initializeAddress();
-    });
-  }
-
-  void getAddress(AddressModel newAddress) {
-    // Update the provider instead of local state
-    context.read<CheckoutAddressProvider>().updateAddress(newAddress);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Consumer<CheckoutAddressProvider>(
-      builder: (context, addressProvider, child) {
+    return BlocBuilder<AddressBloc, AddressState>(
+      builder: (context, state) {
+        final userAddress = state.currentAddress;
+
+        if (state.status == AddressStatus.loading) {
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.20,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Theme.of(context).colorScheme.surface,
+                boxShadow: [
+                  BoxShadow(
+                    color:
+                        const Color.fromARGB(255, 129, 129, 129).withAlpha(140),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(-2, 3),
+                  ),
+                ]),
+            child: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
         return Container(
           height: MediaQuery.of(context).size.height * 0.20,
           width: MediaQuery.of(context).size.width,
@@ -50,10 +51,10 @@ class _ShippingAddressState extends State<ShippingAddress> {
             padding: const EdgeInsets.all(14.0),
             child: Stack(
               children: [
-                Positioned(
+                const Positioned(
                   top: 0,
                   left: 3,
-                  child: const Text("Address:",
+                  child: Text("Address:",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
                 Positioned(
@@ -62,7 +63,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   child: Opacity(
                     opacity: 0.5,
                     child: Text(
-                      "City: ${addressProvider.city.isEmpty ? 'Not set' : addressProvider.city}",
+                      "City: ${userAddress?.city == null || userAddress!.city!.isEmpty ? 'Not set' : userAddress.city}",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -74,7 +75,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   child: Opacity(
                     opacity: 0.5,
                     child: Text(
-                      "Area: ${addressProvider.area.isEmpty ? 'Not set' : addressProvider.area}",
+                      "Area: ${userAddress?.area == null || userAddress!.area!.isEmpty ? 'Not set' : userAddress.area}",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -86,7 +87,7 @@ class _ShippingAddressState extends State<ShippingAddress> {
                   child: Opacity(
                     opacity: 0.5,
                     child: Text(
-                      "Street: ${addressProvider.street.isEmpty ? 'Not set' : addressProvider.street}",
+                      "Street: ${userAddress?.street == null || userAddress!.street!.isEmpty ? 'Not set' : userAddress.street}",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
@@ -101,23 +102,25 @@ class _ShippingAddressState extends State<ShippingAddress> {
                       iconSize: 19,
                       onPressed: () {
                         showModalBottomSheet(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
                           context: context,
-                          sheetAnimationStyle: AnimationStyle(
-                            curve: Curves.easeInOut,
-                            reverseDuration: Duration(milliseconds: 600),
-                            duration: const Duration(milliseconds: 600),
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.vertical(top: Radius.circular(20)),
                           ),
-
-                          /// Note: The ctx is the context for the BottomSheet, but context is refer to the main context.
                           builder: (ctx) {
-                            return SizedBox(
-                                height: double.infinity,
-                                width: double.infinity,
-                                child: NewAddress(
-                                  addAddress: getAddress,
-                                ));
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(ctx).viewInsets.bottom),
+                              child: AddressSelector(
+                                onAddressSelected: (newAddress) {
+                                  context
+                                      .read<AddressBloc>()
+                                      .add(SaveAddressEvent(newAddress));
+                                  Navigator.pop(ctx);
+                                },
+                              ),
+                            );
                           },
                         );
                       },

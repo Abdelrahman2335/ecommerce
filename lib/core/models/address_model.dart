@@ -67,4 +67,26 @@ class AddressModel {
       'defaultAddress': defaultAddress ?? false,
     };
   }
+
+  bool get isValid {
+    return city != null &&
+        city!.isNotEmpty &&
+        area != null &&
+        area!.isNotEmpty &&
+        street != null &&
+        street!.isNotEmpty;
+  }
+
+  String? get validationError {
+    if (city == null || city!.isEmpty) {
+      return 'City is required';
+    }
+    if (area == null || area!.isEmpty) {
+      return 'Area is required';
+    }
+    if (street == null || street!.isEmpty) {
+      return 'Street is required';
+    }
+    return null;
+  }
 }

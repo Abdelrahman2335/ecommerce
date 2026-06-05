@@ -61,3 +61,12 @@ class AddressStreetChanged extends AddressEvent {
   @override
   List<Object?> get props => [street];
 }
+
+class TriggerManualAddressEvent extends AddressEvent {
+  const TriggerManualAddressEvent(this.triggerManualAddress);
+
+  final bool triggerManualAddress;
+
+  @override
+  List<Object?> get props => [triggerManualAddress];
+}

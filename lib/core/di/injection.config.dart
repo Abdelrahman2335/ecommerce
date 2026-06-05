@@ -13,7 +13,7 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
 import '../../features/address/data/repo/AddressRepo.dart' as _i736;
-import '../../features/address/data/repo/AddressRepoImpl.dart' as _i510;
+import '../../features/address/data/repo/addressRepoImpl.dart' as _i510;
 import '../../features/address/presentation/manager/address_bloc.dart' as _i244;
 import '../../features/auth/data/auth_repo/create_user_repo/create_user_repo.dart'
     as _i237;
@@ -37,6 +37,12 @@ import '../../features/cart/data/repository/cart_repository.dart' as _i323;
 import '../../features/cart/data/repository/cart_repository_impl.dart'
     as _i1063;
 import '../../features/cart/presentation/manager/cart_bloc.dart' as _i474;
+import '../../features/checkout/data/repository/checkout_repository.dart'
+    as _i555;
+import '../../features/checkout/data/repository/checkout_repository_impl.dart'
+    as _i763;
+import '../../features/checkout/presentation/manager/checkout_bloc.dart'
+    as _i95;
 import '../../features/home/data/repository/home_repo.dart' as _i930;
 import '../../features/home/data/repository/home_repo_impl.dart' as _i1013;
 import '../../features/home/presentation/manager/home_bloc.dart' as _i801;
@@ -69,6 +75,8 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i1013.HomeRepoImpl(gh<_i921.ApiService>()));
     gh.lazySingleton<_i410.WishListRepository>(
         () => _i669.WishListRepositoryImpl(gh<_i758.FirebaseService>()));
+    gh.lazySingleton<_i555.CheckoutRepository>(
+        () => _i763.CheckoutRepositoryImpl());
     gh.factory<_i570.LoginRepository>(
         () => _i582.LoginRepositoryImpl(gh<_i758.FirebaseService>()));
     gh.factory<_i237.SignupRepository>(
@@ -98,6 +106,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i710.UserRegistrationBloc(gh<_i499.UserRegistrationRepo>()));
     gh.factory<_i244.AddressBloc>(
         () => _i244.AddressBloc(gh<_i736.AddressRepo>()));
+    gh.factory<_i95.CheckoutBloc>(() => _i95.CheckoutBloc(
+          gh<_i555.CheckoutRepository>(),
+          gh<_i736.AddressRepo>(),
+          gh<_i474.CartBloc>(),
+        ));
     return this;
   }
 }
