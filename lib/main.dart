@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/di/injection.dart';
 import 'package:ecommerce/core/router/app_router.dart';
+import 'package:ecommerce/core/router/navigation_keys.dart';
+import 'package:ecommerce/core/services/remote_config_service.dart';
 import 'package:ecommerce/core/theme/theme_config.dart';
 import 'package:ecommerce/features/address/presentation/manager/address_bloc.dart';
 import 'package:ecommerce/features/auth/presentation/manager/cubits/create_user_bloc/create_user_bloc.dart';
@@ -12,10 +14,7 @@ import 'package:ecommerce/features/checkout/presentation/manager/checkout_bloc.d
 import 'package:ecommerce/features/home/presentation/manager/home_bloc.dart';
 import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
-import 'package:ecommerce/features/payment/data/repository/paymob_repository_impl.dart';
-import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:ecommerce/features/wishlist/presentation/manager/wishlist_bloc.dart';
-import 'package:ecommerce/core/services/remote_config_service.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,9 +36,6 @@ void main() async {
 
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
-        create: (_) => PaymentProvider(PaymentRepositoryImpl()),
-      ),
-      ChangeNotifierProvider(
         create: (_) => OrderProvider(OrderRepositoryImpl()),
       ),
     ], child: const MyApp()));
@@ -47,10 +43,6 @@ void main() async {
     log("Error in the main function: $error");
   }
 }
-
-final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>();
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

@@ -67,6 +67,10 @@ class CheckoutOrderConfirmed extends CheckoutEvent {
   List<Object?> get props => [cartItems, shippingAddress, paymentMethod];
 }
 
+class CheckoutOrderPaymentStarted extends CheckoutEvent {
+  const CheckoutOrderPaymentStarted();
+}
+
 class CheckoutValidated extends CheckoutEvent {
   final List<CartModel> cartItems;
   final AddressModel shippingAddress;

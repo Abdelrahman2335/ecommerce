@@ -32,6 +32,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     on<CheckoutPromoCodeRemoved>(_onPromoCodeRemoved);
     on<CheckoutUpdated>(_onUpdated);
     on<CheckoutOrderConfirmed>(_onOrderConfirmed);
+    on<CheckoutOrderPaymentStarted>(_onOrderPaymentStarted);
     on<CheckoutValidated>(_onValidated);
     on<CheckoutPromoCodeUpdated>(_onPromoCodeUpdated);
 
@@ -195,6 +196,17 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
         errorMessage: "Failed to process order. Please try again.",
       ));
     }
+  }
+
+  void _onOrderPaymentStarted(
+    CheckoutOrderPaymentStarted event,
+    Emitter<CheckoutState> emit,
+  ) {
+    emit(state.copyWith(
+      status: CheckoutStatus.success,
+      confirmedOrder: null,
+      errorMessage: null,
+    ));
   }
 
   void _onValidated(

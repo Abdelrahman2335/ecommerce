@@ -14,7 +14,7 @@ class OrderProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  void placeOrder({required OrderModel order}) async {
+  Future<void> placeOrder({required OrderModel order}) async {
     try {
       _isLoading = true;
       notifyListeners();

@@ -13,14 +13,13 @@ class MockAddressRepo extends Mock implements AddressRepo {}
 
 void main() {
   late MockAddressRepo repo;
-  late AddressBloc bloc;
 
   setUp(() {
     repo = MockAddressRepo();
-    bloc = AddressBloc(repo);
+    // Default stub: constructor's LoadAddressEvent completes without data.
+    when(() => repo.getUserAddress())
+        .thenAnswer((_) async => const Right(null));
   });
-
-  tearDown(() => bloc.close());
 
   group('LoadAddressEvent', () {
     final address = AddressModel(
@@ -36,9 +35,8 @@ void main() {
       build: () {
         when(() => repo.getUserAddress())
             .thenAnswer((_) async => Right(address));
-        return bloc;
+        return AddressBloc(repo);
       },
-      act: (b) => b.add(const LoadAddressEvent()),
       expect: () => [
         const AddressState(status: AddressStatus.loading),
         AddressState(
@@ -54,9 +52,8 @@ void main() {
       build: () {
         when(() => repo.getUserAddress())
             .thenAnswer((_) async => Left(FirestoreFailure("Network error")));
-        return bloc;
+        return AddressBloc(repo);
       },
-      act: (b) => b.add(const LoadAddressEvent()),
       expect: () => [
         const AddressState(status: AddressStatus.loading),
         isA<AddressState>()
@@ -71,9 +68,8 @@ void main() {
         when(() => repo.getUserAddress()).thenAnswer(
           (_) async => Right(AddressModel(city: 'Cairo')),
         );
-        return bloc;
+        return AddressBloc(repo);
       },
-      act: (b) => b.add(const LoadAddressEvent()),
       expect: () => [
         const AddressState(status: AddressStatus.loading),
         isA<AddressState>()
@@ -92,9 +88,10 @@ void main() {
       build: () {
         when(() => repo.updateAddressDetails(address))
             .thenAnswer((_) async => const Right(null));
-        return bloc;
+        return AddressBloc(repo);
       },
       act: (b) => b.add(SaveAddressEvent(address)),
+      skip: 2, // skip: LoadAddressEvent → loading + success(null)
       expect: () => [
         const AddressState(status: AddressStatus.loading),
         AddressState(status: AddressStatus.success, currentAddress: address),
@@ -106,16 +103,15 @@ void main() {
     blocTest<AddressBloc, AddressState>(
       'emits success with null address',
       build: () {
+        when(() => repo.getUserAddress()).thenAnswer(
+          (_) async => Right(AddressModel(city: 'Cairo')),
+        );
         when(() => repo.deleteUserAddress())
             .thenAnswer((_) async => const Right(null));
-        return bloc;
+        return AddressBloc(repo);
       },
-      // Seed with an existing address to verify it gets cleared
-      seed: () => AddressState(
-        currentAddress: AddressModel(city: 'Cairo'),
-        status: AddressStatus.success,
-      ),
       act: (b) => b.add(DeleteAddressEvent()),
+      skip: 2, // skip: LoadAddressEvent → loading + success(existing address)
       expect: () => [
         isA<AddressState>()
             .having((s) => s.status, 'status', AddressStatus.loading),

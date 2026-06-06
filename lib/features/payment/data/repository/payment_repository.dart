@@ -1,4 +1,10 @@
+import 'package:dartz/dartz.dart';
+import 'package:ecommerce/core/error/failure.dart';
+
 abstract class PaymentRepository {
-  Future<String?> getPaymentToken();
-  Future<String?> createPaymentLink(String token, num amount);
+  Future<Either<Failure, String>> createPaymentLink({
+    required num amount,
+    String? email,
+    String? phoneNumber,
+  });
 }

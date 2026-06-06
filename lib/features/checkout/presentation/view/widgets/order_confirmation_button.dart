@@ -1,11 +1,14 @@
 import 'dart:developer';
 
+import 'package:ecommerce/core/router/app_router.dart';
 import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
+import 'package:ecommerce/features/cart/presentation/manager/cart_event.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_bloc.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
 import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class OrderConfirmationButton extends StatelessWidget {
@@ -18,7 +21,10 @@ class OrderConfirmationButton extends StatelessWidget {
     final cartItems = context.select((CartBloc bloc) => bloc.state.items);
 
     return BlocConsumer<CheckoutBloc, CheckoutState>(
-      listener: (context, state) {
+      listenWhen: (previous, current) =>
+          previous.status != current.status ||
+          previous.errorMessage != current.errorMessage,
+      listener: (context, state) async {
         if (state.status == CheckoutStatus.orderSuccess &&
             state.confirmedOrder != null) {
           final paymentProvider = context.read<PaymentProvider>();
@@ -26,16 +32,51 @@ class OrderConfirmationButton extends StatelessWidget {
 
           if (paymentProvider.getPaymentMethod ==
               PaymentMethod.cashOnDelivery) {
-            context.read<OrderProvider>().placeOrder(order: order);
-            log("Cash on Delivery order placed");
+            try {
+              await context.read<OrderProvider>().placeOrder(order: order);
+              if (!context.mounted) {
+                return;
+              }
+              final cartBloc = context.read<CartBloc>();
+              for (final item in order.products) {
+                cartBloc.add(
+                  CartItemRemoved(item.product, deleteItem: true),
+                );
+              }
+              context.go(AppRouter.kLayoutScreen);
+              log('Cash on Delivery order placed');
+            } catch (error) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Failed to place order. Please try again.'),
+                  ),
+                );
+              }
+            }
           } else {
-            log("Online Payment initiated");
-            paymentProvider.makePayment(order.totalPrice);
+            log('Online Payment initiated');
+            context
+                .read<CheckoutBloc>()
+                .add(const CheckoutOrderPaymentStarted());
+
+            if (!context.mounted) {
+              return;
+            }
+
+            final started = await paymentProvider.makePayment(order: order);
+            if (!started && context.mounted) {
+              final message = paymentProvider.errorMessage ??
+                  'Unable to start card payment.';
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(message)),
+              );
+            }
           }
         } else if (state.status == CheckoutStatus.failure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.errorMessage ?? "Order confirmation failed"),
+              content: Text(state.errorMessage ?? 'Order confirmation failed'),
             ),
           );
         }
@@ -43,21 +84,10 @@ class OrderConfirmationButton extends StatelessWidget {
       builder: (context, checkoutState) {
         return Consumer<PaymentProvider>(
           builder: (context, paymentProvider, child) {
-            // if (paymentProvider.errorMessage != null) {
-            //   WidgetsBinding.instance.addPostFrameCallback((_) {
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       SnackBar(
-            //         content: Text(paymentProvider.errorMessage!),
-            //         duration: const Duration(seconds: 3),
-            //       ),
-            //     );
-            //      paymentProvider.clearError();
-            //   });
-            // }
-
             final isLoading =
                 checkoutState.status == CheckoutStatus.orderProcessing ||
-                    paymentProvider.isLoading;
+                    paymentProvider.isLoading ||
+                    paymentProvider.paymentInProgress;
 
             return ElevatedButton(
               onPressed: isLoading
@@ -68,7 +98,7 @@ class OrderConfirmationButton extends StatelessWidget {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(address?.validationError ??
-                                "Please select a valid shipping address"),
+                                'Please select a valid shipping address'),
                           ),
                         );
                         return;
@@ -81,7 +111,6 @@ class OrderConfirmationButton extends StatelessWidget {
                               paymentMethod: paymentProvider.getPaymentMethod,
                             ),
                           );
-                      // Navigate the user after the order is confirmed and payment is successful
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).primaryColor,
@@ -103,7 +132,7 @@ class OrderConfirmationButton extends StatelessWidget {
                     )
                   : const Center(
                       child: Text(
-                        "Confirm Order",
+                        'Confirm Order',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

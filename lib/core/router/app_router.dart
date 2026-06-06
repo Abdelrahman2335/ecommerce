@@ -1,4 +1,5 @@
 import 'package:ecommerce/core/models/product_model/product.dart';
+import 'package:ecommerce/core/router/navigation_keys.dart';
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/features/address/presentation/view/screens/user_location.dart';
 import 'package:ecommerce/features/auth/presentation/view/screens/create_user_screen.dart';
@@ -8,12 +9,13 @@ import 'package:ecommerce/features/auth/presentation/view/screens/user_registrat
 import 'package:ecommerce/features/cart/presentation/view/screen/cart_view.dart';
 import 'package:ecommerce/features/checkout/presentation/view/screens/check_out.dart';
 import 'package:ecommerce/features/home/presentation/view/screens/item_details.dart';
+import 'package:ecommerce/features/payment/data/models/payment_session.dart';
+import 'package:ecommerce/features/payment/presentation/view/screens/payment_web_view.dart';
 import 'package:ecommerce/layout.dart';
 import 'package:ecommerce/presentation/screens/auth/profile_screen.dart';
 import 'package:go_router/go_router.dart';
 
 abstract class AppRouter {
-  static final _firebaseService = FirebaseService();
   static const kLoginScreen = "/login";
   static const kLayoutScreen = "/layout";
   static const kProfileScreen = "/profile";
@@ -24,9 +26,10 @@ abstract class AppRouter {
   static const kItemDetails = "/item_details";
   static const kUserSetupScreen = "/user_setup";
   static const kUserLocationScreen = "/user_location";
+  static const kPaymentScreen = "/payment";
 
   static String get _initialRoute {
-    final currentUser = _firebaseService.auth.currentUser;
+    final currentUser = FirebaseService().auth.currentUser;
     if (currentUser != null) {
       return kLayoutScreen;
     } else {
@@ -35,6 +38,7 @@ abstract class AppRouter {
   }
 
   static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: _initialRoute,
     routes: [
       GoRoute(
@@ -81,6 +85,13 @@ abstract class AppRouter {
       GoRoute(
         path: kUserLocationScreen,
         builder: (context, state) => const UserLocation(),
+      ),
+      GoRoute(
+        path: kPaymentScreen,
+        builder: (context, state) {
+          final session = state.extra as PaymentSession;
+          return PaymentWebView(session: session);
+        },
       ),
     ],
   );

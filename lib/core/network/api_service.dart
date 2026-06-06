@@ -7,13 +7,20 @@ import 'dio_client.dart';
 @lazySingleton
 class ApiService {
   ApiService(this._config)
-      : _dio = DioClient.initializeDio(url: _config.dummyJsonBaseUrl,);
+      : _dio = DioClient.initializeDio(
+          url: _config.dummyJsonBaseUrl,
+        );
 
   final ApiConfig _config;
   final Dio _dio;
 
   String get defaultBaseUrl => _config.dummyJsonBaseUrl;
+
   String get nominatimBaseUrl => _config.nominatimBaseUrl;
+
+  String get paymentAuth => _config.payAuth;
+
+  String get paymentBaseUrl => _config.payBaseUrl;
 
   Future<dynamic> get({
     String? baseUrl,
@@ -32,5 +39,20 @@ class ApiService {
     );
 
     return response.data;
+  }
+
+  Future<Response> post({
+    required String baseUrl,
+    required String endPoint,
+    Object? data,
+    Options? options,
+  }) async {
+    _dio.options.baseUrl = baseUrl;
+    final response = await _dio.post(
+      endPoint,
+      data: data,
+      options: options,
+    );
+    return response;
   }
 }

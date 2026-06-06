@@ -20,6 +20,13 @@ class RemoteConfigService {
         minimumFetchInterval: const Duration(hours: 1),
       ),
     );
+    await remoteConfig.setDefaults(const {
+      'paymob_api_key': '',
+      'paymob_integration_id': 5021285,
+      'paymob_is_live': false,
+      'paymob_success_url': 'success',
+      'paymob_failure_url': 'failure',
+    });
     await remoteConfig.fetchAndActivate();
 
     /// Fetch the latest values from Firebase.

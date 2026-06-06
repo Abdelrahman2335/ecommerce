@@ -1,68 +1,101 @@
 import 'dart:developer';
 
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:ecommerce/core/error/dio_failure.dart';
+import 'package:ecommerce/core/error/failure.dart';
+import 'package:ecommerce/core/network/api_service.dart';
+import 'package:ecommerce/core/services/firebase_service.dart';
+import 'package:injectable/injectable.dart';
 
-import '../../../../core/network/dio_client.dart';
 import 'payment_repository.dart';
 
-/// When a class [implements] an abstract class, it must provide an implementation for all methods in that abstract class.
+@LazySingleton(as: PaymentRepository)
 class PaymentRepositoryImpl implements PaymentRepository {
-  static String apiKey =
-      FirebaseRemoteConfig.instance.getString("paymob_api_key");
+  PaymentRepositoryImpl(this._apiService, FirebaseService _firebaseService)
+      : _apiKey = _firebaseService.remoteConfig.getString('paymob_api_key'),
+        _integrationId =
+            _firebaseService.remoteConfig.getInt('paymob_integration_id'),
+        _isLive = _firebaseService.remoteConfig.getBool('paymob_is_live');
 
-  final Dio _authDio =
-      DioClient.initializeDio(url: "https://accept.paymob.com/api/auth");
-  final Dio _paymentDio =
-      DioClient.initializeDio(url: "https://accept.paymob.com/api/ecommerce");
+  final ApiService _apiService;
 
-  @override
-  Future<String?> getPaymentToken() async {
-    /// Getting the token by sending your api key or you can use your username and password related Documentation
-    /// https://developers.paymob.com/egypt/payment-links/payment-link-api/login
+  final String _apiKey;
+  final int _integrationId;
+  final bool _isLive;
+
+  Future<Either<Failure, String>> _getPaymentToken() async {
     try {
-      final response = await _authDio.post("/tokens", data: {
-        "api_key": apiKey,
-      });
-      return response.data["token"];
+      final response = await _apiService.post(
+        baseUrl: _apiService.paymentAuth,
+        endPoint: 'tokens',
+        data: {
+          'api_key': _apiKey,
+        },
+      );
+      final token = response.data['token'];
+      if (token is! String || token.isEmpty) {
+        return Left(ServerFailure('Paymob did not return a valid auth token.'));
+      }
+      return Right(token);
+    } on DioException catch (error) {
+      log('Error when getting the token: ${error.response?.data ?? error.message}');
+      return Left(ServerFailure.fromDioException(error));
     } catch (error) {
-      log("Error when getting the token: $error");
+      log('Error when getting the token: $error');
 
-      rethrow;
+      return Left(ServerFailure("Unexpected error"));
     }
   }
 
   @override
-  Future<String?> createPaymentLink(String token, num amount) async {
-    return await _paymentDio
-        .post(
-      "/payment-links",
-      data: {
-        "is_live": false,
-        "amount_cents": amount,
-        "expiration": 3600,
-        "payment_methods": [5021285],
-        "currency": "EGP",
-        "customer": {
-          "email": "user@example.com",
-          "phone_number": "201234567890"
-        }
-      },
-      options: Options(headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer $token",
-      }),
-    )
-        .then((response) {
-      log("Payment link response: ${response.data}");
-      return response.data["client_url"];
-    }).catchError((error) {
-      if (error is DioException) {
-        log("Error in the payment link: ${error.response?.data}");
-      } else {
-        log("Unexpected error: $error");
-        throw error;
+  Future<Either<Failure, String>> createPaymentLink({
+    required num amount,
+    String? email,
+    String? phoneNumber,
+  }) async {
+    try {
+      final tokenResult = await _getPaymentToken();
+      final Either<Failure, String>? earlyExit = tokenResult.fold(
+        (failure) => Left(failure),
+        (_) => null,
+      );
+      if (earlyExit != null) return earlyExit;
+      final token = tokenResult.getOrElse(() => '');
+
+      final response = await _apiService.post(
+        baseUrl: _apiService.paymentBaseUrl,
+        endPoint: '/payment-links',
+        data: {
+          'is_live': _isLive,
+          'amount_cents': (amount * 100).round(),
+          'expiration': 3600,
+          'payment_methods': [_integrationId],
+          'currency': 'EGP',
+          'customer': {
+            'email': email ?? 'user@example.com',
+            'phone_number': phoneNumber ?? '201234567890',
+          },
+        },
+        options: Options(headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      log('Payment link response: ${response.data}');
+      final clientUrl = response.data['client_url'];
+      if (clientUrl is! String || clientUrl.isEmpty) {
+        log('Invalid client_url in response: ${response.data}');
+        return Left(ServerFailure('Unexpected response from payment service.'));
       }
-    });
+      return Right(clientUrl);
+    } on DioException catch (error) {
+      log('Error in the payment link: ${error.response?.data ?? error.message}');
+      return Left(ServerFailure.fromDioException(error));
+    } catch (error) {
+      log('Unexpected payment link error: $error');
+      return Left(ServerFailure("Unexpected error"));
+    }
   }
 }
