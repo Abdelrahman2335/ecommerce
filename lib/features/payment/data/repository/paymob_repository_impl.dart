@@ -12,11 +12,11 @@ import 'payment_repository.dart';
 
 @LazySingleton(as: PaymentRepository)
 class PaymentRepositoryImpl implements PaymentRepository {
-  PaymentRepositoryImpl(this._apiService, FirebaseService _firebaseService)
-      : _apiKey = _firebaseService.remoteConfig.getString('paymob_api_key'),
+  PaymentRepositoryImpl(this._apiService, FirebaseService firebaseService)
+      : _apiKey = firebaseService.remoteConfig.getString('paymob_api_key'),
         _integrationId =
-            _firebaseService.remoteConfig.getInt('paymob_integration_id'),
-        _isLive = _firebaseService.remoteConfig.getBool('paymob_is_live');
+            firebaseService.remoteConfig.getInt('paymob_integration_id'),
+        _isLive = firebaseService.remoteConfig.getBool('paymob_is_live');
 
   final ApiService _apiService;
 

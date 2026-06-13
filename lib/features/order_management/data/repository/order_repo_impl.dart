@@ -2,57 +2,71 @@ import 'dart:developer';
 
 import 'package:ecommerce/core/services/firebase_service.dart';
 import 'package:ecommerce/features/order_management/data/repository/order_repo.dart';
+import 'package:injectable/injectable.dart';
 
 import '../model/order_model.dart';
 
+@LazySingleton(as: OrderRepository)
 class OrderRepositoryImpl implements OrderRepository {
-  final FirebaseService _firebaseService = FirebaseService();
+  final FirebaseService _firebaseService;
+
+  OrderRepositoryImpl(this._firebaseService);
 
   @override
   Future<void> placeOrder(OrderModel order) async {
     try {
-      if (_firebaseService.auth.currentUser == null) return;
+      if (_firebaseService.auth.currentUser == null) {
+        throw Exception('User must be logged in to place an order');
+      }
+      final uid = _firebaseService.auth.currentUser!.uid;
+      log("Placing order ${order.id} for user $uid");
+
       await _firebaseService.firestore
           .collection("customers")
-          .doc(_firebaseService.auth.currentUser!.uid)
+          .doc(uid)
           .collection("orders")
           .doc(order.id)
           .set(order.toJson());
+      log("Order ${order.id} successfully placed in Firestore");
     } catch (error) {
       log("error in the placeOrder impl: $error");
+      rethrow;
     }
   }
 
   @override
   Future<void> cancelOrder(OrderModel order) async {
     try {
-      final data = await _firebaseService.firestore
+      final uid = _firebaseService.auth.currentUser!.uid;
+      await _firebaseService.firestore
           .collection("customers")
-          .doc(_firebaseService.auth.currentUser!.uid)
+          .doc(uid)
           .collection("orders")
           .doc(order.id)
-          .get();
-
-      if (data.exists) {
-        OrderModel item = data.data()!["cartItems"] as OrderModel;
-        item.copyWith(orderStatus: OrderStatus.cancelled);
-      }
+          .update({'orderStatus': OrderStatus.cancelled.displayName});
+      log("Order ${order.id} cancelled successfully");
     } catch (error) {
       log("error in the cancelOrder: $error");
+      rethrow;
     }
   }
 
   @override
   Future<OrderModel?> getOrder(String orderId, String userId) async {
-    final docSnapshot =
-        await _firebaseService.firestore.collection("orders").doc(userId).get();
+    try {
+      final docSnapshot = await _firebaseService.firestore
+          .collection("customers")
+          .doc(userId)
+          .collection("orders")
+          .doc(orderId)
+          .get();
 
-    if (docSnapshot.exists && docSnapshot.data() != null) {
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      data["orderId"] = orderId;
-      return OrderModel.fromJson(data);
+      if (docSnapshot.exists && docSnapshot.data() != null) {
+        return OrderModel.fromJson(docSnapshot.data()!);
+      }
+    } catch (error) {
+      log("Error getting order: $error");
     }
-
     return null;
   }
 }

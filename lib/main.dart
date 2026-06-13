@@ -12,8 +12,9 @@ import 'package:ecommerce/features/auth/presentation/manager/cubits/user_registr
 import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 import 'package:ecommerce/features/checkout/presentation/manager/checkout_bloc.dart';
 import 'package:ecommerce/features/home/presentation/manager/home_bloc.dart';
-import 'package:ecommerce/features/order_management/data/repository/order_repo_impl.dart';
+import 'package:ecommerce/features/order_management/data/repository/order_repo.dart';
 import 'package:ecommerce/features/order_management/presentation/manager/order_provider.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_bloc.dart';
 import 'package:ecommerce/features/wishlist/presentation/manager/wishlist_bloc.dart';
 import 'package:ecommerce/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,7 +37,7 @@ void main() async {
 
     runApp(MultiProvider(providers: [
       ChangeNotifierProvider(
-        create: (_) => OrderProvider(OrderRepositoryImpl()),
+        create: (_) => OrderProvider(getIt<OrderRepository>()),
       ),
     ], child: const MyApp()));
   } catch (error) {
@@ -53,22 +54,15 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (context) => getIt<SignupBloc>(),
-          ),
-          BlocProvider(
-            create: (context) => getIt<LoginLogoutBloc>(),
-          ),
-          BlocProvider(
-            create: (context) => getIt<UserRegistrationBloc>(),
-          ),
+          BlocProvider(create: (context) => getIt<SignupBloc>()),
+          BlocProvider(create: (context) => getIt<LoginLogoutBloc>()),
+          BlocProvider(create: (context) => getIt<UserRegistrationBloc>()),
           BlocProvider(create: (context) => getIt<AddressBloc>()),
           BlocProvider(create: (context) => getIt<HomeBloc>()),
           BlocProvider(create: (context) => getIt<WishlistBloc>()),
+          BlocProvider(create: (context) => getIt<CartBloc>()),
           BlocProvider(create: (context) => getIt<CheckoutBloc>()),
-          BlocProvider(
-            create: (context) => getIt<CartBloc>(),
-          ),
+          BlocProvider(create: (context) => getIt<PaymentBloc>()),
         ],
         child: MaterialApp.router(
           routerConfig: AppRouter.router,

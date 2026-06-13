@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:ecommerce/core/models/address_model.dart';
 import 'package:ecommerce/features/cart/data/model/cart_model.dart';
-import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_bloc.dart';
 
 enum OrderStatus {
   notConfirmed('Not Confirmed'),
@@ -36,6 +36,7 @@ class OrderModel {
   final OrderStatus orderStatus;
 
   OrderModel({
+    String? id,
     required this.totalPrice,
     required this.deliveryFee,
     required this.discount,
@@ -44,25 +45,36 @@ class OrderModel {
     required this.createdAt,
     required this.shippingAddress,
     this.orderStatus = OrderStatus.notConfirmed,
-  }) : id = generateOrderId();
+  }) : id = id ?? generateOrderId();
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
+      id: json['id'],
       totalPrice: json['totalPrice'],
       deliveryFee: json['deliveryFee'],
       discount: json['discount'],
-      paymentMethod: json['paymentMethod'],
-      products: json['products'],
+      paymentMethod: PaymentMethod.values.firstWhere(
+        (e) => e.displayName == json['paymentMethod'],
+        orElse: () => PaymentMethod.cashOnDelivery,
+      ),
+      products:
+          (json['products'] as List).map((i) => CartModel.fromJson(i)).toList(),
       createdAt: DateTime.parse(json['createdAt']),
       shippingAddress: AddressModel.fromJson(json['shippingAddress']),
+      orderStatus: OrderStatus.values.firstWhere(
+        (e) => e.displayName == json['orderStatus'],
+        orElse: () => OrderStatus.notConfirmed,
+      ),
     );
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'totalPrice': totalPrice,
         'deliveryFee': deliveryFee,
         'discount': discount,
         'paymentMethod': paymentMethod.displayName,
+        'orderStatus': orderStatus.displayName,
         'products': products.map((p) => p.toJson()).toList(),
         'createdAt': createdAt.toIso8601String(),
         'shippingAddress': shippingAddress.toJson(),
@@ -80,6 +92,7 @@ class OrderModel {
     OrderStatus? orderStatus,
   }) {
     return OrderModel(
+      id: id ?? this.id,
       totalPrice: totalPrice ?? this.totalPrice,
       deliveryFee: deliveryFee ?? this.deliveryFee,
       discount: discount ?? this.discount,

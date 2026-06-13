@@ -3,7 +3,7 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:dartz/dartz.dart';
 import 'package:ecommerce/core/error/firestore_failure.dart';
 import 'package:ecommerce/core/models/address_model.dart';
-import 'package:ecommerce/features/address/data/repo/AddressRepo.dart';
+import 'package:ecommerce/features/address/data/repo/address_repo.dart';
 import 'package:ecommerce/features/address/presentation/manager/address_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';

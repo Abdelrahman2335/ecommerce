@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:ecommerce/features/order_management/data/repository/order_repo.dart';
 import 'package:flutter/material.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../data/model/order_model.dart';
 
+@injectable
 class OrderProvider extends ChangeNotifier {
   final OrderRepository _orderRepository;
 

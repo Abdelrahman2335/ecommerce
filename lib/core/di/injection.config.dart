@@ -12,8 +12,8 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
-import '../../features/address/data/repo/AddressRepo.dart' as _i736;
-import '../../features/address/data/repo/addressRepoImpl.dart' as _i510;
+import '../../features/address/data/repo/address_repo.dart' as _i811;
+import '../../features/address/data/repo/address_repo_impl.dart' as _i660;
 import '../../features/address/presentation/manager/address_bloc.dart' as _i244;
 import '../../features/auth/data/auth_repo/create_user_repo/create_user_repo.dart'
     as _i237;
@@ -46,6 +46,17 @@ import '../../features/checkout/presentation/manager/checkout_bloc.dart'
 import '../../features/home/data/repository/home_repo.dart' as _i930;
 import '../../features/home/data/repository/home_repo_impl.dart' as _i1013;
 import '../../features/home/presentation/manager/home_bloc.dart' as _i801;
+import '../../features/order_management/data/repository/order_repo.dart'
+    as _i960;
+import '../../features/order_management/data/repository/order_repo_impl.dart'
+    as _i607;
+import '../../features/order_management/presentation/manager/order_provider.dart'
+    as _i555;
+import '../../features/payment/data/repository/payment_repository.dart' as _i67;
+import '../../features/payment/data/repository/paymob_repository_impl.dart'
+    as _i27;
+import '../../features/payment/presentation/manager/payment_bloc.dart'
+    as _i1057;
 import '../../features/wishlist/data/repository/wishlist_repository.dart'
     as _i410;
 import '../../features/wishlist/data/repository/wishlist_repository_impl.dart'
@@ -88,7 +99,7 @@ extension GetItInjectableX on _i174.GetIt {
           gh<_i237.SignupRepository>(),
           gh<_i758.FirebaseService>(),
         ));
-    gh.lazySingleton<_i736.AddressRepo>(() => _i510.AddressRepoImpl(
+    gh.lazySingleton<_i811.AddressRepo>(() => _i660.AddressRepoImpl(
           gh<_i758.FirebaseService>(),
           gh<_i921.ApiService>(),
         ));
@@ -100,16 +111,28 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i474.CartBloc(gh<_i323.CartRepository>()));
     gh.lazySingleton<_i499.UserRegistrationRepo>(
         () => _i763.UserRegistrationRepoImpl(gh<_i758.FirebaseService>()));
+    gh.lazySingleton<_i960.OrderRepository>(
+        () => _i607.OrderRepositoryImpl(gh<_i758.FirebaseService>()));
+    gh.lazySingleton<_i67.PaymentRepository>(() => _i27.PaymentRepositoryImpl(
+          gh<_i921.ApiService>(),
+          gh<_i758.FirebaseService>(),
+        ));
     gh.factory<_i17.WishlistBloc>(
         () => _i17.WishlistBloc(gh<_i410.WishListRepository>()));
-    gh.factory<_i710.UserRegistrationBloc>(
-        () => _i710.UserRegistrationBloc(gh<_i499.UserRegistrationRepo>()));
-    gh.factory<_i244.AddressBloc>(
-        () => _i244.AddressBloc(gh<_i736.AddressRepo>()));
     gh.factory<_i95.CheckoutBloc>(() => _i95.CheckoutBloc(
           gh<_i555.CheckoutRepository>(),
-          gh<_i736.AddressRepo>(),
+          gh<_i811.AddressRepo>(),
           gh<_i474.CartBloc>(),
+        ));
+    gh.factory<_i244.AddressBloc>(
+        () => _i244.AddressBloc(gh<_i811.AddressRepo>()));
+    gh.factory<_i555.OrderProvider>(
+        () => _i555.OrderProvider(gh<_i960.OrderRepository>()));
+    gh.factory<_i710.UserRegistrationBloc>(
+        () => _i710.UserRegistrationBloc(gh<_i499.UserRegistrationRepo>()));
+    gh.factory<_i1057.PaymentBloc>(() => _i1057.PaymentBloc(
+          gh<_i67.PaymentRepository>(),
+          gh<_i758.FirebaseService>(),
         ));
     return this;
   }

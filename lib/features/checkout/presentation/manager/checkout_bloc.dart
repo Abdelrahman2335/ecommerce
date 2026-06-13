@@ -3,14 +3,14 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:ecommerce/core/models/address_model.dart';
-import 'package:ecommerce/features/address/data/repo/AddressRepo.dart';
+import 'package:ecommerce/features/address/data/repo/address_repo.dart';
 import 'package:ecommerce/features/cart/data/model/cart_model.dart';
 import 'package:ecommerce/features/cart/presentation/manager/cart_bloc.dart';
 import 'package:ecommerce/features/checkout/data/models/checkout_summary.dart';
 import 'package:ecommerce/features/checkout/data/models/promo_code_model.dart';
 import 'package:ecommerce/features/checkout/data/repository/checkout_repository.dart';
 import 'package:ecommerce/features/order_management/data/model/order_model.dart';
-import 'package:ecommerce/features/payment/presentation/manager/payment_provider.dart';
+import 'package:ecommerce/features/payment/presentation/manager/payment_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';

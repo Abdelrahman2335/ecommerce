@@ -13,7 +13,7 @@ import 'package:geocoding/geocoding.dart' as geo;
 import 'package:injectable/injectable.dart';
 import 'package:location/location.dart';
 
-import 'AddressRepo.dart';
+import 'address_repo.dart';
 
 @LazySingleton(as: AddressRepo)
 class AddressRepoImpl implements AddressRepo {

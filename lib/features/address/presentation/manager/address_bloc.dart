@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:ecommerce/core/error/firestore_failure.dart';
-import 'package:ecommerce/features/address/data/repo/AddressRepo.dart';
+import 'package:ecommerce/features/address/data/repo/address_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import 'package:latlong2/latlong.dart';
